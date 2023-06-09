@@ -1,2 +1,2 @@
-# MySql_Corso_Base
+# DB_MySql_Appunti
 Introduzione a MySql, sql e procedurale
