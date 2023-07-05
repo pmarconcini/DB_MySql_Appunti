@@ -1,4 +1,6 @@
 # Variabili d'ambiente
+-----------------------------------
+
 ## Variabili di sistema
   L'elenco e la modalità di gestione sono disponibili nelal documentazione ufficiale: 
   https://dev.mysql.com/doc/refman/8.0/en/server-system-variable-reference.html
@@ -15,6 +17,8 @@
     SHOW SESSION VARIABLES LIKE '%generated_random_password_length%';
     SHOW VARIABLES like '%generated_random_password_length%';
     select @@generated_random_password_length AS generated_random_password_length;
+
+-----------------------------------
 
 ## Variabili User-defined
   - Sono variabili che permettono la memorizzazione di dati senza la necessità di utilizzare un metodo di storage. 
