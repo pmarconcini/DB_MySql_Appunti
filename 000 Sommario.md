@@ -1,5 +1,6 @@
 # Sommario
 
+-----------------------------------
 ## 0. Introduzione a MySql e RDBMS 
 
 0.10 [Links e risorse utili](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/010%20%20Links%20e%20risorse%20utili)
@@ -10,6 +11,7 @@
 
 0.40 [Convenzioni e regole di scrittura](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/040%20Convenzioni%20e%20regole%20di%20scrittura)
 
+-----------------------------------
 ## 1. Organizzazione e informazioni
 
 1.10 [Utenze e ruoli](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/110%20Utenze%20e%20ruoli.md) (da fare)
@@ -22,13 +24,18 @@
 
 1.50 [Character Sets e Collations](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/150%20Character%20Sets%20e%20Collations.md)
 
+-----------------------------------
 ## 2. SQL
 
+-----------------------------------
 ## 3. Oggetti senza codice
 
+-----------------------------------
 ## 4. Oggetti con codice
 
+-----------------------------------
 ## 5. Errori frequenti e soluzioni
 5.10 [Ottimizzazione del database] 
 
+-----------------------------------
 ## 6. Snippets
