@@ -1,4 +1,26 @@
 # Tipi di dati
+
+## Dati numerici
+
+Nella definizione di colonne e variabili è possibile specificare gli attributi ZEROFILL per indicare che il valore nullo deve essere convertito in 0 e UNSIGNED per escludere valori negativi.
+
+Le due macro categorie disponibili sono:
+- Numeri precisi interi:
+	- BIT da i 1 64
+	- TINYINT[(M)] da -128 a 127
+	- BOOL (o BOOLEAN) 0 (falso) o 1 (vero)
+	- SMALLINT[(M)] da -32768 a 32767. UNSIGNED da 0 a 65535.
+	- MEDIUMINT[(M)] da -8388608 a 8388607. UNSIGNED da 0 a 16777215.
+	- INTEGER[(M)] (o INT[(M)]) da -2147483648 a 2147483647. UNSIGNED da 0 to 4294967295.
+	- BIGINT[(M)] da -9223372036854775808 a 9223372036854775807. UNSIGNED da 0 a 18446744073709551615.
+- Numeri decimali a virgola fissa:
+	- DECIMAL[(M[,D])] (o DEC o NUMERIC o FIXED) con massimo 65 cifre (M) di cui al massimo 30 decimali (D).
+- Numeri decimali a virgola flottante (c.d. approssimati):
+	- FLOAT[(M,D)] da -3.402823466E+38 a 3.402823466E+38. E' un tipo di dato deprecato.
+	- DOUBLE[(M,D)] (o DOUBLE PRECISION o REAL) da -2.2250738585072014E-308 a 2.2250738585072014E-308 ma il limite reale è dato presumibilmente dalle componenti hardware. I decimali sono considerati affidabili fino ad un valore di 15 per D. E' un tipo di dato deprecato.
+
+
+
 ## AUTO_INCREMENT
   AUTO_INCREMENT è un attributo di colonna utilizzabile per generare un identificativo numerico unico incrementale per ogni nuovo record di una tabella. 
   Il comportamento varia a seconda del motore utilizzato per la specifica colonna.
