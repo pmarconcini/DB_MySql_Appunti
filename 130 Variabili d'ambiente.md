@@ -11,12 +11,12 @@
   - Per vedere i valori delle variabili di sessione è possibile utilizzare l'istruzione SHOW [SESSION] VARIABLES [LIKE '%<testo>%']; o tramite query. 
   - La visibilità di una eventuale variazione dipende dall'indicazione (SESSION o GLOBAL) usata nell'istruzione SET di valorizzazione.
   
-    SET GLOBAL generated_random_password_length = 10; -- valore iniziale 20
-    SET SESSION generated_random_password_length = 15; -- valore iniziale 20
-    SHOW GLOBAL VARIABLES LIKE '%generated_random_password_length%';
-    SHOW SESSION VARIABLES LIKE '%generated_random_password_length%';
-    SHOW VARIABLES like '%generated_random_password_length%';
-    select @@generated_random_password_length AS generated_random_password_length;
+        SET GLOBAL generated_random_password_length = 10; -- valore iniziale 20
+        SET SESSION generated_random_password_length = 15; -- valore iniziale 20
+        SHOW GLOBAL VARIABLES LIKE '%generated_random_password_length%';
+        SHOW SESSION VARIABLES LIKE '%generated_random_password_length%';
+        SHOW VARIABLES like '%generated_random_password_length%';
+        select @@generated_random_password_length AS generated_random_password_length;
 
 -----------------------------------
 
