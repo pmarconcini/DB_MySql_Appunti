@@ -1,7 +1,9 @@
 # Links e risorse utili
+-----------------------------------
 ## Documentazione ufficiale
   https://dev.mysql.com/doc/refman/8.0/en/
 
+-----------------------------------
 ## Databases di esempio
   ### Employees
   https://dev.mysql.com/doc/employee/en/employees-installation.html
