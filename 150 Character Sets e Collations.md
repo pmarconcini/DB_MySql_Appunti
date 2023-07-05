@@ -9,6 +9,7 @@
   - Per le lettere dell'alfabeto: _ci > Case-insensitive o _cs > Case-sensitive
   - Per dati binari: _bin
 
+-----------------------------------
 ## Creazione e modifica degli oggetti
 
   Per impostare la scelta in fase di creazione del database (o anche in fase di modifica per gli oggetti in esso contenuti) è necessario specificare le parole chiave "CHARACTER SET" o "COLLATE" seguite da uno dei valori specifici disponibili nell'installazione.
@@ -33,8 +34,9 @@ E' possibile definire dei valori specifici per singola tabella e o singola colon
 
 Attenzione: modificare i valori in corso d'opera implica una conversione automatica che potrebbe causare una perdita di dati.
 
+-----------------------------------
 ## Lettura e scrittura delle impostazioni 
-E' possibile sapere quali sono le impostazioni correnti tramite la query seguente:
+  E' possibile sapere quali sono le impostazioni correnti tramite la query seguente:
 
     SELECT * FROM performance_schema.session_variables
     WHERE VARIABLE_NAME IN (
@@ -42,13 +44,15 @@ E' possibile sapere quali sono le impostazioni correnti tramite la query seguent
       'character_set_results', 'collation_connection'
     ) ORDER BY VARIABLE_NAME;
 
-Per variare in tempo reale le impostazioni è possibile utilizzare le seguenti istruzioni:
-SET character_set_client = charset_name;
-SET character_set_results = charset_name;
+  Per variare in tempo reale le impostazioni è possibile utilizzare le seguenti istruzioni:
+  
+    SET character_set_client = charset_name;
+    SET character_set_results = charset_name;
 
 
+-----------------------------------
 ## Conversione dei dati
-E' possibile eseguire una conversione in una collation diversa direttamente nell'istruzione SQL, sia a livello globale che a livello di singola colonna:
+  E' possibile eseguire una conversione in una collation diversa direttamente nell'istruzione SQL, sia a livello globale che a livello di singola colonna:
 
     SELECT col1 FROM tab ORDER BY col1 COLLATE latin1_german2_ci;
     
