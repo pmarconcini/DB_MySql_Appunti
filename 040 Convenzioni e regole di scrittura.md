@@ -102,4 +102,25 @@
   		DATE_ADD('1970-01-01 12:00:00', INTERVAL 6/4 HOUR_MINUTE) c5;-- 1 ora e 5000 minuti
 
   ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/6eabc55f-393b-4499-8b65-1bd53d608ea3)
+
+## Commenti
+  Sono disponibili varie tipologie di commento, come da esempio seguente:
+
+		SELECT 1+0 ris    # Commento fino a fine linea
+		UNION 
+		SELECT 1+1  -- Commento fino a fine linea
+		UNION 
+		SELECT 1 /* Commento in linea */ + 2
+		UNION 
+		SELECT 1+		/* Commento
+		multilinea */		3;
+
+ ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/560b0759-84f3-4e7e-8adc-d3b3d5423101)
+
+  Nel caso in cui i commenti siano parte del codice di procedure e funzioni vengono memorizzati anch'essi.
+
+  Esiste poi un ulteriore tipo di commenti simile al commento "in linea" che permette di indicare delle direttive in fase di esecuzione degli script e che NON viene memorizzato. La scrittura è /*! Codice MySQL */, come nell'esempio seguente in cui la creazione della tabella è vincolata alla versione minima del DBMS:
+
+	CREATE TABLE tab (a INT, KEY (a)) /*!80024 KEY_BLOCK_SIZE=1024 */;
+
   
