@@ -1,4 +1,5 @@
 # Convenzioni e regole di scrittura
+-----------------------------------
 ## Testi e caratteri speciali
   I testi sono racchiusi tra apici singoli o doppi. Sequenze ti testi espliciti sono automaticamente concatenati:
   
@@ -25,6 +26,7 @@
   - \%	Percentuale
   - \_	Underscore
 
+-----------------------------------
 ## Numeri e date
   Il separatore decimale è il punto. 
   I numeri in MySql possono essere esatti (tipi INTEGER e DECIMAL e derivati) o approssimati (FLOAT e DOUBLE e sinonimi). Numeri presentati con la notazione scientifica sono approssimati.
@@ -44,6 +46,7 @@
 
   Nel caso in cui un testo debba essere convertito in orario MySql procede secondo la seguente regola: 2 byte > SS, 4 byte MISS, 6 byte > HHMISS
 
+-----------------------------------
 ## Booleani e valore nullo
   I valori booleani sono TRUE e FALSE, NON sono case sensitive e corrispondono rispettivamente ai valori 1 e 0.
 
@@ -55,6 +58,7 @@
 
   ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/2f3c7a6f-7b90-4d5d-83c5-239054e2bfdb)
 
+-----------------------------------
 ## Naming convention
   Esistono un buon numero di regole per la naming convention degli oggetti:
   - L'identificativo può non essere quotato, ma deve esserlo se nel nome sono presenti caratteri speciali (in questo caso sarà sempre necessario quotare l'identificativo
@@ -66,6 +70,7 @@
   - Gli identificativi sono non case sensitivi ma è buona prassi utilizzare sempre nomi lower case per non generare conflitti di compatibilità in un eventuale cambio di sistema operativo
   - Non è possibile utilizzare una parola chiave o una parola riservata come identificativo (l'elenco aggiornato è reperibile nella documentazione ufficiale)
 
+-----------------------------------
 ## Intervalli temporali
   In alcune funzioni o attività è possibile indicare come parametro un intervallo temporale specificando la parola chiave INTERVAL seguita dalla quantità e da una unità di misura tra quelle esposte nell'esempio seguente:
 
@@ -103,6 +108,7 @@
 
   ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/6eabc55f-393b-4499-8b65-1bd53d608ea3)
 
+-----------------------------------
 ## Commenti
   Sono disponibili varie tipologie di commento, come da esempio seguente:
 
