@@ -1,20 +1,14 @@
 # DB_MySql_Appunti
   Introduzione a MySql, sql e procedurale
 
-#Links e risorse utili
-## Documentazione ufficiale
-  https://dev.mysql.com/doc/refman/8.0/en/
+# Sommario
 
-## Databases di esempio
-  ### Employees
-  https://dev.mysql.com/doc/employee/en/employees-installation.html
-  https://github.com/datacharmer/test_db
+[Links e risorse utili](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/010%20%20Links%20e%20risorse%20utili)
 
-  ### Sakila
-  https://dev.mysql.com/doc/sakila/en/
-  
-  ### Scott (Oracle like)
-  https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/MySql_DB_scott_oracle_like.sql
+Installazione e strumenti (da fare)
+
+Concetti generali e RDBS (da fare)
+
 
 # Convenzioni e regole di scrittura
 ## Testi e caratteri speciali
