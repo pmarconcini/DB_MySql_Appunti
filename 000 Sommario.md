@@ -20,6 +20,8 @@
 
 1.40 [Tipi di dati](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/140%20Tipi%20di%20dati.md) (da completare)
 
+1.50 [Character Sets e Collations](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/150%20Character%20Sets%20e%20Collations.md)
+
 ## 2. SQL
 
 ## 3. Oggetti senza codice
