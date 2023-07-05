@@ -1,7 +1,7 @@
 # Tipi di dati
 
+-----------------------------------
 ## Dati numerici
-
 Nella definizione di colonne e variabili è possibile specificare gli attributi ZEROFILL per indicare che il valore nullo deve essere convertito in 0 e UNSIGNED per escludere valori negativi.
 
 Le due macro categorie disponibili sono:
@@ -19,7 +19,44 @@ Le due macro categorie disponibili sono:
 	- FLOAT[(M,D)] da -3.402823466E+38 a 3.402823466E+38. E' un tipo di dato deprecato.
 	- DOUBLE[(M,D)] (o DOUBLE PRECISION o REAL) da -2.2250738585072014E-308 a 2.2250738585072014E-308 ma il limite reale è dato presumibilmente dalle componenti hardware. I decimali sono considerati affidabili fino ad un valore di 15 per D. E' un tipo di dato deprecato.
 
+-----------------------------------
 
+## Date e ore
+Tutti i tipi di dato hanno un valore corrispondente allo "zero" che è utilizzato in caso di valore proposto non valido.
+
+MySql cerca sempre di interpretare il dato atteso nel formato standard per la tipologia, ma cerca comunque eventualmente di interpretare il valore sencondo altri formati accettabili.
+In presenza di date contenenti il riferimento all'anno con 2 caratteri compresi tra 70 e 90 si suppone che si intenda gli anni dal 1970 al 1999, mentre negli altri casi (00-69) si intende il range 2000-2069.
+
+I tipi di dato utilizzabili per i valori temporali sono:
+	- DATE => formato 'yyyy-mm-dd', valori tra '1000-01-01' e '9999-12-31', zero: '00:00:00'
+	- TIME[(fsp)] => formato 'hh:mi:ss[.fsp decimali]', valori tra '-838:59:59.000000' e '838:59:59.000000', zero: '0000-00-00'
+	- DATETIME[(fsp)] => formato 'yyyy-mm-dd hh:mi:ss[.fsp decimali]', valori tra '1000-01-01 00:00:00.000000' e '9999-12-31 23:59:59.999999', zero: '0000-00-00 00:00:00'
+	- TIMESTAMP[(fsp)] => formato 'yyyy-mm-dd hh:mi:ss[.fsp decimali]', valori tra '1970-01-01 00:00:01.000000' e '2038-01-19 03:14:07.999999', zero: '0000-00-00 00:00:00'
+	- YEAR => formato 'yyyy', valori tra 1901 e 2155, zero: '0000'
+
+fsp: fractional second precision
+
+-----------------------------------
+
+## Peculiarità di DATETIME e TIMESTAMP
+
+Come da esempio seguente, nella definizione di una colonna è possibile specificare:
+	- che il valore predefinito, se non specificato, non segue la regola standard, tramite attributo NULL o NOT NULL
+	- che ha un valore predefinito con l'attributo DEFAULT valorizzato a 0, CURRENT_TIMESTAMP o un timestamp specifico
+	- che deve essere aggiornato automaticamente in caso di update della riga tramite l'attributo ON UPDATE CURRENT_TIMESTAMP
+	
+CREATE TABLE t1 (
+  ts1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,      -- default CURRENT_TIMESTAMP
+  ts2 TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,                                -- default 0
+  ts3 TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,                           -- default NULL
+  ts4 TIMESTAMP,                                                            -- default 0, non aggiornato con update
+  dt1 DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,       -- default CURRENT_TIMESTAMP
+  dt2 DATETIME ON UPDATE CURRENT_TIMESTAMP,                                 -- default NULL
+  dt3 DATETIME NOT NULL ON UPDATE CURRENT_TIMESTAMP,                        -- default 0
+  dt4 DATETIME,                                                             -- default NULL, non aggiornato con update
+);
+
+-----------------------------------
 
 ## AUTO_INCREMENT
   AUTO_INCREMENT è un attributo di colonna utilizzabile per generare un identificativo numerico unico incrementale per ogni nuovo record di una tabella. 
