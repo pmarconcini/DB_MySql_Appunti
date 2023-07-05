@@ -8,6 +8,7 @@
   - Il motore impostato per ogni singola tabella è quello più adatto
   - Dimensione adeguata delle varie aree di memoria
 
+-----------------------------------
 ## Ottimizzazione delle istruzioni SQL
   Considerazioni generali:
   - Per velocizzare una query il primo passo è verificare la correttezza degli indici coinvolti (soprattutto sui criteri di filtro della clausola WHERE).
