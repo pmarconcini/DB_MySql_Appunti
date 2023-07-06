@@ -20,22 +20,39 @@
 
 1.30 [Variabili d'ambiente](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/130%20Variabili%20d'ambiente.md)
 
-1.40 [Tipi di dati](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/140%20Tipi%20di%20dati.md) (da completare)
+1.40 [Tipi di dati](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/140%20Tipi%20di%20dati.md)
 
 1.50 [Character Sets e Collations](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/150%20Character%20Sets%20e%20Collations.md)
 
 -----------------------------------
 ## 2. SQL
++Functions and Operators
++SQL Statements
 
 -----------------------------------
 ## 3. Oggetti senza codice
++SQL Statements
++MySQL Data Dictionary
++Partitioning
 
 -----------------------------------
 ## 4. Oggetti con codice
++Stored Objects
 
 -----------------------------------
 ## 5. Errori frequenti e soluzioni
-5.10 [Ottimizzazione del database] 
+5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) 
+
++INFORMATION_SCHEMA Tables
++MySQL Performance Schema
++MySQL sys Schema
++Connectors and APIs
++Error Messages and Common Problems
 
 -----------------------------------
 ## 6. Snippets
+
+
+
+
+
