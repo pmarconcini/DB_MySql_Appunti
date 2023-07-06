@@ -81,6 +81,25 @@ Nella definizione di colonne di tipo CHAR, VARCHAR, TEXT, ENUM e SET (e sinonimi
 
 
 -----------------------------------
+## Altre tipologie di dato
+
+MySql gestisce anche altri dipi di dato:
+  - Spatial Data Types a valore geometrico singolo:
+    - GEOMETRY
+    - POINT
+    - LINESTRING
+    - POLYGON
+  - Spatial Data Types a valore geometrico multiplo:
+    - MULTIPOINT
+    - MULTILINESTRING
+    - MULTIPOLYGON
+    - GEOMETRYCOLLECTION
+  - JSON 
+
+Per una trattazione completa si rimanda alla documentazione ufficiale.
+
+
+-----------------------------------
 ## AUTO_INCREMENT
   AUTO_INCREMENT è un attributo di colonna utilizzabile per generare un identificativo numerico unico incrementale per ogni nuovo record di una tabella. 
   Il comportamento varia a seconda del motore utilizzato per la specifica colonna.
