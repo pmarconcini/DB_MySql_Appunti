@@ -28,36 +28,59 @@ MySql cerca sempre di interpretare il dato atteso nel formato standard per la ti
 In presenza di date contenenti il riferimento all'anno con 2 caratteri compresi tra 70 e 90 si suppone che si intenda gli anni dal 1970 al 1999, mentre negli altri casi (00-69) si intende il range 2000-2069.
 
 I tipi di dato utilizzabili per i valori temporali sono:
-	- DATE => formato 'yyyy-mm-dd', valori tra '1000-01-01' e '9999-12-31', zero: '00:00:00'
-	- TIME[(fsp)] => formato 'hh:mi:ss[.fsp decimali]', valori tra '-838:59:59.000000' e '838:59:59.000000', zero: '0000-00-00'
-	- DATETIME[(fsp)] => formato 'yyyy-mm-dd hh:mi:ss[.fsp decimali]', valori tra '1000-01-01 00:00:00.000000' e '9999-12-31 23:59:59.999999', zero: '0000-00-00 00:00:00'
-	- TIMESTAMP[(fsp)] => formato 'yyyy-mm-dd hh:mi:ss[.fsp decimali]', valori tra '1970-01-01 00:00:01.000000' e '2038-01-19 03:14:07.999999', zero: '0000-00-00 00:00:00'
-	- YEAR => formato 'yyyy', valori tra 1901 e 2155, zero: '0000'
+- DATE => formato 'yyyy-mm-dd', valori tra '1000-01-01' e '9999-12-31', zero: '00:00:00'
+- TIME[(fsp)] => formato 'hh:mi:ss[.fsp decimali]', valori tra '-838:59:59.000000' e '838:59:59.000000', zero: '0000-00-00'
+- DATETIME[(fsp)] => formato 'yyyy-mm-dd hh:mi:ss[.fsp decimali]', valori tra '1000-01-01 00:00:00.000000' e '9999-12-31 23:59:59.999999', zero: '0000-00-00 00:00:00'
+- TIMESTAMP[(fsp)] => formato 'yyyy-mm-dd hh:mi:ss[.fsp decimali]', valori tra '1970-01-01 00:00:01.000000' e '2038-01-19 03:14:07.999999', zero: '0000-00-00 00:00:00'
+- YEAR => formato 'yyyy', valori tra 1901 e 2155, zero: '0000'
 
 fsp: fractional second precision
 
------------------------------------
 
 ## Peculiarità di DATETIME e TIMESTAMP
 
 Come da esempio seguente, nella definizione di una colonna è possibile specificare:
-	- che il valore predefinito, se non specificato, non segue la regola standard, tramite attributo NULL o NOT NULL
-	- che ha un valore predefinito con l'attributo DEFAULT valorizzato a 0, CURRENT_TIMESTAMP o un timestamp specifico
-	- che deve essere aggiornato automaticamente in caso di update della riga tramite l'attributo ON UPDATE CURRENT_TIMESTAMP
+- che il valore predefinito, se non specificato, non segue la regola standard, tramite attributo NULL o NOT NULL
+- che ha un valore predefinito con l'attributo DEFAULT valorizzato a 0, CURRENT_TIMESTAMP o un timestamp specifico
+- che deve essere aggiornato automaticamente in caso di update della riga tramite l'attributo ON UPDATE CURRENT_TIMESTAMP
 	
-CREATE TABLE t1 (
-  ts1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,      -- default CURRENT_TIMESTAMP
-  ts2 TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,                                -- default 0
-  ts3 TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,                           -- default NULL
-  ts4 TIMESTAMP,                                                            -- default 0, non aggiornato con update
-  dt1 DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,       -- default CURRENT_TIMESTAMP
-  dt2 DATETIME ON UPDATE CURRENT_TIMESTAMP,                                 -- default NULL
-  dt3 DATETIME NOT NULL ON UPDATE CURRENT_TIMESTAMP,                        -- default 0
-  dt4 DATETIME,                                                             -- default NULL, non aggiornato con update
-);
+		CREATE TABLE t1 (
+			ts1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,      -- default CURRENT_TIMESTAMP
+			ts2 TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,                                -- default 0
+			ts3 TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,                           -- default NULL
+			ts4 TIMESTAMP,                                                            -- default 0, non aggiornato con update
+			dt1 DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,       -- default CURRENT_TIMESTAMP
+			dt2 DATETIME ON UPDATE CURRENT_TIMESTAMP,                                 -- default NULL
+			dt3 DATETIME NOT NULL ON UPDATE CURRENT_TIMESTAMP,                        -- default 0
+			dt4 DATETIME,                                                             -- default NULL, non aggiornato con update
+		);
+
 
 -----------------------------------
+## Formati testuali
 
+I tipi di dato utilizzabili per il testo sono i seguenti:
+- CHAR[(n)] > testo a dimensione fissa di n caratteri; la dimensione massima è 255 caratteri e, se omessa, la dimensione è 1
+- VARCHAR(n) > testo a dimensione variabile fino a n caratteri; la dimensione massima è 65535 caratteri
+- BINARY[(n)] > testo a dimensione fissa di n byte; la dimensione massima è 255 byte e, se omessa, la dimensione è 1
+- VARBINARY(n) > testo a dimensione variabile fino a n byte; la dimensione massima è 65535 byte
+- TINYBLOB > testo a dimensione variabile fino a circa 255 byte 
+- TINYTEXT > testo a dimensione variabile fino a circa 255 caratteri
+- BLOB(n) > testo a dimensione variabile fino a n byte; la dimensione massima è 65535 byte
+- TEXT(n) > testo a dimensione variabile fino a n caratteri; la dimensione massima è 65535 caratteri
+- MEDIUMBLOB(n) > testo a dimensione variabile fino a n byte; la dimensione massima è 16777215 byte
+- MEDIUMTEXT(n) > testo a dimensione variabile fino a n caratteri; la dimensione massima è 16777215 caratteri
+- LONGBLOB(n) > testo a dimensione variabile fino a n byte; la dimensione massima è 4294967295 byte (4 GB)
+- LONGTEXT(n) > testo a dimensione variabile fino a n caratteri; la dimensione massima è 4294967295 caratteri (4 GB)
+- ENUM('val1', 'val2', ...) > valore specifico dell'elenco; gli elementi possono essere al massimo 65535, con singolo peso di 255 caratteri o 1020 byte massimi
+- SET('val1', 'val2', ...) > valore specifico dell'elenco; gli elementi possono essere al massimo 64, con singolo peso di 255 caratteri o 1020 byte massimi
+
+NB: la dimensione specificata si intende in caratteri per CHAR, VARCHAR e TEXT e in byte per BINARY, VARBINARY e BLOB.
+
+Nella definizione di colonne di tipo CHAR, VARCHAR, TEXT, ENUM e SET (e sinonimi) è possibile specificare anche un charset e/o una collation di riferimento.
+
+
+-----------------------------------
 ## AUTO_INCREMENT
   AUTO_INCREMENT è un attributo di colonna utilizzabile per generare un identificativo numerico unico incrementale per ogni nuovo record di una tabella. 
   Il comportamento varia a seconda del motore utilizzato per la specifica colonna.
