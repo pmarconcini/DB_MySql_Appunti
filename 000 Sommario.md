@@ -14,7 +14,7 @@
 -----------------------------------
 ## 1. Organizzazione e informazioni
 
-1.10 [Utenze e ruoli](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/110%20Utenze%20e%20ruoli.md) (da fare)
+1.10 [Utenze, privilegi e ruoli]((https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/110%20Utenze,%20privilegi%20e%20ruoli.md))
 
 1.20 [Informazioni su database e oggetti](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/120%20Informazioni%20su%20database%20e%20oggetti.md)
 
