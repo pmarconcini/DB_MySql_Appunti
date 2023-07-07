@@ -161,3 +161,54 @@ A seguire alcuni esempi di partizionamento:
         PARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)
     );
 
+## Modifica di una tabella
+
+L'istruzione è la seguente:
+
+		ALTER TABLE <nome_tbl>
+		    [<elenco_opzioni_di_modifica>]
+		    [<elenco_definizione_di_partizioni>]
+			;
+
+Le opzioni di modifica più frequentemente utilizzate sono:
+- ADD [COLUMN] <definizione_di_colonna> [FIRST | AFTER <nome_colonna>]
+- ADD [COLUMN] (<elenco_definizioni_di_colonna>)
+- ADD INDEX | KEY [<nome_indice>] [<tipo_indice>] (<elenco_colonne>)
+- ADD [CONSTRAINT [<nome_constraint>]] PRIMARY KEY [<tipo_indice>] (<elenco_colonne>)
+- ADD [CONSTRAINT [<nome_constraint>]] UNIQUE [INDEX | KEY] [<nome_indice>] [<tipo_indice>] (<elenco_colonne>)
+- ADD [CONSTRAINT [<nome_constraint>]] FOREIGN KEY [<nome_indice>] (<elenco_colonne>) REFERENCES <tabella_referenziata> (<elenco_colonne_referenziate>)
+- ADD [CONSTRAINT [<nome_constraint>]] CHECK (<espressione>) [[NOT] ENFORCED]
+- DROP  CHECK | CONSTRAINT <nome_constraint>
+- DROP [COLUMN] <nome_colonna>
+- DROP INDEX | KEY <nome_indice>
+- DROP PRIMARY KEY
+- DROP FOREIGN KEY <nome_constraint>
+- LOCK [=] DEFAULT | NONE | SHARED | EXCLUSIVE
+- MODIFY [COLUMN] <nome_colonna> <definizione_colonna> [FIRST | AFTER <nome_colonna>]
+- RENAME COLUMN <vecchio_nome_colonna> TO <nuovo_nome_colonna>
+- RENAME INDEX | KEY <vecchio_nome_indice> TO <nuovo_nome_indice>
+- RENAME [TO | AS] <nuovo_nome_tabella>
+
+Le definizioni sono le medesime già viste per la creazione. 
+Le novità nell'elenco sono:
+- ADD per aggiungere nuove caratteristiche
+- DROP per eliminare caratteristiche presenti
+- MODIFY per aggiornare caratteristiche presenti
+- RENAME per rinominare la tabella o una colonna
+- l'attributo ENFORCED per il vincolo check che permette di stabilire se il vincolo deve essere creato anche in presenza di dati che non passerebbero la validazione
+- l'attributo LOCK per bloccare/sbloccare l'accesso in modifica ai dati
+
+In maniera analoga si può intervenire sulla definizione delle partizioni:
+- ADD PARTITION <definizione_partizione>
+- DROP PARTITION <elenco_partizioni>
+- TRUNCATE PARTITION <elenco_partizioni> | ALL
+- REORGANIZE PARTITION <elenco_partizioni> INTO (<definizione_partizioni>)
+- REMOVE PARTITIONING
+
+Le novità rispetto a quanto visto in precedenza sono:
+- ADD per aggiungere nuove partizioni
+- DROP per eliminare partizioni presenti
+- REORGANIZE per aggiornare partizioni presenti
+- TRUNCATE per eliminare i dati di una partizione
+- REMOVE PARTITIONING per eliminare il partizionamento
+
