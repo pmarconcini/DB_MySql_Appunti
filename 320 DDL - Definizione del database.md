@@ -1,1 +1,0 @@
-# DDL - Definizione del database
