@@ -1,6 +1,7 @@
 # Utenze, privilegi e ruoli
 
-MySql è organizzato in modo tale che possano essere creati più utenti e che ad essi possano essere associati dei privilegi singolarmente o a gruppi tramite i ruoli.
+MySql è organizzato in modo tale che possano essere creati più utenti e che ad essi possano essere associati dei privilegi singolarmente o a gruppi tramite i ruoli. 
+Le istruzioni per gestire utenze, privilegi e ruoli fanno parte del DCL (data control language); in passato venivano considerate DCL anche le istruzioni per la gestione delle transazioni, che sono trattate in un capitolo a parte e che ora vengono considerate parte del TCL (Transaction control language).
 
 ## Linee guida per la sicurezza
 
