@@ -212,3 +212,11 @@ Le novità rispetto a quanto visto in precedenza sono:
 - TRUNCATE per eliminare i dati di una partizione
 - REMOVE PARTITIONING per eliminare il partizionamento
 
+
+## Eliminare una tabella
+
+Eliminare una tabella NON implica l'eliminazione dei privilegi associati, che devono quindi essere gestiti manualmente.
+
+L'istruzione è:
+
+		DROP [TEMPORARY] TABLE [IF EXISTS] <elenco_tabelle>;
