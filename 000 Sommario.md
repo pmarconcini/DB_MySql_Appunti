@@ -26,20 +26,31 @@
 
 -----------------------------------
 ## 2. SQL - DQL, DML, TCL
+
 2.10 [Classificazione delle istruzioni SQL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/210%20Classificazione%20delle%20istruzioni%20SQL.md) (da fare)
+
 2.20 [Funzioni e operatori](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/220%20Funzioni%20e%20operatori.md) (da fare) +Functions and Operators
+
 2.30 [Data query language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md) (da fare) +Functions and Operators
+
 2.40 [Join e subquery](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/240%20Join%20e%20subquery.md) (da fare)
+
 2.50 [Insert, update e delete (DML)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/250%20Insert%2C%20update%20e%20delete%20(DML).md) (da fare) +SQL Statements
+
 2.60 [Gestione della transazione (TCL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/260%20Gestione%20della%20transazione%20(TCL).md) (da fare)
 
 -----------------------------------
 ## 3. SQL - DDL, oggetti senza codice
-3.10 Introduzione alle DDL (da fare)
-3.20 DDL - Definizione del database (da fare)
-3.30 DDL - Definizione delle tabelle (da fare)
-3.40 DDL - Definizione degli indici (da fare)
-3.50 DDL - Definizione delle viste (da fare)
+
+3.10 [Introduzione alle DDL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/310%20Introduzione%20alle%20DDL.md) (da fare)
+
+3.20 [Definizione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/320%20Definizione%20del%20database.md) (da fare)
+
+3.30 [Definizione delle tabelle](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/330%20Definizione%20delle%20tabelle.md) (da fare)
+
+3.40 [Definizione degli indici](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/340%20Definizione%20degli%20indici.md) (da fare)
+
+3.50 [Definizione delle viste](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/350%20Definizione%20delle%20viste.md) (da fare)
 
 +SQL Statements
 +MySQL Data Dictionary
@@ -47,15 +58,16 @@
 
 -----------------------------------
 ## 4. SQL - DDL, oggetti con codice
+
 4.10 Strutture e costrutti del codice (da fare)
-4.20 DDL - Definizione delle procedure (da fare)
-4.30 DDL - Definizione delle funzioni (da fare)
-4.40 DDL - Definizione dei trigger (da fare)
-4.50 DDL - Definizione degli eventi (da fare)
+4.20 Definizione delle procedure (da fare)
+4.30 Definizione delle funzioni (da fare)
+4.40 Definizione dei trigger (da fare)
+4.50 Definizione degli eventi (da fare)
 +Stored Objects
 
 -----------------------------------
-## 5. Errori frequenti e soluzioni
+## 5. Informazioni, errori frequenti e soluzioni
 5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) 
 
 +INFORMATION_SCHEMA Tables
