@@ -1,0 +1,1 @@
+# Definizione degli indici
