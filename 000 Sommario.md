@@ -46,7 +46,7 @@
 
 3.20 [Definizione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/320%20Definizione%20del%20database.md)
 
-3.30 [Definizione delle tabelle](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/330%20Definizione%20delle%20tabelle.md) (da fare)
+3.30 [Definizione delle tabelle](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/330%20Definizione%20delle%20tabelle.md)
 
 3.40 [Definizione degli indici](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/340%20Definizione%20degli%20indici.md) (da fare)
 
