@@ -59,17 +59,28 @@
 -----------------------------------
 ## 4. SQL - DDL, oggetti con codice
 
-4.10 Strutture e costrutti del codice (da fare)
-4.20 Definizione delle procedure (da fare)
-4.30 Definizione delle funzioni (da fare)
-4.40 Definizione dei trigger (da fare)
-4.50 Definizione degli eventi (da fare)
+4.10 [Strutture e costrutti del codice](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/410%20Strutture%20e%20costrutti%20del%20codice.md) (da fare)
+
+4.20 [Definizione delle procedure](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/420%20Definizione%20delle%20procedure.md) (da fare)
+
+4.30 [Definizione delle funzioni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/430%20Definizione%20delle%20funzioni.md) (da fare)
+
+4.40 [Definizione dei trigger](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/440%20Definizione%20dei%20trigger.md) (da fare)
+
+4.50 [Definizione degli eventi](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/450%20Definizione%20degli%20eventi.md) (da fare)
+
 +Stored Objects
 
 -----------------------------------
 ## 5. Informazioni, errori frequenti e soluzioni
+
 5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) 
 
+5.20 [Data Dictionary e INFORMATION_SCHEMA](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/520%20Data%20Dictionary%20e%20INFORMATION_SCHEMA.md) (da fare)
+
+5.30 [Messaggi di errore e problemi comuni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/530%20Messaggi%20di%20errore%20e%20problemi%20comuni.md) (da fare)
+
++MySQL Data Dictionary
 +INFORMATION_SCHEMA Tables
 +MySQL Performance Schema
 +MySQL sys Schema
