@@ -42,7 +42,7 @@
 -----------------------------------
 ## 3. SQL - DDL, oggetti senza codice
 
-3.10 [Introduzione alle DDL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/310%20Introduzione%20alle%20DDL.md) (da fare)
+3.10 [Introduzione alle DDL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/310%20Introduzione%20alle%20DDL.md)
 
 3.20 [Definizione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/320%20Definizione%20del%20database.md) (da fare)
 
