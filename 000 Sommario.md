@@ -44,7 +44,7 @@
 
 3.10 [Introduzione alle DDL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/310%20Introduzione%20alle%20DDL.md)
 
-3.20 [Definizione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/320%20Definizione%20del%20database.md) (da fare)
+3.20 [Definizione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/320%20Definizione%20del%20database.md)
 
 3.30 [Definizione delle tabelle](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/330%20Definizione%20delle%20tabelle.md) (da fare)
 
