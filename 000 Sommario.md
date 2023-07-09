@@ -48,7 +48,7 @@
 
 3.30 [Definizione delle tabelle](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/330%20Definizione%20delle%20tabelle.md)
 
-3.40 [Definizione degli indici](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/340%20Definizione%20degli%20indici.md) (da fare)
+3.40 [Definizione degli indici](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/340%20Definizione%20degli%20indici.md)
 
 3.50 [Definizione delle viste](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/350%20Definizione%20delle%20viste.md) 
 
