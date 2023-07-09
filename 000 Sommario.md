@@ -27,7 +27,7 @@
 -----------------------------------
 ## 2. SQL - DQL, DML, TCL
 
-2.10 [Classificazione delle istruzioni SQL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/210%20Classificazione%20delle%20istruzioni%20SQL.md) (da fare)
+2.10 [Classificazione delle istruzioni SQL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/210%20Classificazione%20delle%20istruzioni%20SQL.md)
 
 2.20 [Funzioni e operatori](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/220%20Funzioni%20e%20operatori.md) (da fare) +Functions and Operators
 
