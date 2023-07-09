@@ -6,6 +6,7 @@ https://dev.mysql.com/doc/refman/8.0/en/built-in-function-reference.html
 Alle funzioni preinstallate possono essere aggiunte le "loadable functions":
 https://dev.mysql.com/doc/refman/8.0/en/server-loadable-functions.html
 
+---------------------------------------
 ## Concetto di espressione
 
 Un'espressione è un valore che può essere di qualsiasi tipo di dato ed essere il risultato dell'elaborazione di funzioni (di sistema o user-defined), di un confronto con operatori, di costanti, di dati di colonne o di combinazioni tra questi elementi.
@@ -14,6 +15,7 @@ Come vedremo può essere utilizzata in diversi punti di SQL, ma anche nel codice
 In MySql una espressione che contiene un elemento con valore NULL assume sempre il valore NULL (la cosiddetta propagazione del nullo).
 
 
+---------------------------------------
 ## La tabella DUAL
 
 Per comodità nell'affrontare funzioni e operatori si farà uso di una tabella fittizia di nome DUAL contenente una unica riga e senza colonne definite; in MySql una istruzione DQL in cui si omette la clausola FROM fa riferimento, per definizione, alla tabella DUAL.
@@ -27,6 +29,7 @@ Le due istruzioni seguenti sono, di fatto, identiche:
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/8a297b42-0326-4bd9-b13e-31a574128bd3)
 
 
+---------------------------------------
 ## Conversione di dati
 
 la conversione può essere esplicita o implicita; in questo secondo caso la scelta di cosa convertire è delegata a MySql e dipende in buona sostanza dai formati attesi per i parametri e da quelli restituiti dalle funzioni o dagli operatori.
@@ -45,6 +48,7 @@ La conveersione esplicita invece si può ottenere tramite la funzione CAST, che 
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/339fa5ed-7457-4c99-8f8c-86ac11564891)
 
 
+---------------------------------------
 ## Operatori
 
 Gli operatori più frequentemente utilizzati sono i seguenti:
@@ -93,31 +97,34 @@ L'ordine di elaborazione degli operatori più comuni è il seguente ma, in ogni 
 - \= (assegnamento), :=
 
 
+---------------------------------------
 ## Funzioni e operatori di confronto
 
 Restituiscono un valore booleano vero (true, 1) o falso (false, 0).
 
-    SELECT  2 > 1 AS c1, -- A maggiore di B ==> vero
-        		2 >= 1 AS c2, -- A maggiore o uguale di B ==> vero
+        SELECT  
+            2 > 1 AS c1, -- A maggiore di B ==> vero
+            2 >= 1 AS c2, -- A maggiore o uguale di B ==> vero
             1 < 2 AS c3, -- A minore di B ==> vero
             1 <= 2 AS c4, -- A minore o uguale di B ==> vero
             1 <> 2 AS c5, -- A diverso da B ==> vero
             1 != 2 AS c6, -- A diverso da B ==> vero
-    		    1 <=> 1 AS c7, -- A uguale a B ==> vero (compresi valori NULL)
-    		    1 = 1 AS c8, -- A uguale a B ==> vero (NULL valori NULL)
-    		    2 BETWEEN 1 AND 3 AS c9, -- A compreso tra B e C ==> vero
+            1 <=> 1 AS c7, -- A uguale a B ==> vero (compresi valori NULL)
+            1 = 1 AS c8, -- A uguale a B ==> vero (NULL valori NULL)
+            2 BETWEEN 1 AND 3 AS c9, -- A compreso tra B e C ==> vero
             COALESCE(NULL, NULL, 1, 2) AS c10, -- Il primo valore non nullo in elenco ==> 1
             GREATEST(0, -3, 1, 2) AS c11, -- Il valore più grande nell'elenco ==> 2 (con propagazione del nullo)
-    		    1 IN (null, 1, -1, 2, 3) AS c12, -- Valore nell'elenco ==> vero (compresi nulli)
+            1 IN (null, 1, -1, 2, 3) AS c12, -- Valore nell'elenco ==> vero (compresi nulli)
             INTERVAL(10, 0, 10, 20, 0) AS c13, -- Indice (da 0) del primo valore di cui è minore o uguale il primo parametro ==> 2
-    		    1 IS NOT NULL AS c14, -- test nonnullità ==> vero
+            1 IS NOT NULL AS c14, -- test nonnullità ==> vero
             1 IS NULL AS c15, -- test nullità ==> falso
             ISNULL(1) AS c16, -- test nullità ==> falso
-    		    LEAST(3, -3, 1, 4) AS c17, -- Il valore più piccolo nell'elenco ==> -3 (con propagazione del nullo)
+            LEAST(3, -3, 1, 4) AS c17, -- Il valore più piccolo nell'elenco ==> -3 (con propagazione del nullo)
             'abcd' LIKE	'%c%' AS c18; -- corrispondenza del pattern ==> vero
 
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/8cc92b0e-e8fa-445b-8b6e-170dbf263547)
 
+---------------------------------------
 
 
 
