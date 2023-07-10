@@ -89,7 +89,15 @@
 +Error Messages and Common Problems
 
 -----------------------------------
-## 6. Snippets
+## 6. Snippets e focus
+
++Spatial
+==> https://dev.mysql.com/doc/refman/8.0/en/spatial-analysis-functions.html
+
++Json
+==>  https://dev.mysql.com/doc/refman/8.0/en/json-functions.html
+
++Scrivere e leggere file
 
 
 
