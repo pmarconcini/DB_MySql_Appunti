@@ -394,5 +394,23 @@ Segue il prospetto relativo al parametro utilizzato per indicare la case sensiti
 
 ---------------------------------------
 
+## Funzioni di conversione
+
+La funzione CAST permette di convertire secondo la seguente scrittura: CAST( <valore> AS <tipo_dato>)
+Siccome MySql interpreta il dato, a volte conviene specificare il formato iniziale del valore, come nell'elsempio seguente.
+La funzione CONVERT invece può avere due forme per i parametri: (<espressione> USING <nome_collezione>) o (<espressione>, <tipo_dato>)
+
+
+    SELECT 
+        CAST("11:35:00" AS YEAR) AS c1, -- errata interpretazione di 11
+        CAST(TIME '11:35:00' AS YEAR) AS c2, -- specifica del formato dell'orario
+        CONVERT('test' USING utf8mb4) COLLATE utf8mb4_bin AS c3, -- prima forma di trascodifica
+        CONVERT('test', CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_bin AS c4, -- seconda forma di trascodifica
+        CAST('test' AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_bin AS c5 -- trascodifica con CAST
+        ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/222f4658-1188-4901-a6a9-8785fe691563)
+
+
 
 
