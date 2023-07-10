@@ -435,8 +435,43 @@ Le funzioni utili per la gestione dell'XML utilizzano le funzionalità di xPath,
 
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/15d540af-ab8f-452c-a162-a71d07d93abb)
 
+---------------------------------------
 
+## Funzioni di compressione e crittatura
 
+Per le altre funzioni della categoria si rimanda alla documentazione ufficiale.
+
+        SELECT 
+            LENGTH(COMPRESS(REPEAT('a',1000))) AS c1, -- compressione
+            UNCOMPRESS(COMPRESS('any string')) AS c2, -- decompressione
+            MD5('testing') AS c3, -- crittatura MD5
+            SHA1('abc') AS c4, -- crittatura SHA1
+            SHA2('abc', 224) AS c5 -- crittatura SHA2 (modalità 224, 256, 384, 512)
+        ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/f12b284b-3450-4b14-915e-c82ecde8be1e)
+
+---------------------------------------
+
+## Funzioni informative
+
+Per le altre funzioni della categoria si rimanda alla documentazione ufficiale.
+
+        SELECT 
+            CONNECTION_ID() AS c1, -- thread ID di connessione;
+            CURRENT_ROLE() AS c2, -- i ruoli attualmente assegnati all'utente;
+            CURRENT_USER() AS c3, -- una combinazione di username e host
+            DATABASE() AS c4, -- il database corrente
+            LAST_INSERT_ID() AS c5, -- l'ultimo ID riga calcolato
+            ROW_COUNT() AS c6, -- il numero di righe processate nell'ultima DML
+            SCHEMA() AS c7, -- è un sinonimo di DATABASE()
+            USER() AS c8, -- l'utente collegato (anche SESSION_USER() e SYSTEM_USER())
+            VERSION() AS c9 -- la versione di MySql
+            ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/3e277aea-7571-4e74-bbec-57a091aa6791)
+
+---------------------------------------
 
 
 
