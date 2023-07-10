@@ -19,6 +19,7 @@
 1.20 [Informazioni su database e oggetti](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/120%20Informazioni%20su%20database%20e%20oggetti.md)
 
 1.30 [Variabili d'ambiente](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/130%20Variabili%20d'ambiente.md)
++SQL Mode (da fare)
 
 1.40 [Tipi di dati](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/140%20Tipi%20di%20dati.md)
 
