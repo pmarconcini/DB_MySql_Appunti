@@ -96,6 +96,19 @@ L'ordine di elaborazione degli operatori più comuni è il seguente ma, in ogni 
 - OR (oppure ||)
 - \= (assegnamento), :=
 
+-----------------------------------
+
+## Operatori matematici
+
+    SELECT  3+5 AS somma,
+            3-5 AS sottrazione,
+            -3 AS negativo,
+            3*5 AS moltiplicazione,
+            3/5 AS divisione,
+            5 DIV 2 AS ris_intero,
+            33 % 5 AS modulo_1,
+            33 MOD 5 AS modulo_2;
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/8001b7db-4197-460e-a148-4c395e5d4982)
 
 ---------------------------------------
 ## Funzioni e operatori di confronto
@@ -126,7 +139,60 @@ Restituiscono un valore booleano vero (true, 1) o falso (false, 0).
 
 ---------------------------------------
 
+## Funzioni di controllo del flusso (o condizionali)
 
+Le seguenti funzioni diversificano il risultato in base alla verifica di una o più condizioni:
+
+- CASE  ==> Operatore Case (2 forme di scrittura)
+- IF()	==> Costrutto If/else (
+- IFNULL() ==> Verifica nullità if/else
+- NULLIF() ==> Nullificazione con <espressione1> = <espressione2>
+
+      SET @a = 1, @b=2;
+      SELECT  CASE @a WHEN 1 THEN 'uno' WHEN 2 THEN 'due' ELSE 'altro' END AS c1, 
+              -- ==> CASE <espressione> WHEN <val1> THEN <ris1> WHEN <val2> THEN <ris2> ELSE <ris_altro> END
+              CASE WHEN @a>0 THEN 'vero' ELSE 'falso' END AS c2,
+              -- ==> CASE WHEN <test_espressione1> THEN <ris1> WHEN <test_espressione2> THEN <ris2> ELSE <ris_altro> END
+              IF(@a > @b, 1, 2) AS c3, 
+              -- ==> IF (<test_espressione>, <ris_se_vero>, <ris_se_falso>)
+              IFNULL (1,0) AS c4,
+              IFNULL (NULL, 10) AS c5,
+              -- ==> IFNULL (<ris_se_non_nullo>, <ris_se_primo_null>)
+              NULLIF(1,1) AS c6,
+              NULLIF(1,2) AS c7
+              -- ==> NULLIF (<espr1>, <espr2>) ==> se uguali ris = NULL, altrimenti ris = <espr1>
+              ;
+  
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/68d9a574-af9c-4997-a42d-c5aaad7a8439)
+
+---------------------------------------
+
+## Funzioni matematiche
+
+NB: tutte le funzioni matematiche restituiscono NULL in caso di errore
+
+    SELECT  ABS(-32) AS c1, -- valore assoluto
+            CEIL(1.23) AS c2, -- il più piccolo intero maggiore di 1.23
+            CEILING(-1.23) AS c3, -- sinonimo di CEIL
+            CONV('a',16,2) AS c4, -- conversione di 'a' da base 16 a base 2
+            FLOOR(1.23) AS c5, -- il più grande intero minore di 1.23
+            MOD(234, 10) AS c6, -- il resto della divisione per 10 di 234;
+            POW(2,3) AS c7, -- elevamento di 2 alla potenza 3
+            RAND() as c8, -- numero randomico compreso tra 0 e 1
+            FLOOR(7 + (RAND() * 5)) AS c9, -- numero randomico intero compreso ta 7 e 12
+            ROUND(-1.23) AS c10, -- arrotondamento all'unità
+            ROUND(1.298, 1) AS c11, -- arrotondamento al primo decimale
+            ROUND(23.298, -1) AS c12, -- arrotondamento alle decine
+            SIGN(-1.23) AS c13, -- il segno del valore -1.23 ==> 1 se positivo, 0 se 0, -1 se negativo, NULL se nullo
+            SQRT(25) AS c14, -- radice quadrata di 25
+            TRUNCATE(1.223,1) AS c15, -- troncamento al primo decimale
+            TRUNCATE(1.999,0) AS c16, -- troncamento all'unità
+            TRUNCATE(122,-2) AS c17 -- troncamento al centinaio
+            ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/39665bbf-286e-4f36-8461-991366f39972)
+
+Esistono anche altre funzioni matematiche per le quali si rimanda alla documentazione ufficiale.
 
 
 
