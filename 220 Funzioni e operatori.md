@@ -236,6 +236,7 @@ NB: le funzioni che si aspettano date come parametri generalmente accettano valo
         ;
 
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/69f1fc2e-1b62-4dcd-8900-1251da3596c4)
+
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a87ab649-db14-40ba-9899-c0efe06601eb)
 
 
@@ -288,5 +289,50 @@ La funzione DATE_FORMAT(<data>,<formato>) permette di formattare come teto una d
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/cbae7dd8-60e0-43f9-b017-df1f26e80b75)
 
 ---------------------------------------
+
+## Funzioni su testi
+
+        SELECT 
+            ASCII('dx') AS c1, -- codice ascii del primo carattere da sinistra del parametro
+            LENGTH('città') AS c2, -- lunghezza in byte 
+            CHAR_LENGTH('città') AS c3, -- lunghezza in caratteri
+            CONCAT('My', 'S', 'QL') AS c4, -- concatenamento
+            'My' 'S' 'QL' AS c5, -- concatenamento di testi quotati
+            CONCAT_WS(',','Nome','Cognome','Telefono') AS c6, -- concatenamento con ',' come separatore
+            ELT(4, 'Aa', 'Bb', 'Cc', 'Dd') AS c7, -- estrae il quarto elemento dall'elenco (NULL se l'indice è inferiore a 1 o superiore agli elementi)
+            FIELD('Bb', 'Aa', 'Bb', 'Cc', 'Dd', 'Ff') AS c8, -- restituisce l'indice (base 1) della posizione di Bb nell'elenco seguente (0 se assente, NULL con nulli presenti)
+            FIND_IN_SET('b','a,b,c,d') AS c9, -- restituisce l'indice (base 1) della posizione di b in una stringa con separatori
+            INSERT('Quadratic', 3, 6, 'What') AS c10, -- inserisce What in terza posizione sostituendo 6 caratteri
+            INSTR('foobarbar', 'bar') AS c11, -- trova la posizione della prima occorrenza di bar (0 se non presente)
+            LCASE('TESTO') AS c12, -- converte il testo in minuscolo
+            LOWER('TESTO') AS c13, -- converte il testo in minuscolo
+            LEFT('foobarbar', 5) AS c14, -- estrae i primi 5 caratteri
+            LOCATE('bar', 'foobarbar') AS c15, -- trova la posizione della prima occorrenza di bar (0 se non presente)
+            LPAD('hi',4,'??') AS c16, -- porta il testo "hi" a 4 caratteri di lunghezza, eventualmente riempiendo a sinistra con "??"
+            LTRIM('  barbar') AS c17, -- elimina gli spazi iniziali a sinistra
+            REPEAT('MySQL', 3) AS c18, -- ripete il testo 3 volte
+            REPLACE('www.mysql.com', 'w', 'Ww') AS c19, -- sostituisce ogni occorrenza di w con Ww
+            REVERSE('abc') AS c20, -- inverte il testo
+            RIGHT('foobarbar', 4) AS c21, -- estrae i primi 4 caratteri da destra
+            RPAD('hi',5,'?') AS c22, -- porta il testo "hi" a 5 caratteri di lunghezza, eventualmente riempiendo a destra con "??"
+            RTRIM('barbar   ') AS c23, -- elimina gli spazi iniziali a destra
+            SPACE(6) AS c24, -- restituisce una stringa di 6 spazi
+            SUBSTRING('Quadratically',5) AS c25a, -- estrae tutto dal 5 carattere in poi
+            SUBSTRING('Quadratically',5,6) AS c25b, -- estrae 6 caratteri dal 5 carattere in poi
+            SUBSTRING('Sakila', -3) AS c25c, -- estrae gli ultimi 3 caratteri
+            SUBSTRING('Sakila', -5, 3) AS c25d, -- estrae 3 caratteri dal 5 carattere contando da destra
+            TRIM('  bar   ') AS c26, -- elimina gli spazi iniziali a destra e sinistra 
+            UCASE('testo') AS c27, -- converte il testo in maiuscolo
+            UPPER('testo') AS c28 -- converte il testo in maiuscolo
+            ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/625ed927-c28f-4858-bb81-35e14224cd93)
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/fa5ff058-65f8-4355-b91f-c4ee55146142)
+
+Esistono anche altre funzioni per la gestione dei testi per le quali si rimanda alla documentazione ufficiale.
+
+---------------------------------------
+
 
 
