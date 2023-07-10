@@ -39,4 +39,37 @@
 
     SET @var_name = expr [, @var_name = expr] ...
 
+-----------------------------------
+
+## Funzioni di controllo del flusso (o condizionali)
+
+Le seguenti funzioni diversificano il risultato in base alla verifica di una o più condizioni:
+
+- CASE  ==> Operatore Case (2 forme di scrittura)
+- IF()	==> Costrutto If/else (
+- IFNULL() ==> Verifica nullità if/else
+- NULLIF() ==> Nullificazione con <espressione1> = <espressione2>
+
+      SET @a = 1, @b=2;
+      SELECT  CASE @a WHEN 1 THEN 'uno' WHEN 2 THEN 'due' ELSE 'altro' END AS c1, 
+              -- ==> CASE <espressione> WHEN <val1> THEN <ris1> WHEN <val2> THEN <ris2> ELSE <ris_altro> END
+              CASE WHEN @a>0 THEN 'vero' ELSE 'falso' END AS c2,
+              -- ==> CASE WHEN <test_espressione1> THEN <ris1> WHEN <test_espressione2> THEN <ris2> ELSE <ris_altro> END
+              IF(@a > @b, 1, 2) AS c3, 
+              -- ==> IF (<test_espressione>, <ris_se_vero>, <ris_se_falso>)
+              IFNULL (1,0) AS c4,
+              IFNULL (NULL, 10) AS c5,
+              -- ==> IFNULL (<ris_se_non_nullo>, <ris_se_primo_null>)
+              NULLIF(1,1) AS c6,
+              NULLIF(1,2) AS c7
+              -- ==> NULLIF (<espr1>, <espr2>) ==> se uguali ris = NULL, altrimenti ris = <espr1>
+              ;
   
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/68d9a574-af9c-4997-a42d-c5aaad7a8439)
+
+-----------------------------------
+
+
+
+
+
