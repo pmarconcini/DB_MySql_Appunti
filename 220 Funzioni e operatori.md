@@ -332,6 +332,66 @@ La funzione DATE_FORMAT(<data>,<formato>) permette di formattare come teto una d
 
 Esistono anche altre funzioni per la gestione dei testi per le quali si rimanda alla documentazione ufficiale.
 
+
+### Espressioni regolari
+
+        SELECT 
+            'Michael!' REGEXP '.*' AS c1, -- vero se il pattern corrisponde
+            REGEXP_INSTR('dog cat dog', 'dog') AS c2, -- posizione della prima occorrenza di dog
+            REGEXP_INSTR('dog cat dog', 'dog', 2) AS c3, -- posizione della seconda occorrenza di dog
+            REGEXP_INSTR('aa aaa aaaa', 'a{4}') AS c4, -- posizione della prima occorrenza del pattern ("aaaa")
+            REGEXP_LIKE('CamelCase', 'CAMELCASE') AS c5, -- vero se il pattern corrisponde
+            REGEXP_LIKE('CamelCase', 'CAMELCASE', 'c') AS c6, -- vero se il pattern corrisponde 
+            -- c: Case-sensitive matching
+            -- i: Case-insensitive matching
+            -- m: Multiple-line mode
+            -- n: Il "." è il termine della linea
+            -- u: Unix-only line endings
+            REGEXP_REPLACE('a b c', 'b', 'X') AS c7, -- sostituisce b con X
+            REGEXP_REPLACE('abc def ghi jkl', '[a-z]+', 'X', 1, 3) AS c8, -- sostituisce con X una sequenza di lettere minuscole a partire dalla terza
+            REGEXP_SUBSTR('abc def ghi', '[a-z]+') AS c9, -- estrae la pima sequenza di lettere minuscole
+            REGEXP_SUBSTR('abc def ghi jkl', '[a-z]+', 1, 3) AS c10 -- estrae la pima sequenza di lettere minuscole partendo dalla terza
+        ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1d428c1b-d2a8-49f8-87fc-229e741974e2)
+
+Segue un prospetto delle combinazioni di caratteri speciali usabili nel pattern (i valori sono combinabili).
+
+- ^	Inizio testo/riga
+- $	Fine testo/riga
+- \*	Zero o più occorrenze
+- \+	Una o più occorrenze
+- ?	Zero o una occorrenza
+- |	Valori alternativi
+- []	Uno tra i singoli valori racchiusi. Range impostabile collegando due valori con -
+- [^ ]	Nessuno tra i singoli valori racchiusi
+- ( )	Per raggruppare una espressione
+- [: :]	Classe di caratteri (v. elenco a seguire)
+- {m}	Numero di occorrenza dell’elemento che precede
+- {m,}	Numero minimo di occorrenza dell’elemento che precede
+- {m,n}	Numero di occorrenza compreso tra m e n dell’elemento che precede
+
+Dettaglio delle principali classi di caratteri:
+- [:alnum:] Tutti caratteri alfanumerici
+- [:alpha:] Tutti caratteri alfabetici
+- [:blank:] Tutti caratteri vuoti
+- [:cntrl:] Tutti caratteri di controllo (non stampati)
+- [:digit:] Tutti caratteri numerici
+- [:graph:] Tutti i caratteri compresi in [:punct:], [:upper:], [:lower:] e [:digit:]
+- [:lower:] Tutti i caratteri alfabetici minuscoli 
+- [:print:] Tutti i caratteri stampabili 
+- [:punct:] Tutti i caratteri non stampabili 
+- [:space:] Tutti spazi 
+- [:upper:] Tutti i caratteri alfabetici maiuscoli
+- [:xdigit:] Tutti i caratteri esadecimali
+
+Segue il prospetto relativo al parametro utilizzato per indicare la case sensitivity:
+- 'c'	Case sensitive
+- 'i'	NON Case sensitive
+- 'n'	Abilita l’identificazione della nuova linea con il carattere “.”
+- 'm'	L’espressione è multilinea e i caratteri ^ e $ si riferiscono ad ogni linea.
+- 'x'	I blank sono ignorati
+
 ---------------------------------------
 
 
