@@ -194,5 +194,99 @@ NB: tutte le funzioni matematiche restituiscono NULL in caso di errore
 
 Esistono anche altre funzioni matematiche per le quali si rimanda alla documentazione ufficiale.
 
+---------------------------------------
+
+## Funzioni su date e tempo
+
+NB: le funzioni che si aspettano date come parametri generalmente accettano valori temporali e viceversa. MySql si attende un formato ben preciso ('YYYY-MM-DD HH:MI:SS.mmmmm') ma cerca di interpretare il dato che viene passato (ie-dati in formato più corto, ordine diverso, etc).
+
+    SELECT 
+        ADDDATE('2008-01-02', 31) AS c1, -- aggiunge 31 giorni
+        ADDTIME('2007-12-31 23:59:59.999999', '1 1:1:1.000002') AS c2, -- aggiunge 1 DD, 1 HH, 1 MI, 1 SS e 2 mmmmm
+        CONVERT_TZ('2004-01-01 12:00:00','GMT','MET') AS c3, -- converte una data/ora dalla zona GMT alla zona MET
+        CURDATE() AS c4, -- data corrente in formato 'YYYY-MM-DD' o YYYYMMDD
+        CURRENT_DATE() AS c5, -- come CURRDATE()
+        CURRENT_TIME() AS c6, -- come CURTIME()
+        CURRENT_TIMESTAMP() AS c7, -- come NOW()
+        CURTIME() AS c8a, -- ora corrente senza frazioni di secondo, in formato 'hh:mm:ss' o hhmmss
+        CURTIME(3) AS c8b, -- ora corrente con 3 decimali di secondo, in formato 'hh:mm:ss.mmmmm' o hhmmss.mmmmm
+        DATE('2003-12-31 01:02:03') AS c9, -- estrazione della data
+        DATEDIFF('2007-12-31 23:59:59','2007-12-30') AS c10, -- differenza in giorni tra 2 date
+        DATE_ADD('2008-01-02', INTERVAL 31 DAY) AS c11, -- aggiunge un intervallo di 31 giorni
+        DATE_SUB('2018-05-01',INTERVAL 1 YEAR) AS c12, -- sottrae un intervallo di 1 anno
+        DAYNAME('2007-02-03') AS c13, -- giorno della settimana letterale della data
+        DAYOFMONTH('2007-02-03') AS c14, -- giorno del mese della data
+        DAYOFWEEK('2007-02-03') AS c15, -- giorno della settimana numerico dela data (1 = domenica)
+        DAYOFYEAR('2007-02-03') AS c16, -- giorno dell'anno
+        HOUR('10:05:03') AS c17, -- ore di un orario
+        LAST_DAY('2003-02-05') AS c18, -- ultimo giorno del mese di una data
+        MINUTE('2008-02-03 10:05:03') AS c19, -- minuti di un orario
+        MONTH('2008-02-03') AS c20, -- mese di una data
+        MONTHNAME('2008-02-03') AS c21, -- mese testuale di una data
+        NOW() AS c22a, -- questo momento (data e ora)
+        NOW(3) AS c22b, -- questo momento con decimali di secondo (data e ora)
+        SECOND('10:05:03') AS c23, -- secondi di un orario
+        STR_TO_DATE('01,5,2013','%d,%m,%Y') AS c24a, -- conversione di testo in data
+        STR_TO_DATE('a09:30:17','a%h:%i:%s') AS c24b, -- conversione di testo in data
+        SUBTIME('2007-12-31 23:59:59.999999','1 1:1:1.000002') AS c25, -- sottrae 1 DD, 1 HH, 1 MI, 1 SS e 2 mmmmm
+        TIME('2003-12-31 01:02:03') AS c26, -- estrae l'orario da un date/time
+        TIMEDIFF('2008-12-31 23:59:59.000001','2008-12-30 01:01:01.000002') AS c27, -- differenza temporale in ore, minuti e secondi
+        WEEK('2008-02-20') AS c28, -- settimana dell'anno
+        YEAR('1987-01-01') AS c29 -- l'anno di un date/time
+        ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/69f1fc2e-1b62-4dcd-8900-1251da3596c4)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a87ab649-db14-40ba-9899-c0efe06601eb)
+
+
+Esistono anche altre funzioni per la gestione di date e orari per le quali si rimanda alla documentazione ufficiale.
+
+
+### Formattare le date e gli orari
+
+La funzione DATE_FORMAT(<data>,<formato>) permette di formattare come teto una data, utilizzando i seguenti indicatori:
+%a	Giorno letterale in breve
+%b	Mese letterale in breve
+%c	Mese numerico (0..12)
+%D	Giorno del mese con suffisso inglese
+%d	Giorno del mese numerico (00..31)
+%e	Giorno del mese numerico (0..31)
+%f	Microsecondi (000000..999999)
+%H	Ore (00..23)
+%h	Ore (01..12)
+%I	Ore (01..12)
+%i	Minuti numerici (00..59)
+%j	Giorno dell'anno (001..366)
+%k	Ore (0..23)
+%l	Ore (1..12)
+%M	Mese letterale esteso (Gennaio..Dicembre)
+%m	Mese numerico (00..12)
+%p	AM o PM
+%r	Orario, 12-ore (hh:mm:ss seguito da AM o PM)
+%S	Secondi (00..59)
+%s	Secondi (00..59)
+%T	Orario, 24-ore (hh:mm:ss)
+%U	Settimana (00..53), con Domenica primo giorno ==> WEEK() modo 0
+%u	Settimana (00..53), con Lunedì primo giorno ==> WEEK() modo 1
+%V	Settimana (01..53), con Domenica primo giorno ==> WEEK() modo 2
+%v	Settimana (01..53), con Lunedì primo giorno ==> WEEK() modo 3
+%W	Giorno della settimana testuale esteso (Domenica..Sabato)
+%w	Giorno della settimana numerico (0=Domenica..6=Sabato)
+%X	Anno come parametro della settimana, numerico, 4 caratteri; usato con %V
+%x	Anno come parametro della settimana, numerico, 4 caratteri; usato con %v
+%Y	Anno, numerico, 4 caratteri
+%y	Anno, numerico, 2 caratteri
+%%	Il carattere %
+
+    SELECT DATE_FORMAT('2009-10-04 22:23:00', '%W %M %Y') AS c1,
+        DATE_FORMAT('2007-10-04 22:23:00', '%H:%i:%s') AS c2, 
+        DATE_FORMAT('1900-10-04 22:23:00', '%D %y %a %d %m %b %j') AS c3,
+        DATE_FORMAT('1997-10-04 22:23:00', '%H %k %I %r %T %S %w') AS c4, 
+        DATE_FORMAT('1999-01-01', '%X %V') AS c5, 
+        DATE_FORMAT('2006-06-00', '%d') AS c6;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/cbae7dd8-60e0-43f9-b017-df1f26e80b75)
+
+---------------------------------------
 
 
