@@ -473,6 +473,35 @@ Per le altre funzioni della categoria si rimanda alla documentazione ufficiale.
 
 ---------------------------------------
 
+## Le funzioni aggregate
+
+Per le altre funzioni della categoria si rimanda alla documentazione ufficiale.
+
+Sono le funzioni che retituiscono un unico dato a fronte di un set di dati (sostanzialmente uno per riga); sono generalmente utilizzate nelle clausole GROUP BY e/o HAVING, oltre che nella clausola SELECT.
+Nela maggior parte dei casi le funzioni aggregate ignorano i valori NULL.
+
+        SELECT 
+            AVG(n) AS c1a, -- media dei valori
+            AVG(DISTINCT n) AS c1b, -- media dei valori con esclusione delle ripetizioni
+            COUNT(*) AS c2a, -- conteggio delle righe
+            COUNT(n) AS c2b, -- conteggio dei valori non nulli della colonna
+            COUNT(DISTINCT n) AS c2c, -- conteggio dei valori non nulli della colonna senza ripetizioni
+            GROUP_CONCAT(n) AS c3a, -- concatenamento dei valori
+            GROUP_CONCAT(DISTINCT n) AS c3b, -- concatenamento dei valori senza ripetizioni
+            GROUP_CONCAT(n ORDER BY n DESC SEPARATOR "#") AS c3c, -- concatenamento dei valori decrescenti separati con #
+            MAX(n) AS c4a, -- massimo dei valori
+            MAX(DISTINCT n) AS c4b, -- massimo dei valori con esclusione delle ripetizioni
+            MIN(n) AS c5a, -- minimo dei valori
+            MIN(DISTINCT n) AS c5b, -- minimo dei valori con esclusione delle ripetizioni
+            SUM(n) AS c6a, -- sommatoria dei valori
+            SUM(DISTINCT n) AS c6b -- sommatoria dei valori con esclusione delle ripetizioni
+        FROM (
+        	SELECT 1 n        	UNION        	SELECT 3 n        	UNION        	SELECT 4 n        	UNION        	
+            SELECT 8 n        	UNION        	SELECT NULL n        	UNION        	SELECT 6 n        	UNION
+        	SELECT 6 n        	UNION        	SELECT 6 n        	UNION        	SELECT -1 n        	UNION        	SELECT 7 n
+        ) x;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/6e8213f3-5236-4e17-b68e-6e5441e3e621)
 
 
 
