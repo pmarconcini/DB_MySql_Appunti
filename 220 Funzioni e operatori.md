@@ -412,5 +412,32 @@ La funzione CONVERT invece può avere due forme per i parametri: (<espressione> 
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/222f4658-1188-4901-a6a9-8785fe691563)
 
 
+---------------------------------------
+
+## Funzioni per dati XML
+
+Le funzioni utili per la gestione dell'XML utilizzano le funzionalità di xPath, la cui sèiegazione esula da questa trattazione. 
+
+        SET @xml = '<a><b>X</b><b>Y</b></a>', @i =1, @j = 2;
+        
+        SELECT 
+            ExtractValue(@xml, '//b[$@i]') AS c1, -- valore dell'occorrenza i del tag b
+            ExtractValue(@xml, '//b[$@j]') AS c2, -- valore dell'occorrenza j del tag b
+            ExtractValue(@xml, '//b[$@k]') AS c3, -- valore dell'occorrenza inesistente del tag b (NULL)
+            ExtractValue(@xml, '/a/b') AS c4, -- elenco dei valori dell'occorrenza "a dentro b"
+            ExtractValue(@xml, 'count(/a/b)') AS c5, -- conteggio dei valori dell'occorrenza "a dentro b"
+            UpdateXML(@xml, '/a', '<e>fff</e>') AS c6, -- una occorrenza, sostituisce tutto
+            UpdateXML(@xml, '/b', '<e>fff</e>') AS c7, -- nessuna occorrenza, non sostituisce
+            UpdateXML(@xml, '//b', '<e>fff</e>') AS c8, -- occorrenza multiple, non sostituisce
+            UpdateXML(@xml, '//c', '<e>fff</e>') AS c9, -- occorrenza singola, sostituisce localmente 
+            UpdateXML(@xml, '/a/d', '<e>fff</e>') AS c10 -- occorrenza singola vuota, sostituisce localmente 
+        ;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/15d540af-ab8f-452c-a162-a71d07d93abb)
+
+
+
+
+
 
 
