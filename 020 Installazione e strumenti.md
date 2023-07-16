@@ -1,5 +1,7 @@
 # Download delle risorse
+-----------------------
 
+## Installazione di MySql Server
 -----------------------
 1) Visitare il sito https://dev.mysql.com/downloads/ e selezionare il link per l'installer di Windows:
 
@@ -50,9 +52,84 @@
 
 ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a9d487e4-8b6b-4f40-9176-301c249050ef)
 
+-----------------------
+11) Nel caso in cui si sia attivato il Pipe, concedere l'accesso minimo e premere Next:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/d03ea603-fbba-48ab-908d-95ff53131262)
+
+-----------------------
+12) Confermare la tipologia di autenticazione e selezionare Next:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/bb5007ea-6f64-4557-b91b-85f486ae26f1)
+
+-----------------------
+13) Impostare una password per l'utente root (l'amministratore) e premere Next (utenti e ruoli saranno definiti in seguito):
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/f37ea7e7-6dfc-4779-b5c1-333f93d88e74)
+
+-----------------------
+14) Confermare la configurazione del servizio Windows e selezionare Next:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/0784ccad-6f6f-4a50-8d1f-174151a9f033)
+
+-----------------------
+15) Confermare le impostazioni per l'accesso al file system e selezionare Next:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a803d57f-1ce0-41df-98cd-e0957f1fd3e5)
+
+-----------------------
+16) Selezionare Execute per applicare le impostazioni:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/e01be897-077f-4f9a-9ce0-a0a37195d2ff)
+
+
+-----------------------
+17) Al termine delle operazioni premere su Finish:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/dbce8898-bc21-4621-a036-f6f7ce906683)
+
+-----------------------
+18) Avviare la configurazione di MySql Router selezionando Next:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/65b223fb-f344-422d-abe9-88ffcc9df670)
+
+-----------------------
+19) Non è necessaria alcuna configurazione quindi confermare le impostazioni e selezionare Finish:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/0037f605-eeee-4f7c-ad21-8f9785fd9e50)
+
+-----------------------
+20) Nella videata di connessione al server inserire la password precedentemente scelta e premere Check. Se la password è corretta si attiva la voce Next, che va selezionata:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/ac256319-5cd5-4f3d-8d81-a7d0e1a1280f)
+
+-----------------------
+21) Selezionare Execut per applicare le impostazioni:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/69c6123c-c21c-412c-9761-2772b11c7956)
+
+-----------------------
+22) L'installazione è terminata. Si può premere Finish:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/7f2afad3-abb6-4058-9d13-1e308deff97c)
+
+-----------------------
+23) Premere su Next:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/bf6070cc-e905-4803-af5c-3a05a877deb1)
+
+-----------------------
+24) Terminare il wizard avviando i servizi:
+
+![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/07063cb0-c759-4c46-bdec-1da7894272ce)
 
 
 
+
+
+
+
+-----------------------
 
 The InnoDB Storage Engine and Alternative Storage Engines
 
