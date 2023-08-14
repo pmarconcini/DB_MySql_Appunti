@@ -82,7 +82,7 @@ I privilegi statici più frequentemente utilizzati:
 - INDEX	> gestire gli indici
 - INSERT > inserire dati nelle tabelle
 - LOCK TABLES > bloccare tabelle
-> REFERENCES > Gestione delle foreign key
+- REFERENCES > Gestione delle foreign key
 - SELECT eseguire query sulle tabelle
 - SHOW DATABASES > esaminare i database (amministrazione)
 - SHOW VIEW > esaminare le viste
