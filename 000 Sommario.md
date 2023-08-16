@@ -5,7 +5,7 @@
 
 0.10 [Links e risorse utili](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/010%20%20Links%20e%20risorse%20utili)
 
-0.20 [Installazione e strumenti](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/020%20Installazione%20e%20strumenti.md) (da fare)
+0.20 [Installazione e strumenti](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/020%20Installazione%20e%20strumenti.md) (da completare, mancano gli strumenti)
 
 0.30 [Concetti generali e RDBS](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/030%20Concetti%20generali%20e%20RDBMS.md) (da fare)
 
