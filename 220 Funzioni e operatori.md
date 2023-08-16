@@ -26,7 +26,8 @@ Le due istruzioni seguenti sono, di fatto, identiche:
     
     SELECT 1 + 2 AS tot, 1 + NULL AS nullo FROM DUAL;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/8a297b42-0326-4bd9-b13e-31a574128bd3)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/0ddab1f0-a0d6-4b8e-9600-3f6b8e88e45e)
+
 
 
 ---------------------------------------
@@ -38,14 +39,16 @@ Negli esempi di conversione implicita seguenti l'operatore "+" fa convertire i d
 
     SELECT 2.1+2.1 AS c1, 2.1+'2z' AS c2, '2,1'+'2.1' AS c3, CONCAT(2,2) AS c4, 1 * 'z6' AS c5;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/2bb71a43-9a26-458e-994a-ed5b3bb32de4)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/55afb29b-533d-45a6-bc9b-a4062eef5cbb)
+
 
 
 La conveersione esplicita invece si può ottenere tramite la funzione CAST, che richiede di indicare il valore da convertire e il tipo dato in cui eseguire la conversione:
 
     SELECT 4.1 AS numero, CAST(4.1 AS CHAR) AS testo;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/339fa5ed-7457-4c99-8f8c-86ac11564891)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/dc19fb9a-cc16-4904-a65d-8edb060d88e1)
+
 
 
 ---------------------------------------
@@ -108,7 +111,9 @@ L'ordine di elaborazione degli operatori più comuni è il seguente ma, in ogni 
             5 DIV 2 AS ris_intero,
             33 % 5 AS modulo_1,
             33 MOD 5 AS modulo_2;
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/8001b7db-4197-460e-a148-4c395e5d4982)
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/c2d2e519-c76a-478f-9d41-e6bb0900c408)
+
 
 ---------------------------------------
 ## Funzioni e operatori di confronto
@@ -135,7 +140,8 @@ Restituiscono un valore booleano vero (true, 1) o falso (false, 0).
             LEAST(3, -3, 1, 4) AS c17, -- Il valore più piccolo nell'elenco ==> -3 (con propagazione del nullo)
             'abcd' LIKE	'%c%' AS c18; -- corrispondenza del pattern ==> vero
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/8cc92b0e-e8fa-445b-8b6e-170dbf263547)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/9f7157da-7081-4fff-95ea-e0e858e3c262)
+
 
 ---------------------------------------
 
@@ -163,7 +169,8 @@ Le seguenti funzioni diversificano il risultato in base alla verifica di una o p
               -- ==> NULLIF (<espr1>, <espr2>) ==> se uguali ris = NULL, altrimenti ris = <espr1>
               ;
   
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/68d9a574-af9c-4997-a42d-c5aaad7a8439)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/0583ec1d-5d14-4e1e-8c76-03f7651cd76b)
+
 
 ---------------------------------------
 
@@ -190,7 +197,8 @@ NB: tutte le funzioni matematiche restituiscono NULL in caso di errore
             TRUNCATE(122,-2) AS c17 -- troncamento al centinaio
             ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/39665bbf-286e-4f36-8461-991366f39972)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/6c7cde25-48ea-48fe-954f-65d0927ef809)
+
 
 Esistono anche altre funzioni matematiche per le quali si rimanda alla documentazione ufficiale.
 
@@ -235,9 +243,9 @@ NB: le funzioni che si aspettano date come parametri generalmente accettano valo
         YEAR('1987-01-01') AS c29 -- l'anno di un date/time
         ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/69f1fc2e-1b62-4dcd-8900-1251da3596c4)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/91d6f219-1ddc-4a2b-a460-7683a5be1be3)
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a87ab649-db14-40ba-9899-c0efe06601eb)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/acf7f4d6-a406-411d-8839-1f4009a44dfa)
 
 
 Esistono anche altre funzioni per la gestione di date e orari per le quali si rimanda alla documentazione ufficiale.
@@ -286,7 +294,7 @@ La funzione DATE_FORMAT(<data>,<formato>) permette di formattare come teto una d
         DATE_FORMAT('1999-01-01', '%X %V') AS c5, 
         DATE_FORMAT('2006-06-00', '%d') AS c6;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/cbae7dd8-60e0-43f9-b017-df1f26e80b75)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/c34c2ec0-ec7a-4205-b9d1-8ccaa3a1ded5)
 
 ---------------------------------------
 
@@ -326,9 +334,9 @@ La funzione DATE_FORMAT(<data>,<formato>) permette di formattare come teto una d
             UPPER('testo') AS c28 -- converte il testo in maiuscolo
             ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/625ed927-c28f-4858-bb81-35e14224cd93)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/ab92e73f-24aa-4047-9daf-4add180d462f)
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/fa5ff058-65f8-4355-b91f-c4ee55146142)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/fe490039-3857-4400-8c50-aecba4bcaf83)
 
 Esistono anche altre funzioni per la gestione dei testi per le quali si rimanda alla documentazione ufficiale.
 
@@ -353,7 +361,7 @@ Esistono anche altre funzioni per la gestione dei testi per le quali si rimanda 
             REGEXP_SUBSTR('abc def ghi jkl', '[a-z]+', 1, 3) AS c10 -- estrae la pima sequenza di lettere minuscole partendo dalla terza
         ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1d428c1b-d2a8-49f8-87fc-229e741974e2)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/ffa5d041-9d71-468b-aff7-bf827022707f)
 
 Segue un prospetto delle combinazioni di caratteri speciali usabili nel pattern (i valori sono combinabili).
 
@@ -409,7 +417,7 @@ La funzione CONVERT invece può avere due forme per i parametri: (<espressione> 
         CAST('test' AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_bin AS c5 -- trascodifica con CAST
         ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/222f4658-1188-4901-a6a9-8785fe691563)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/80a4058e-080a-4e74-a3f7-8774c2fec6ef)
 
 
 ---------------------------------------
@@ -433,7 +441,8 @@ Le funzioni utili per la gestione dell'XML utilizzano le funzionalità di xPath,
             UpdateXML(@xml, '/a/d', '<e>fff</e>') AS c10 -- occorrenza singola vuota, sostituisce localmente 
         ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/15d540af-ab8f-452c-a162-a71d07d93abb)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/4bcf8e57-30de-4b9f-9d5b-f78e21253494)
+
 
 ---------------------------------------
 
@@ -449,7 +458,7 @@ Per le altre funzioni della categoria si rimanda alla documentazione ufficiale.
             SHA2('abc', 224) AS c5 -- crittatura SHA2 (modalità 224, 256, 384, 512)
         ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/f12b284b-3450-4b14-915e-c82ecde8be1e)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/cd194732-7091-4805-a7a1-2200bdad5a72)
 
 ---------------------------------------
 
@@ -469,7 +478,7 @@ Per le altre funzioni della categoria si rimanda alla documentazione ufficiale.
             VERSION() AS c9 -- la versione di MySql
             ;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/3e277aea-7571-4e74-bbec-57a091aa6791)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/565da40b-e8a1-4cac-a5eb-fa8b73e949d6)
 
 ---------------------------------------
 
@@ -501,7 +510,8 @@ Nela maggior parte dei casi le funzioni aggregate ignorano i valori NULL.
         	SELECT 6 n        	UNION        	SELECT 6 n        	UNION        	SELECT -1 n        	UNION        	SELECT 7 n
         ) x;
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/6e8213f3-5236-4e17-b68e-6e5441e3e621)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/d14d422e-9bb3-419e-9d9b-4102cba5b86e)
+
 
 
 
