@@ -1,50 +1,69 @@
 # Data query language (DQL)
 
+--------------------------------
+## Struttra della query standard
 
-********************************************************************
+L'istruzione SELECT permette di ricavare un set di dati composti da 0 o più righe i cui valori sono strutturati in una o più colonne ed è, quindi, l'elemento centrale di SQL.
+L'origine dei valori è abitualmente una tabella o una vista, ma possono essere ricavati anche da operazioni, funzioni e costanti; ci si riferisce genericamente all'origine del dato col termine espressione.
 
-***************************************************************
+In MySql l'unica clausola obbligatoria tra quelle previste dagli standard ANSI è proprio SELECT, mentre le altre sono facoltative e seguono le regole ufficiali per quanto riguarda presenza e dipendenze.
 
-13.2.13 SELECT Statement
-13.2.13.1 SELECT ... INTO Statement
-13.2.13.2 JOIN Clause
-SELECT
-    [ALL | DISTINCT | DISTINCTROW ]
-    [HIGH_PRIORITY]
-    [STRAIGHT_JOIN]
-    [SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]
-    [SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]
-    select_expr [, select_expr] ...
-    [into_option]
-    [FROM table_references
-      [PARTITION partition_list]]
-    [WHERE where_condition]
-    [GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]]
-    [HAVING where_condition]
-    [WINDOW window_name AS (window_spec)
-        [, window_name AS (window_spec)] ...]
-    [ORDER BY {col_name | expr | position}
-      [ASC | DESC], ... [WITH ROLLUP]]
-    [LIMIT {[offset,] row_count | row_count OFFSET offset}]
-    [into_option]
-    [FOR {UPDATE | SHARE}
-        [OF tbl_name [, tbl_name] ...]
-        [NOWAIT | SKIP LOCKED]
-      | LOCK IN SHARE MODE]
-    [into_option]
+La forma standard di una query è la seguente (l'indentazione è utilizzata per evidenziare le dipendenze):
 
-into_option: {
-    INTO OUTFILE 'file_name'
-        [CHARACTER SET charset_name]
-        export_options
-  | INTO DUMPFILE 'file_name'
-  | INTO var_name [, var_name] ...
-}
-SELECT is used to retrieve rows selected from one or more tables, and can include UNION operations and subqueries. Beginning with MySQL 8.0.31, INTERSECT and EXCEPT operations are also supported. The UNION, INTERSECT, and EXCEPT operators are described in more detail later in this section. See also Section 13.2.15, “Subqueries”.
+    SELECT [ALL | DISTINCT | DISTINCTROW ] <elenco espressioni>]
+    [INTO {<elenco variabili>] | OUTFILE 'nome_file' | DUMPFILE 'nome_file'}
+        [FROM {<elenco tabelle> | row_count OFFSET offset}
+            [WHERE <serie di condizioni>]
+            [GROUP BY <elenco espressioni> [WITH ROLLUP]]
+                [HAVING <serie di condizioni>]
+            [ORDER BY <elenco espressioni [ASC | DESC]> [WITH ROLLUP]]
+            [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+            [FOR {UPDATE | SHARE}
+                [OF <elenco tabelle>]
+                [NOWAIT | SKIP LOCKED]
+            ]
+        ]
 
-A SELECT statement can start with a WITH clause to define common table expressions accessible within the SELECT. See Section 13.2.20, “WITH (Common Table Expressions)”.
 
-The most commonly used clauses of SELECT statements are these:
+### SELECT, espressioni e alias di colonna e tabella
+
+Nell'esempio seguente sono rappresentate le tipiche situazioni legate alla clausola SELECT: valorizzazione del dato tramite espressioni e utilizzo degli alias per nominare le colonne dell'output e per risolvere eventuali ambiguità nei riferimenti alle tabelle.
+
+        SELECT
+            current_date() AS data,      /* ⇒ esposto valore non derivato dalla tabella */
+            i.deptno,                 /* ⇒ è necessario specificare l'alias di tabella perché il nome di colonna è presente in entrambe le tabelle coinvolte */
+            i.empno,                  /* ⇒ nome della colonna mantenuta, valore del campo non variato */
+            i.ename Nome,             /* ⇒ alias di colonna considerato comunque maiuscolo, valore del campo non variato*/
+            UCASE(i.ename) "Nome Dip",  /* ⇒ alias di colonna come specificato tra virgolette, valore del campo variato (funzione) */
+            i.ename || i.empno,  /* ⇒ alias corrispondente al calcolo (da evitare perché causa l'allargamento della colonna in output, valore variato (concatenamento) */
+            (i.sal * 14 + comm) * (1 - 0.40) netto_annuo,  /* ⇒ operazioni secondo le regole dell'algebra */
+            (select count(*) from emp) tot_dip, /* ⇒ valore ottenuto da una subquery */
+            d.* /* ⇒ l'asterisco indica di considerare tutti i campi della tabella (o vista) */
+        FROM emp i, dept d
+        WHERE i.deptno = d.deptno AND i.job     = 'SALESMAN';
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1af18d4f-f37b-40ca-b779-866d9278fcd3)
+        
+
+Questi sono i concetti fondamentali ricavabili:
+- Colonna data: è esposto valore non derivato dalla tabella traite una funzione (ma la logica è la stessa anche con un valore assoluto)
+- Colonna data: la parola chiave (opzionale) AS precede il nome specificato per la colonna; il nome deve essere unico nella query
+- Colonna deptno: il valore è ricavato da tabella e non modificato
+- Colonna deptno: è necessario specificare l'alias di tabella  "i." perché il nome di colonna è presente in entrambe le tabelle coinvolte (disambiguazione)
+- Colonna deptno: se non viene specificato un alias di colonna il nome della stessa coinciderà con l'espressione (causa un errore nella creazione di una vista)
+- Colonna Nome: viene specificato un nome di colonna ma senza utilizzare la parola chiave AS; il nome NON è case sensitive e quindi ci si potrà riferire ad esso con qualsiasi forma del testo "nome"
+- Colonna Nome Dip: viene utilizzata una funzione su un valore ricavato da tabella
+- Colonna Nome Dip: Viene specificato un nome di colonna tra doppi apici, rendendo lo stesso case sensitive e quindi ci si potrà riferire allo stesso SOLO con il riferimento "Nome Dip" (è l'unico modo per specificare degli spazi in un nome di colonna)
+- Colonna netto_annuo: utilizzo di operazioni algebriche secondo le abituali regole della matematica
+- Colonna tot_dip: valore ottenuto da una sub-query annidata; la sub-query deve restituire zero o un valore
+- Colonne successive: sono ricavate dal riferimento <alias di tabella>.* che significa esporre tutte le colonne di una data tabella (da evitare nella creazione di viste per non violare l'unicità del nome)
+  
+
+
+*********************************************************************
+
+*********************************************************************
+
 
 Each select_expr indicates a column that you want to retrieve. There must be at least one select_expr.
 
