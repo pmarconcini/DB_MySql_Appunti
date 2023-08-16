@@ -50,6 +50,51 @@ Per assegnare o modificare la password si deve utilizzare la seguente istruzione
 
     ALTER USER 'utente'@'host' IDENTIFIED BY 'password';
 
+---------------------
+### Resettare la password di 'root'@'localhost'
+
+NB: per host diversi è necessario adeguare gli script seguenti.
+
+- in ambiente Windows
+    - Eseguire il login come amministratore
+    - Stoppare il server MySql se è attivo (eventualmente utilizzando task manager se non è presente alcun servizio)
+    - Creare un file di testo contenente lo script di modifica della password:
+      
+            ALTER USER 'root'@'localhost' IDENTIFIED BY 'NuovaPassword';
+      
+    - Salvare il file (ie: C:\mysql-init.txt)
+    - Avviare il prompt di MS-Dos (cmd.exe)
+    - Avviare il server MySql con le seguenti istruzioni (adeguando i percorsi e il nome del file):
+    
+            C:\> cd "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+            C:\> mysqld --init-file=C:\\mysql-init.txt
+    
+    - Il server esegue lo script del file all'avvio cambiando la password
+    - Nel caso in cui l'installazione di MySql sia stata fatta tramite wizard potrebbe essere necessario modificare l'istruzione come segue (sempre adeguando percorsi e nome del file):
+    
+            C:\> mysqld
+            --defaults-file="C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini"
+            --init-file=C:\\mysql-init.txt
+    
+    - Eliminare il file
+- in ambiente Unix e Unix-Like
+    - Accedere al sistema con l'utente abitualmente utilizzato per avviare MySql server (ie: mysql)
+    - Stoppare il server MySql se avviato con la seguente istruzione (adeguando i percorsi e il nome):
+
+            $> kill `cat /mysql-data-directory/host_name.pid`
+
+    - Creare un file contenente lo script di modifica della password:
+      
+            ALTER USER 'root'@'localhost' IDENTIFIED BY 'NuovaPassword';
+      
+    - Salvare il file (ie: /home/me/mysql-init)
+    - Avviare il server MySql con le seguenti istruzioni (adeguando i percorsi e il nome del file):
+    
+            $> mysqld --init-file=/home/me/mysql-init &
+      
+    - Il server esegue lo script del file all'avvio cambiando la password
+    - Eliminare il file
+
 
 ---------------------
 ## Gestione dei privilegi
