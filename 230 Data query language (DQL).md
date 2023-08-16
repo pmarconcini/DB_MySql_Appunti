@@ -10,7 +10,7 @@ In MySql l'unica clausola obbligatoria tra quelle previste dagli standard ANSI �
 
 La forma standard di una query è la seguente (l'indentazione è utilizzata per evidenziare le dipendenze):
 
-    SELECT [ALL | DISTINCT | DISTINCTROW ] <elenco espressioni>]
+    SELECT [ALL | DISTINCT ] <elenco espressioni>]
     [INTO {<elenco variabili>] | OUTFILE 'nome_file' | DUMPFILE 'nome_file'}
         [FROM {<elenco tabelle> | row_count OFFSET offset}
             [WHERE <serie di condizioni>]
@@ -24,8 +24,8 @@ La forma standard di una query è la seguente (l'indentazione è utilizzata per 
             ]
         ]
 
-
-### SELECT, espressioni e alias di colonna e tabella
+---------------------------------
+### La clausola SELECT, le espressioni e gli alias di colonna e tabella
 
 Nell'esempio seguente sono rappresentate le tipiche situazioni legate alla clausola SELECT: valorizzazione del dato tramite espressioni e utilizzo degli alias per nominare le colonne dell'output e per risolvere eventuali ambiguità nei riferimenti alle tabelle.
 
@@ -57,7 +57,43 @@ Questi sono i concetti fondamentali ricavabili:
 - Colonna netto_annuo: utilizzo di operazioni algebriche secondo le abituali regole della matematica
 - Colonna tot_dip: valore ottenuto da una sub-query annidata; la sub-query deve restituire zero o un valore
 - Colonne successive: sono ricavate dal riferimento <alias di tabella>.* che significa esporre tutte le colonne di una data tabella (da evitare nella creazione di viste per non violare l'unicità del nome)
-  
+
+
+L'opzione facoltativa DISTINCT permette di considerare nel risultato della query le righe duplicate una sola volta; l'opzione ALL è la scelta predefinita ed indica di consderare anche i duplicati:
+
+    SELECT job FROM emp WHERE deptno = 30;
+    SELECT ALL job FROM emp WHERE deptno = 30;
+    SELECT DISTINCT job FROM emp WHERE deptno = 30;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/2d7b8bbf-d9a7-4dba-9712-d9a39d5a6076)
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/32f970bd-d754-44ac-838c-c2ea7d80dcf4)
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/56bfbe43-f2dd-49da-98ff-1896ffb2c68e)
+
+La clausola facoltativa INTO è necessaria per utilizzare i dati ottenuti per valorizzare variabili o file e sarà esaminata in un paragrafo successivo.
+
+
+------------------------------------------
+### La clausola FROM
+
+La clausola FROM è destinata ad indicare le origini dei dati (tabelle, viste, sub-query) ed è opzionale ed ometterla equivale a utilizzare la tabella fittizia monoriga di sistema DUAL; non avendo essa alcuna colonna predefinita, in assenza di clausola FROM si potrà fare uso solamente di espressioni che non fanno riferimento ad alcuna colonna.
+
+E' possibile specificare per ogni tabella un alias (nome locale), purchè univoco per il livello di query; l'utilizzo dell'alias è necessario in caso di utilizzo ripetuto di una tabella o vista (come vedremo a proposito delle self-join) e nel caso di sub-query; in assenza di alias di tabella la "disambiguazione" avviene specificando l'intero nome della tabella nella forma <tabella>.<campo>.
+
+Nell'esempio seguente possiamo osservare:
+- Quando non c'è ambiguità nell'origine del dato non serve l'alia (ma è vivamente consigliato): i campi ename, loc, job e sal_medio sono presenti solo una volta nelle tabelle coinvolte e nella sub-query
+- Quando non è specificato l'alia di tabella è necessario specificare anche il nome della tabella per fare riferimento ad una colonna: emp.deptno nella clausola WHERE
+    
+        SELECT 	ename, d.deptno, loc, sal - sal_medio delta
+        FROM emp, dept d, (SELECT avg(sal) sal_medio FROM emp) m
+        WHERE emp.deptno = d.deptno AND job     = 'SALESMAN';
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/296ada12-bf67-4a90-aed5-65cb2d15e25a)
+
+
+
+
 
 
 *********************************************************************
