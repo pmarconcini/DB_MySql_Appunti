@@ -110,4 +110,3 @@ EXCEPT was added in MySQL 8.0.31.
 
 
 
-
