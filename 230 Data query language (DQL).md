@@ -12,7 +12,7 @@ La forma standard di una query è la seguente (l'indentazione è utilizzata per 
 
     SELECT [ALL | DISTINCT ] <elenco espressioni>]
     [INTO {<elenco variabili>] | OUTFILE 'nome_file' | DUMPFILE 'nome_file'}
-        [FROM {<elenco tabelle> | row_count OFFSET offset}
+        [FROM <elenco tabelle>
             [WHERE <serie di condizioni>]
             [GROUP BY <elenco espressioni> [WITH ROLLUP]]
                 [HAVING <serie di condizioni>]
@@ -92,6 +92,49 @@ Nell'esempio seguente possiamo osservare:
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/296ada12-bf67-4a90-aed5-65cb2d15e25a)
 
 
+------------------------------------------
+### La clausola WHERE
+
+La clausola opzionale WHERE ha il duplice scopo di filtrare i singoli record e di indicare la relazione tra tabelle (ma in questo caso vedremo una scrittura alternativa nel paragrafo dedicato alle join). Le espressioni utilizzate a tale scopo sono tipicamente costituite da due valori intervallati da un operatore di confronto, ma sono comunque presenti alcune eccezioni.
+I valori possono essere dati presenti nel record, elaborazione degli stessi, costanti o risultati di subquery.
+
+Queste le peculiarità:
+- La relazione tra tabelle prevede tipicamente una condizione per ogni colonna coinvolta unite dall'operatore AND.
+- Le espressioni sono logicamente legate tra loro dagli operatori AND e OR e dall’uso delle parentesi tonde secondo la logica applicata in matematica.
+- In assenza di parentesi l’operatore AND è considerato prima dell’operatore OR.
+- L’operatore NOT nega la verifica dell’espressione (attenzione, le espressioni “a = 1” e “NOT a = 1” NON sono complementari perchè entrambe escludono i casi in cui “a” è nullo).
+- L’operatore di confronto IN è abitualmente utilizzato con elenchi definiti e statici di valori semplici (costituiti da una singola colonna).
+- L'operatore BETWEEN permette di verificare la presenza in un intervallo di cui sono indicati i due estremi (che sono compresi) separati dall'operatore AND
+- Per verificare la nullità (o nonnullità) di un dato è necessario utilizzare l'operatore IS NULL (o NOT IS NULL) che restituisce un valore booleano; attenzione a non confondere il "non valore" (NULL) con un testo a lunghezza nulla ('').
+
+NB: Gli operatori di confronto IN, ALL, ANY, SOME, EXISTS saranno affrontati nel paragrafo destinato alle subqueries. In tutti questi casi il confronto avviene con un elenco (anche vuoto) di dati ed è possibile considerare più colonne.
+
+Nell'esempio seguente gli elementi fondamentali sono:
+- La relazione tra tabelle: e.deptno = d.deptno
+- l'operatore OR per definire due condizioni alternative prevale sull'operatore AND grazie alle parentesi
+- l'operatore BETWEEN per indicare un range
+- l'operatore IN per indicare un elenco di valori ammissibili o non (NOT) ammissibili
+- l'operatore IS NULL per verificare l'esistenza di un dato 
+    
+        SELECT 	e.ename, e.job, e.deptno, e.sal, e.comm, d.loc
+        FROM emp e, dept d
+        WHERE e.deptno = d.deptno 
+        AND (e.sal BETWEEN 1000 AND 2000 OR e.comm IS NOT NULL)
+        AND d.loc IN ('CHICAGO', 'NEW YORK')
+        AND NOT e.job IN ('PRESIDENT');
+
+  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/23e8222f-b56d-4881-80cd-ba4691765157)
+
+
+
+@WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK @WORK 
+
+
+
+La clausola opzionale ORDER BY permette di stabilire l’ordine di esposizione dei record elencando i criteri per priorità; i criteri seguono le stesse regole dell’esposizione nella clausola SELECT e quindi possono essere valori presenti in campi, elaborazioni di essi, subqueries, gli alias utilizzati o la posizione della colonne nella SELECT e, per ognuno, è possibile stabilire:
+-	 la cardinalità aggiungendo la sigla ASC (valore predefinito e quindi in genere omesso) per l’ordine crescente o DESC per l’ordine decrescente, secondo la logica del dato stesso (alfabetico per i testi, dimensioni per i numeri e temporale per le date)
+-	il posizionamento dei campi nulli indicando NULLS FIRST o NULLS LAST (che è il valore predefinito e si può quindi omettere)
+Nel caso in cui siano eseguiti dei raggruppamenti secondo le modalità specificate nei paragrafi seguenti, nella clausola ORDER BY possono essere specificati solo i raggruppamenti stessi (o loro elaborazioni). 
 
 
 
