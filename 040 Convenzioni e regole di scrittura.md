@@ -5,16 +5,22 @@
   
     select 'a string' c1, "another string" c2, 'a' ' ' 'string' c3;
     
-  ==>![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/953a338c-a62a-49e6-999f-4cc1f0da16be)
-
+  ==>  
+  |c1|c2|c3|
+  |--|--|--|
+  |a string|another string|a string|
+  
   nb: se è abilitato il parametro ANSI_QUOTES è utilizzabile solo l'apice singolo per l'identificazione del testo (mentre il doppio apice è sempre utilizzabile come identificatore).
 
   E' possibile specificare il set di caratteri da applicare a un testo anteponendo il formato (i 3 esempi seguenti sono equivalenti):
     
       SELECT N'aeiouèéùòàì' c1, n'aeiouèéùòàì' c2, _utf8'aeiouèéùòàì' c3;
 
-  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/7bed6f38-723e-4d49-aa00-4378bcc92dc3)
-
+  ==> 
+  |c1|c2|c3|
+  |--|--|--|
+  |aeiouèéùòàì|aeiouèéùòàì|aeiouèéùòàì|
+  
   Il backslash (\) è il carattere di escape di una serie di caratteri:
   - \'	Apice singolo (ma anche due apici singoli se l'identificatore di testo è un apice singolo)
   - \"	Apice doppio (ma anche due apici doppi se l'identificatore di testo è un apice doppio)
@@ -37,7 +43,7 @@
     select DATE '19750607' c1, DATE '1975-06-07' c2, TIME '192800' c3, TIME '19:28:00' c4, 
     TIMESTAMP '19750607192800' c5, TIMESTAMP '1975-06-07 19:28:00' c6;
 
-  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/b8121c38-04cc-42f5-8101-d2c224f339f7)
+  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/edd40c63-d412-4ebf-953e-52d494d7a3a4)
 
   nb: i caratteri di separazione possono essere diversi da quelli indicati così come l'anno può essere espresso in 2 byte
   
@@ -56,7 +62,7 @@
   
     SELECT NULL = '' c1, coalesce(NULL, '') = '' c2, coalesce(NULL, 'x') = coalesce('', 'x') c3;
 
-  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/2f3c7a6f-7b90-4d5d-83c5-239054e2bfdb)
+  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/7826b97d-0017-4759-9b4b-1ce6d3576652)
 
 -----------------------------------
 ## Naming convention
@@ -84,7 +90,7 @@
         DATE_SUB('1998-01-02', INTERVAL 31 DAY) c8,
         DATE_ADD('1992-12-31 23:59:59.000002', INTERVAL '1.999999' SECOND_MICROSECOND) c9;
 
-  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/3224239b-7968-499a-9ca6-0745f852450a)
+  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/07163213-e93a-45b7-8c30-0f0725f17fe4)
 
   nb: per tutte le unità di misura disponibili si rimanda alla documentazione ufficiale
 
@@ -96,7 +102,7 @@
        EXTRACT(YEAR FROM '2019-07-02') c4, 
        EXTRACT(YEAR_MONTH FROM '2019-07-02 01:02:03') c5;
 
-  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/e492d6a2-3785-4a63-9749-23e9240ac285)
+  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/27ff4a71-6a72-4103-b744-1322c1644f1a)
   
   Attenzione alla conversione del dato della quantità; è sempre preferibile eseguire un CAST:
 
@@ -106,7 +112,7 @@
   		DATE_ADD('1970-01-01 12:00:00', INTERVAL '6/4' HOUR_MINUTE) c4, -- 6 ore 3 4 minuti
   		DATE_ADD('1970-01-01 12:00:00', INTERVAL 6/4 HOUR_MINUTE) c5;-- 1 ora e 5000 minuti
 
-  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/6eabc55f-393b-4499-8b65-1bd53d608ea3)
+  ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/bc6a6e79-760d-4b96-b7f9-c1ae389a6459)
 
 -----------------------------------
 ## Commenti
@@ -121,7 +127,7 @@
 		SELECT 1+		/* Commento
 		multilinea */		3;
 
- ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/560b0759-84f3-4e7e-8adc-d3b3d5423101)
+ ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/2015383b-b535-4711-9c60-e6d0ea3d1cd0)
 
   Nel caso in cui i commenti siano parte del codice di procedure e funzioni vengono memorizzati anch'essi.
 
