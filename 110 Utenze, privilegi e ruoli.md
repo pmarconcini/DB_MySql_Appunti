@@ -122,7 +122,7 @@ I privilegi statici più frequentemente utilizzati:
 - DROP > eliminare ruoli (amministrazione)
 - EVENT	> gestire la schedulazione (amministrazione)
 - EXECUTE > eseguire procedure e funzioni
-- FILE > accedere a file sul seerver
+- FILE > accedere a file sul server
 - GRANT OPTION > garantire privilegi su database, tabelle, procedure e funzioni
 - INDEX	> gestire gli indici
 - INSERT > inserire dati nelle tabelle
