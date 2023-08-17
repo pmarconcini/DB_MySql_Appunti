@@ -135,4 +135,8 @@
 
 	CREATE TABLE tab (a INT, KEY (a)) /*!80024 KEY_BLOCK_SIZE=1024 */;
 
+-----------------------------------
+## Riferimenti ad oggetti
+La scrittura standard per riferirsi ad una colonna di una tabella (o di una vista) è <nome_database>.<nome_tabella>.<nome_colonna>, ma si può omettere il riferimento al database per le tabelle del database locale. 
+La stessa logica va considerata per riferirsi agli altri tipi di oggetti (procedure, funzioni e trigger): <nome_database>.<nome_oggetto>, con la possibilità di omettere il riferimento al database per gli oggetti locali.
   
