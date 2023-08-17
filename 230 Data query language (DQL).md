@@ -106,6 +106,7 @@ Queste le peculiarità:
 - L’operatore di confronto IN è abitualmente utilizzato con elenchi definiti e statici di valori semplici (costituiti da una singola colonna).
 - L'operatore BETWEEN permette di verificare la presenza in un intervallo di cui sono indicati i due estremi (che sono compresi) separati dall'operatore AND
 - Per verificare la nullità (o nonnullità) di un dato è necessario utilizzare l'operatore IS NULL (o NOT IS NULL) che restituisce un valore booleano; attenzione a non confondere il "non valore" (NULL) con un testo a lunghezza nulla ('').
+- L'operatore LIKE permette di confrontare testi utilizzando i caratteri jolly "*" (qualsiasi quantità di qualsiasi carattere) e "_" (un carattere qualsiasi).
 
 NB: Gli operatori di confronto IN, ALL, ANY, SOME, EXISTS saranno affrontati nel paragrafo destinato alle subqueries. In tutti questi casi il confronto avviene con un elenco (anche vuoto) di dati ed è possibile considerare più colonne.
 
@@ -114,14 +115,16 @@ Nell'esempio seguente gli elementi fondamentali sono:
 - l'operatore OR per definire due condizioni alternative prevale sull'operatore AND grazie alle parentesi
 - l'operatore BETWEEN per indicare un range
 - l'operatore IN per indicare un elenco di valori ammissibili o non (NOT) ammissibili
-- l'operatore IS NULL per verificare l'esistenza di un dato 
+- l'operatore IS NULL per verificare l'esistenza di un dato
+- l'operatore LIKE per confrontare un testo con un pattern
     
         SELECT 	e.ename, e.job, e.deptno, e.sal, e.comm, d.loc
         FROM emp e, dept d
         WHERE e.deptno = d.deptno 
         AND (e.sal BETWEEN 1000 AND 2000 OR e.comm IS NOT NULL)
         AND d.loc IN ('CHICAGO', 'NEW YORK')
-        AND NOT e.job IN ('PRESIDENT');
+        AND NOT e.job IN ('PRESIDENT')
+        AND e.job LIKE '%E%';
 
   ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/23e8222f-b56d-4881-80cd-ba4691765157)
 
