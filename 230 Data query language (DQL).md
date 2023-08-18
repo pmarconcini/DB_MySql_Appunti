@@ -361,3 +361,17 @@ Nell'esempio seguente si evidenzia l'uso di tutte le opzioni (ORDER BY e LIMIT s
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1bc12467-dbb0-4a17-9b31-61ad2fd39692)
 
 
+
+--------------------------------
+### L'opzione facoltativa WITH ROLLUP
+
+La clausola GROUP BY permette di specificare l'opzione WITH ROLLUP, che genera l'inserimento nell'output di righe aggiuntive che riportano valori aggregati parziali e totali.
+
+L'esempio seguente evidenzia la media salariale per dipartimento e la media salariale totale ed utilizza le funzioni GROUPING per identificare le celle di aggregazione e IF per discriminarne il valore:
+
+    SELECT IF(GROUPING(deptno), 'TUTTI ==>', deptno) AS deptno, IF(GROUPING(job), concat('DEPTNO ', deptno, ' =>'), job) AS job, AVG(sal) sal_medio
+    FROM emp
+    GROUP BY deptno, job WITH ROLLUP;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/b74c20f6-0e40-416b-801a-5f9cb1048c9c)
+
