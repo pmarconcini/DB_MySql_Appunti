@@ -1,261 +1,142 @@
 # Join e subquery
 
+--------------------------------------------
+## Join
 
-**********************************************************************
+La join è la rappresentazione della relazione che intercorre tra due tabelle; tale relazione può coinvolgere una o più colonne di ogni tabella e può coincidere con un vincolo di integrità referenziale o essere una relazione solamente logica.
 
-**********************************************************************
+La join può essere specificata a integrazione della clausola FROM tramite la specifica del tipo di join e l'utilizzo dell'opzione ON seguita dalle condizioni di join oppure direttamente all'interno della clausola WHERE (generalmente in apertura della stessa, prima delle reali condizioni di filtro) per l'INNER JOIN.
 
-13.2.13.2 JOIN Clause
-MySQL supports the following JOIN syntax for the table_references part of SELECT statements and multiple-table DELETE and UPDATE statements:
+Nei paragrafi seguenti vengono analizzate tutte le tipologie di relazione tra tabelle
 
-table_references:
-    escaped_table_reference [, escaped_table_reference] ...
+--------------------------------------------
+### SIMPLE o INNER JOIN
+Per la “simple (o inner) join” si intende la rappresentazione standard in cui, al netto di eventuali filtri specificati, vengono considerati solo e soltanto i dati per cui esiste una relazione diretta tra le due tabelle; ciò avviene specificando tutti i campi coinvolti nella clausola WHERE o nell'opzione ON collegando logicamente le espressioni necessarie tramite l’operatore logico AND. Per esempio, date due tabelle T1 e T2 in relazione tramite i campi A e B (NB: non necessariamente i campi devono avere lo stesso nome sulle tabelle coinvolte), il risultato sarà la presenza della doppia espressione T1.A = T2.A AND T1.B = T2.B al netto di eventuali condizioni di filtro.
+Record non coinvolti dalla relazione (dipartimenti senza dipendenti, nel db di esempio) saranno esclusi dalla query.
+NB: nel caso della simple o inner join la parola chiave INNER si può omettere e l’ordine delle tabelle non incide
 
-escaped_table_reference: {
-    table_reference
-  | { OJ table_reference }
-}
+Esempio di INNER JOIN (scritture equivalenti): 
 
-table_reference: {
-    table_factor
-  | joined_table
-}
+    SELECT count(*) k -- conta 14 record, cioè gli impiegati associati a un dipartimento
+    FROM emp i, dept d
+    WHERE i.deptno = d.deptno;
+    
+    SELECT COUNT(*) k -- conta 14 record, cioè gli impiegati associati a un dipartimento
+    FROM dept d INNER JOIN emp i
+    ON i.deptno = d.deptno;
 
-table_factor: {
-    tbl_name [PARTITION (partition_names)]
-        [[AS] alias] [index_hint_list]
-  | [LATERAL] table_subquery [AS] alias [(col_list)]
-  | ( table_references )
-}
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/e20a48b7-93c0-4c90-920b-0b288be155c7)
 
-joined_table: {
-    table_reference {[INNER | CROSS] JOIN | STRAIGHT_JOIN} table_factor [join_specification]
-  | table_reference {LEFT|RIGHT} [OUTER] JOIN table_reference join_specification
-  | table_reference NATURAL [INNER | {LEFT|RIGHT} [OUTER]] JOIN table_factor
-}
 
-join_specification: {
-    ON search_condition
-  | USING (join_column_list)
-}
+--------------------------------------------
+### NATURAL JOIN
+E’ una join in cui la relazione tra i campi della tabella è automaticamente interpretata da Oracle in base a nome e tipo di dato.
 
-join_column_list:
-    column_name [, column_name] ...
+Esempio di NATURAL JOIN (per la join viene automaticamente considerato l’unico campo presente in entrambe le tabelle: DEPTNO): 
 
-index_hint_list:
-    index_hint [, index_hint] ...
+    SELECT COUNT(*) k -- conta 14 record, cioè gli impiegati associati a un dipartimento
+    FROM dept d NATURAL JOIN emp i;
 
-index_hint: {
-    USE {INDEX|KEY}
-      [FOR {JOIN|ORDER BY|GROUP BY}] ([index_list])
-  | {IGNORE|FORCE} {INDEX|KEY}
-      [FOR {JOIN|ORDER BY|GROUP BY}] (index_list)
-}
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/e20a48b7-93c0-4c90-920b-0b288be155c7)
 
-index_list:
-    index_name [, index_name] ...
-A table reference is also known as a join expression.
 
-A table reference (when it refers to a partitioned table) may contain a PARTITION clause, including a list of comma-separated partitions, subpartitions, or both. This option follows the name of the table and precedes any alias declaration. The effect of this option is that rows are selected only from the listed partitions or subpartitions. Any partitions or subpartitions not named in the list are ignored. For more information and examples, see Section 24.5, “Partition Selection”.
+--------------------------------------------
+### LEFT o RIGHT o FULL OUTER JOIN
+E’ una join in cui viene forzata la restituzione dei record di una tabella NON collegati all’altra. Il nome LEFT o RIGHT o FULL deriva dalla posizione della tabella forzata nella clausola FROM, cioè quella in cui manca il record per completare la join (FULL indica la forzatura da entrambe le parti).
+In MySql NON è possibile forzare direttamente la FULL join ed è necessario utilizzare una UNION di LEFT e RIGHT join per ottenere il medesimo risultato)
 
-The syntax of table_factor is extended in MySQL in comparison with standard SQL. The standard accepts only table_reference, not a list of them inside a pair of parentheses.
+Esempi di OUTER JOIN (se potesse esistere ed esistesse un impiegato non associato ad alcun dipartimento, il conteggio sarebbe della terza query sarebbe di 16 record): 
 
-This is a conservative extension if each comma in a list of table_reference items is considered as equivalent to an inner join. For example:
+    SELECT COUNT(*) k -- conta 15 record, cioè i 14 impiegati associati e il dipartimento vuoto
+    FROM dept d RIGHT JOIN emp i ON i.deptno = d.deptno;
+    
+    SELECT COUNT(*) k -- conta 15 record, cioè i 14 impiegati associati e il dipartimento vuoto
+    FROM dept d LEFT JOIN emp i ON i.deptno = d.deptno;
+    
+    SELECT COUNT(*) k -- conta 15 record, cioè i 14 impiegati associati e il dipartimento vuoto
+    FROM 
+    (SELECT EMPNO
+        FROM dept d RIGHT JOIN emp i ON i.deptno = d.deptno
+        UNION
+        SELECT EMPNO
+        FROM dept d LEFT JOIN emp i ON i.deptno = d.deptno
+    ) a;
 
-SELECT * FROM t1 LEFT JOIN (t2, t3, t4)
-                 ON (t2.a = t1.a AND t3.b = t1.b AND t4.c = t1.c)
-is equivalent to:
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/e20a48b7-93c0-4c90-920b-0b288be155c7)
 
-SELECT * FROM t1 LEFT JOIN (t2 CROSS JOIN t3 CROSS JOIN t4)
-                 ON (t2.a = t1.a AND t3.b = t1.b AND t4.c = t1.c)
-In MySQL, JOIN, CROSS JOIN, and INNER JOIN are syntactic equivalents (they can replace each other). In standard SQL, they are not equivalent. INNER JOIN is used with an ON clause, CROSS JOIN is used otherwise.
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/9cec7ac7-36d8-48e0-928f-eb459f1e08a3)
 
-In general, parentheses can be ignored in join expressions containing only inner join operations. MySQL also supports nested joins. See Section 8.2.1.8, “Nested Join Optimization”.
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/d89649ef-17df-413d-87f6-6575af0c25f5)
 
-Index hints can be specified to affect how the MySQL optimizer makes use of indexes. For more information, see Section 8.9.4, “Index Hints”. Optimizer hints and the optimizer_switch system variable are other ways to influence optimizer use of indexes. See Section 8.9.3, “Optimizer Hints”, and Section 8.9.2, “Switchable Optimizations”.
 
-The following list describes general factors to take into account when writing joins:
+--------------------------------------------
+### SELF (inner o outer) JOIN
+E’ una join che mette in relazione uno o più campi di una tabella con uno o più campi della tabella stessa, come nell’esempio seguente. Di fatto è una INNER o OUTER JOIN tra una tabella e la replica di se stessa (tramite alias)
 
-A table reference can be aliased using tbl_name AS alias_name or tbl_name alias_name:
+Esempi di SELF (INNER o OUTER) JOIN: 
 
-SELECT t1.name, t2.salary
-  FROM employee AS t1 INNER JOIN info AS t2 ON t1.name = t2.name;
+    SELECT i.ename NOME, i.empno MATRICOLA, i2.ename NOME_SUP, i2.empno MATRICOLA_SUP
+    FROM emp i, emp i2 WHERE i.mgr = i2.empno;
 
-SELECT t1.name, t2.salary
-  FROM employee t1 INNER JOIN info t2 ON t1.name = t2.name;
-A table_subquery is also known as a derived table or subquery in the FROM clause. See Section 13.2.15.8, “Derived Tables”. Such subqueries must include an alias to give the subquery result a table name, and may optionally include a list of table column names in parentheses. A trivial example follows:
+    -- è equivalente alla precedente
+    SELECT i.ename NOME, i.empno MATRICOLA, i2.ename NOME_SUP, i2.empno MATRICOLA_SUP
+    FROM emp i JOIN emp i2 ON i.mgr = i2.empno;
+    
+    SELECT i.ename NOME, i.empno MATRICOLA, i2.ename NOME_SUP, i2.empno MATRICOLA_SUP
+    FROM emp i LEFT JOIN emp i2 ON i.mgr = i2.empno;
 
-SELECT * FROM (SELECT 1, 2, 3) AS t1;
-The maximum number of tables that can be referenced in a single join is 61. This includes a join handled by merging derived tables and views in the FROM clause into the outer query block (see Section 8.2.2.4, “Optimizing Derived Tables, View References, and Common Table Expressions with Merging or Materialization”).
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/31fb434d-1064-4706-890d-7d455151e73d)
 
-INNER JOIN and , (comma) are semantically equivalent in the absence of a join condition: both produce a Cartesian product between the specified tables (that is, each and every row in the first table is joined to each and every row in the second table).
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/2471e27b-40d2-4d53-9b8b-86d3c1b2f2bf)
 
-However, the precedence of the comma operator is less than that of INNER JOIN, CROSS JOIN, LEFT JOIN, and so on. If you mix comma joins with the other join types when there is a join condition, an error of the form Unknown column 'col_name' in 'on clause' may occur. Information about dealing with this problem is given later in this section.
 
-The search_condition used with ON is any conditional expression of the form that can be used in a WHERE clause. Generally, the ON clause serves for conditions that specify how to join tables, and the WHERE clause restricts which rows to include in the result set.
+--------------------------------------------
+## PRODOTTO CARTESIANO
+E’ considerato una NON-JOIN (o NON EQUIJOIN, in contrasto con le EQUIJOIN che presentano una uguaglianza di confronto) perchè non esiste una relazione di uguaglianza tra i campi delle due tabelle, pur essendoci un legame logico (spesso esplicato nella clausola WHERE). All’atto pratico il prodotto cartesiano produce l’incrocio di tutti i record delle tabelle coinvolte (nel database di esempio 14 impiegati per 5 dipartimenti per un totale di 70 record). 
+L’esempio classico di utilizzo corretto è l’incrocio tra salari e livelli salariali come da codice seguente:
 
-If there is no matching row for the right table in the ON or USING part in a LEFT JOIN, a row with all columns set to NULL is used for the right table. You can use this fact to find rows in a table that have no counterpart in another table:
+Esempi di join tramite prodotto cartesiano (restituiscono lo stesso risultato):
 
-SELECT left_tbl.*
-  FROM left_tbl LEFT JOIN right_tbl ON left_tbl.id = right_tbl.id
-  WHERE right_tbl.id IS NULL;
-This example finds all rows in left_tbl with an id value that is not present in right_tbl (that is, all rows in left_tbl with no corresponding row in right_tbl). See Section 8.2.1.9, “Outer Join Optimization”.
+    SELECT i.ename, i.sal, s.losal, s.hisal, s.grade
+    FROM emp i, salgrade s
+    WHERE i.sal BETWEEN s.losal AND s.hisal;
+    
+    SELECT i.ename, i.sal, s.losal, s.hisal, s.grade
+    FROM emp i JOIN salgrade s ON i.sal BETWEEN s.losal AND s.hisal;
 
-The USING(join_column_list) clause names a list of columns that must exist in both tables. If tables a and b both contain columns c1, c2, and c3, the following join compares corresponding columns from the two tables:
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/d909f652-7164-4409-86e4-ce1c9eb0c224)
 
-a LEFT JOIN b USING (c1, c2, c3)
-The NATURAL [LEFT] JOIN of two tables is defined to be semantically equivalent to an INNER JOIN or a LEFT JOIN with a USING clause that names all columns that exist in both tables.
-
-RIGHT JOIN works analogously to LEFT JOIN. To keep code portable across databases, it is recommended that you use LEFT JOIN instead of RIGHT JOIN.
-
-The { OJ ... } syntax shown in the join syntax description exists only for compatibility with ODBC. The curly braces in the syntax should be written literally; they are not metasyntax as used elsewhere in syntax descriptions.
-
-SELECT left_tbl.*
-    FROM { OJ left_tbl LEFT OUTER JOIN right_tbl
-           ON left_tbl.id = right_tbl.id }
-    WHERE right_tbl.id IS NULL;
-You can use other types of joins within { OJ ... }, such as INNER JOIN or RIGHT OUTER JOIN. This helps with compatibility with some third-party applications, but is not official ODBC syntax.
+Non specificare la relazione logica implica l'incrocio di tutte le combinazioni dei record:
 
-STRAIGHT_JOIN is similar to JOIN, except that the left table is always read before the right table. This can be used for those (few) cases for which the join optimizer processes the tables in a suboptimal order.
-
-Some join examples:
+    SELECT * FROM 
+    (SELECT 1 numero UNION SELECT 2 UNION SELECT 3) tab_a,
+    (SELECT 'a' lettera UNION SELECT 'b' UNION SELECT 'c') tab_b
+    ORDER BY numero, lettera;
+    
+    SELECT * FROM 
+    (SELECT 1 numero UNION SELECT 2 UNION SELECT 3) tab_a JOIN (SELECT 'a' lettera UNION SELECT 'b' UNION SELECT 'c') tab_b
+    ORDER BY numero, lettera;
 
-SELECT * FROM table1, table2;
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a5b4538e-0b37-49d0-bc02-a6a1884f5568)
 
-SELECT * FROM table1 INNER JOIN table2 ON table1.id = table2.id;
+--------------------------------------------
+## CROSS JOIN
 
-SELECT * FROM table1 LEFT JOIN table2 ON table1.id = table2.id;
+In MySql è possibile, tramite CROSS join, stabilire in maniera più rapida relazioni multiple di una tabella, come da esempio seguente; indicata una volta la tipologia di relazione si specifica l'elenco di tabelle associate:
 
-SELECT * FROM table1 LEFT JOIN table2 USING (id);
+    SELECT * FROM t1 LEFT JOIN (t2, t3, t4)
+                     ON (t2.a = t1.a AND t3.b = t1.b AND t4.c = t1.c);
+    --oppure
+    SELECT * FROM t1 LEFT JOIN (t2 CROSS JOIN t3 CROSS JOIN t4)
+                     ON (t2.a = t1.a AND t3.b = t1.b AND t4.c = t1.c);
 
-SELECT * FROM table1 LEFT JOIN table2 ON table1.id = table2.id
-  LEFT JOIN table3 ON table2.id = table3.id;
-Natural joins and joins with USING, including outer join variants, are processed according to the SQL:2003 standard:
 
-Redundant columns of a NATURAL join do not appear. Consider this set of statements:
 
-CREATE TABLE t1 (i INT, j INT);
-CREATE TABLE t2 (k INT, j INT);
-INSERT INTO t1 VALUES(1, 1);
-INSERT INTO t2 VALUES(1, 1);
-SELECT * FROM t1 NATURAL JOIN t2;
-SELECT * FROM t1 JOIN t2 USING (j);
-In the first SELECT statement, column j appears in both tables and thus becomes a join column, so, according to standard SQL, it should appear only once in the output, not twice. Similarly, in the second SELECT statement, column j is named in the USING clause and should appear only once in the output, not twice.
 
-Thus, the statements produce this output:
 
-+------+------+------+
-| j    | i    | k    |
-+------+------+------+
-|    1 |    1 |    1 |
-+------+------+------+
-+------+------+------+
-| j    | i    | k    |
-+------+------+------+
-|    1 |    1 |    1 |
-+------+------+------+
-Redundant column elimination and column ordering occurs according to standard SQL, producing this display order:
 
-First, coalesced common columns of the two joined tables, in the order in which they occur in the first table
 
-Second, columns unique to the first table, in order in which they occur in that table
 
-Third, columns unique to the second table, in order in which they occur in that table
-
-The single result column that replaces two common columns is defined using the coalesce operation. That is, for two t1.a and t2.a the resulting single join column a is defined as a = COALESCE(t1.a, t2.a), where:
-
-COALESCE(x, y) = (CASE WHEN x IS NOT NULL THEN x ELSE y END)
-If the join operation is any other join, the result columns of the join consist of the concatenation of all columns of the joined tables.
-
-A consequence of the definition of coalesced columns is that, for outer joins, the coalesced column contains the value of the non-NULL column if one of the two columns is always NULL. If neither or both columns are NULL, both common columns have the same value, so it doesn't matter which one is chosen as the value of the coalesced column. A simple way to interpret this is to consider that a coalesced column of an outer join is represented by the common column of the inner table of a JOIN. Suppose that the tables t1(a, b) and t2(a, c) have the following contents:
-
-t1    t2
-----  ----
-1 x   2 z
-2 y   3 w
-Then, for this join, column a contains the values of t1.a:
-
-mysql> SELECT * FROM t1 NATURAL LEFT JOIN t2;
-+------+------+------+
-| a    | b    | c    |
-+------+------+------+
-|    1 | x    | NULL |
-|    2 | y    | z    |
-+------+------+------+
-By contrast, for this join, column a contains the values of t2.a.
-
-mysql> SELECT * FROM t1 NATURAL RIGHT JOIN t2;
-+------+------+------+
-| a    | c    | b    |
-+------+------+------+
-|    2 | z    | y    |
-|    3 | w    | NULL |
-+------+------+------+
-Compare those results to the otherwise equivalent queries with JOIN ... ON:
-
-mysql> SELECT * FROM t1 LEFT JOIN t2 ON (t1.a = t2.a);
-+------+------+------+------+
-| a    | b    | a    | c    |
-+------+------+------+------+
-|    1 | x    | NULL | NULL |
-|    2 | y    |    2 | z    |
-+------+------+------+------+
-mysql> SELECT * FROM t1 RIGHT JOIN t2 ON (t1.a = t2.a);
-+------+------+------+------+
-| a    | b    | a    | c    |
-+------+------+------+------+
-|    2 | y    |    2 | z    |
-| NULL | NULL |    3 | w    |
-+------+------+------+------+
-A USING clause can be rewritten as an ON clause that compares corresponding columns. However, although USING and ON are similar, they are not quite the same. Consider the following two queries:
-
-a LEFT JOIN b USING (c1, c2, c3)
-a LEFT JOIN b ON a.c1 = b.c1 AND a.c2 = b.c2 AND a.c3 = b.c3
-With respect to determining which rows satisfy the join condition, both joins are semantically identical.
-
-With respect to determining which columns to display for SELECT * expansion, the two joins are not semantically identical. The USING join selects the coalesced value of corresponding columns, whereas the ON join selects all columns from all tables. For the USING join, SELECT * selects these values:
-
-COALESCE(a.c1, b.c1), COALESCE(a.c2, b.c2), COALESCE(a.c3, b.c3)
-For the ON join, SELECT * selects these values:
-
-a.c1, a.c2, a.c3, b.c1, b.c2, b.c3
-With an inner join, COALESCE(a.c1, b.c1) is the same as either a.c1 or b.c1 because both columns have the same value. With an outer join (such as LEFT JOIN), one of the two columns can be NULL. That column is omitted from the result.
-
-An ON clause can refer only to its operands.
-
-Example:
-
-CREATE TABLE t1 (i1 INT);
-CREATE TABLE t2 (i2 INT);
-CREATE TABLE t3 (i3 INT);
-SELECT * FROM t1 JOIN t2 ON (i1 = i3) JOIN t3;
-The statement fails with an Unknown column 'i3' in 'on clause' error because i3 is a column in t3, which is not an operand of the ON clause. To enable the join to be processed, rewrite the statement as follows:
-
-SELECT * FROM t1 JOIN t2 JOIN t3 ON (i1 = i3);
-JOIN has higher precedence than the comma operator (,), so the join expression t1, t2 JOIN t3 is interpreted as (t1, (t2 JOIN t3)), not as ((t1, t2) JOIN t3). This affects statements that use an ON clause because that clause can refer only to columns in the operands of the join, and the precedence affects interpretation of what those operands are.
-
-Example:
-
-CREATE TABLE t1 (i1 INT, j1 INT);
-CREATE TABLE t2 (i2 INT, j2 INT);
-CREATE TABLE t3 (i3 INT, j3 INT);
-INSERT INTO t1 VALUES(1, 1);
-INSERT INTO t2 VALUES(1, 1);
-INSERT INTO t3 VALUES(1, 1);
-SELECT * FROM t1, t2 JOIN t3 ON (t1.i1 = t3.i3);
-The JOIN takes precedence over the comma operator, so the operands for the ON clause are t2 and t3. Because t1.i1 is not a column in either of the operands, the result is an Unknown column 't1.i1' in 'on clause' error.
-
-To enable the join to be processed, use either of these strategies:
-
-Group the first two tables explicitly with parentheses so that the operands for the ON clause are (t1, t2) and t3:
-
-SELECT * FROM (t1, t2) JOIN t3 ON (t1.i1 = t3.i3);
-Avoid the use of the comma operator and use JOIN instead:
-
-SELECT * FROM t1 JOIN t2 JOIN t3 ON (t1.i1 = t3.i3);
-The same precedence interpretation also applies to statements that mix the comma operator with INNER JOIN, CROSS JOIN, LEFT JOIN, and RIGHT JOIN, all of which have higher precedence than the comma operator.
-
-A MySQL extension compared to the SQL:2003 standard is that MySQL permits you to qualify the common (coalesced) columns of NATURAL or USING joins, whereas the standard disallows that.
 
 
 
