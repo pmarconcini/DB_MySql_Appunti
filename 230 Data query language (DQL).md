@@ -284,7 +284,6 @@ In caso di utilizzo della tabella DUAL con a clausola INTO è necessario che ess
     SELECT current_user() INTO @usr FROM dual;
  
 
-
 --------------------------------
 ## Istruzione DO
 
@@ -345,158 +344,20 @@ Le istruzioni sono combinabili e l'elaborazione segue l'ordine di scrittura, ma 
     SELECT 1;
 
 
+--------------------------------
+## L'istruzione VALUES
 
+L'istruzione VALUES è stata introdotta dalla versione 8.0.19 di MySql e restituisce un recordset costituito da record ottenuti da una sequenza di elaborazioni della funzione ROWS, in cui vengono passati come parametri l'elenco di valori corrispondenti per posizione alle colonne di destinazione.
+Può essere utilizzata all'interno di query DQL e DML, con le istruzioni UNION, INTERSECT e EXCEPT
 
+Lo script standard è il seguente:
 
+    VALUES ROW(<elenco_valori>)[, ROW(<elenco_valori>)][, ...] [ORDER BY <elenco_criteri>] [LIMIT <numero_elementi>];
 
+Nell'esempio seguente si evidenzia l'uso di tutte le opzioni (ORDER BY e LIMIT seguono le regole già viste in precedenza):
 
+    VALUES ROW(1,-2,3), ROW(5,7,9), ROW(4,6,8), ROW(6,6,6) ORDER BY column_2, 1 DESC LIMIT 1, 2;
 
-
-***********************************************************************
-
-***********************************************************************
-
-13.2.19 VALUES Statement
-VALUES is a DML statement introduced in MySQL 8.0.19 which returns a set of one or more rows as a table. In other words, it is a table value constructor which also functions as a standalone SQL statement.
-
-VALUES row_constructor_list [ORDER BY column_designator] [LIMIT number]
-
-row_constructor_list:
-    ROW(value_list)[, ROW(value_list)][, ...]
-
-value_list:
-    value[, value][, ...]
-
-column_designator:
-    column_index
-The VALUES statement consists of the VALUES keyword followed by a list of one or more row constructors, separated by commas. A row constructor consists of the ROW() row constructor clause with a value list of one or more scalar values enclosed in the parentheses. A value can be a literal of any MySQL data type or an expression that resolves to a scalar value.
-
-ROW() cannot be empty (but each of the supplied scalar values can be NULL). Each ROW() in the same VALUES statement must have the same number of values in its value list.
-
-The DEFAULT keyword is not supported by VALUES and causes a syntax error, except when it is used to supply values in an INSERT statement.
-
-The output of VALUES is a table:
-
-mysql> VALUES ROW(1,-2,3), ROW(5,7,9), ROW(4,6,8);
-+----------+----------+----------+
-| column_0 | column_1 | column_2 |
-+----------+----------+----------+
-|        1 |       -2 |        3 |
-|        5 |        7 |        9 |
-|        4 |        6 |        8 |
-+----------+----------+----------+
-3 rows in set (0.00 sec)
-The columns of the table output from VALUES have the implicitly named columns column_0, column_1, column_2, and so on, always beginning with 0. This fact can be used to order the rows by column using an optional ORDER BY clause in the same way that this clause works with a SELECT statement, as shown here:
-
-mysql> VALUES ROW(1,-2,3), ROW(5,7,9), ROW(4,6,8) ORDER BY column_1;
-+----------+----------+----------+
-| column_0 | column_1 | column_2 |
-+----------+----------+----------+
-|        1 |       -2 |        3 |
-|        4 |        6 |        8 |
-|        5 |        7 |        9 |
-+----------+----------+----------+
-3 rows in set (0.00 sec)
-In MySQL 8.0.21 and later, the VALUES statement also supports a LIMIT clause for limiting the number of rows in the output. (Previously, LIMIT was allowed but did nothing.)
-
-The VALUES statement is permissive regarding data types of column values; you can mix types within the same column, as shown here:
-
-mysql> VALUES ROW("q", 42, '2019-12-18'),
-    ->     ROW(23, "abc", 98.6),
-    ->     ROW(27.0002, "Mary Smith", '{"a": 10, "b": 25}');
-+----------+------------+--------------------+
-| column_0 | column_1   | column_2           |
-+----------+------------+--------------------+
-| q        | 42         | 2019-12-18         |
-| 23       | abc        | 98.6               |
-| 27.0002  | Mary Smith | {"a": 10, "b": 25} |
-+----------+------------+--------------------+
-3 rows in set (0.00 sec)
-Important
-VALUES with one or more instances of ROW() acts as a table value constructor; although it can be used to supply values in an INSERT or REPLACE statement, do not confuse it with the VALUES keyword that is also used for this purpose. You should also not confuse it with the VALUES() function that refers to column values in INSERT ... ON DUPLICATE KEY UPDATE.
-
-You should also bear in mind that ROW() is a row value constructor (see Section 13.2.15.5, “Row Subqueries”), whereas VALUES ROW() is a table value constructor; the two cannot be used interchangeably.
-
-VALUES can be used in many cases where you could employ SELECT, including those listed here:
-
-With UNION, as shown here:
-
-mysql> SELECT 1,2 UNION SELECT 10,15;
-+----+----+
-| 1  | 2  |
-+----+----+
-|  1 |  2 |
-| 10 | 15 |
-+----+----+
-2 rows in set (0.00 sec)
-
-mysql> VALUES ROW(1,2) UNION VALUES ROW(10,15);
-+----------+----------+
-| column_0 | column_1 |
-+----------+----------+
-|        1 |        2 |
-|       10 |       15 |
-+----------+----------+
-2 rows in set (0.00 sec)
-You can union together constructed tables having more than one row, like this:
-
-mysql> VALUES ROW(1,2), ROW(3,4), ROW(5,6)
-     >     UNION VALUES ROW(10,15),ROW(20,25);
-+----------+----------+
-| column_0 | column_1 |
-+----------+----------+
-|        1 |        2 |
-|        3 |        4 |
-|        5 |        6 |
-|       10 |       15 |
-|       20 |       25 |
-+----------+----------+
-5 rows in set (0.00 sec)
-You can also (and it is usually preferable to) omit UNION altogether in such cases and use a single VALUES statement, like this:
-
-mysql> VALUES ROW(1,2), ROW(3,4), ROW(5,6), ROW(10,15), ROW(20,25);
-+----------+----------+
-| column_0 | column_1 |
-+----------+----------+
-|        1 |        2 |
-|        3 |        4 |
-|        5 |        6 |
-|       10 |       15 |
-|       20 |       25 |
-+----------+----------+
-VALUES can also be used in unions with SELECT statements, TABLE statements, or both.
-
-The constructed tables in the UNION must contain the same number of columns, just as if you were using SELECT. See Section 13.2.18, “UNION Clause”, for further examples.
-
-In MySQL 8.0.31 and later, you can use EXCEPT and INTERSECT with VALUES in much the same way as UNION, as shown here:
-
-mysql> VALUES ROW(1,2), ROW(3,4), ROW(5,6)
-    ->   INTERSECT 
-    -> VALUES ROW(10,15), ROW(20,25), ROW(3,4);
-+----------+----------+
-| column_0 | column_1 |
-+----------+----------+
-|        3 |        4 |
-+----------+----------+
-1 row in set (0.00 sec)
- 
-mysql> VALUES ROW(1,2), ROW(3,4), ROW(5,6)
-    ->   EXCEPT 
-    -> VALUES ROW(10,15), ROW(20,25), ROW(3,4);
-+----------+----------+
-| column_0 | column_1 |
-+----------+----------+
-|        1 |        2 |
-|        5 |        6 |
-+----------+----------+
-2 rows in set (0.00 sec)
-See Section 13.2.4, “EXCEPT Clause”, and Section 13.2.8, “INTERSECT Clause”, for more information.
-
-In joins. See Section 13.2.13.2, “JOIN Clause”, for more information and examples.
-
-In place of VALUES() in an INSERT or REPLACE statement, in which case its semantics differ slightly from what is described here. See Section 13.2.7, “INSERT Statement”, for details.
-
-In place of the source table in CREATE TABLE ... SELECT and CREATE VIEW ... SELECT. See the descriptions of these statements for more information and examples.
-
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1bc12467-dbb0-4a17-9b31-61ad2fd39692)
 
 
