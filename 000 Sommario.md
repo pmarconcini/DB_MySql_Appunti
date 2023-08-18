@@ -32,10 +32,7 @@
 
 2.20 [Funzioni e operatori](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/220%20Funzioni%20e%20operatori.md) (da fare) +Functions and Operators
 
-2.30 [Data query language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md) (da fare) 
-
-+ https://dev.mysql.com/doc/refman/8.0/en/group-by-modifiers.html
-  
+2.30 [Data query language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md)   
 
 2.40 [Join e subquery](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/240%20Join%20e%20subquery.md) (da fare)
 
