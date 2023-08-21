@@ -141,8 +141,10 @@ Una subquery è una query annidata all’interno di un’altra query, detta pare
 --------------------------------------------
 ## OPERATORI IN, ANY, SOME, EXISTS E ALL
 
-Alcuni operatori utilizzabili nella clausola WHERE utilizzano subqueries: 
+Alcuni operatori utilizzabili nella clausola WHERE utilizzano subqueries (in tutti i casi è possibile utilizzare la forma negativa con l'operatore NOT): 
 
+-	= (verificata se il valore è l'unico eventualmente restituito nel recordset)
+-	<> (verificata se il valore è diverso dall'unico eventualmente restituito nel recordset; in assenza di record la condizione NON è mai verificata per il confronto con valore NULL)
 -	IN (verificata se il valore è uno di quelli dell’elenco)
 -	<operatore di confronto> ANY (condizione rispettata rispetto ad almeno uno dei valori)
 -	EXISTS (esistenza di almeno un valore)
@@ -239,10 +241,11 @@ Una alternativa alla vista inline è l’utilizzo della clausola WITH in cui si 
 
 Dall'esempio seguente si comprende come sia necessario, dopo la parola chiave WITH, definire un nome che può a sua volta avere un alias nella clausola FROM:
  
-    WITH dept_medie AS (
-        SELECT deptno, AVG(sal) sal_medio
-        FROM   emp
-        GROUP BY deptno)
+    WITH 
+        dept_medie AS (
+            SELECT deptno, AVG(sal) sal_medio
+            FROM   emp
+            GROUP BY deptno)
     SELECT e.ename,       e.sal,       e.deptno,    dm.sal_medio,       dm.sal_medio - e.sal sal_diff
     FROM   emp e,       dept_medie dm
     WHERE  e.deptno = dm.deptno
@@ -250,150 +253,38 @@ Dall'esempio seguente si comprende come sia necessario, dopo la parola chiave WI
 
 ==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1beb0777-da2e-4bae-ae58-139019936c6d)
 
+NB: gli alias di colonna del recordet possono essere definiti anche come elenco di parametri dopo il nome:
+
+    WITH 
+        dept_medie (deptno, sal_medio) AS (
+            SELECT deptno, AVG(sal)
+            [...]
 
 
 
+E' possibile definire più set temporanei in una unica clausola WITH:
+
+    WITH
+        rs_temp1 AS (SELECT a, b FROM tabella_1),
+        rs_temp2 AS (SELECT c, d FROM tabella_2)
+    SELECT b, d FROM rs_temp1 JOIN rs_temp2
+    WHERE rs_temp1.a = rs_temp2.c;
 
 
+--------------------------------------------
+## VALUES e TABLE NELLE SUBQUERIES
 
+A partire dalla versione 8.0.19 di MySql è possibile utilizzare VALUES e TABLE nelle subqueries, come da esempi seguenti:
 
-
-
-
-
-13.2.15 Subqueries
-13.2.15.1 The Subquery as Scalar Operand
-13.2.15.2 Comparisons Using Subqueries
-13.2.15.3 Subqueries with ANY, IN, or SOME
-13.2.15.4 Subqueries with ALL
-13.2.15.5 Row Subqueries
-13.2.15.6 Subqueries with EXISTS or NOT EXISTS
-13.2.15.7 Correlated Subqueries
-13.2.15.8 Derived Tables
-13.2.15.9 Lateral Derived Tables
-13.2.15.10 Subquery Errors
-13.2.15.11 Optimizing Subqueries
-13.2.15.12 Restrictions on Subqueries
-A subquery is a SELECT statement within another statement.
-
-All subquery forms and operations that the SQL standard requires are supported, as well as a few features that are MySQL-specific.
-
-Here is an example of a subquery:
-
-SELECT * FROM t1 WHERE column1 = (SELECT column1 FROM t2);
-In this example, SELECT * FROM t1 ... is the outer query (or outer statement), and (SELECT column1 FROM t2) is the subquery. We say that the subquery is nested within the outer query, and in fact it is possible to nest subqueries within other subqueries, to a considerable depth. A subquery must always appear within parentheses.
-
-The main advantages of subqueries are:
-
-They allow queries that are structured so that it is possible to isolate each part of a statement.
-
-They provide alternative ways to perform operations that would otherwise require complex joins and unions.
-
-Many people find subqueries more readable than complex joins or unions. Indeed, it was the innovation of subqueries that gave people the original idea of calling the early SQL “Structured Query Language.”
-
-Here is an example statement that shows the major points about subquery syntax as specified by the SQL standard and supported in MySQL:
-
-DELETE FROM t1
-WHERE s11 > ANY
- (SELECT COUNT(*) /* no hint */ FROM t2
-  WHERE NOT EXISTS
-   (SELECT * FROM t3
-    WHERE ROW(5*t2.s1,77)=
-     (SELECT 50,11*s1 FROM t4 UNION SELECT 50,77 FROM
-      (SELECT * FROM t5) AS t5)));
-A subquery can return a scalar (a single value), a single row, a single column, or a table (one or more rows of one or more columns). These are called scalar, column, row, and table subqueries. Subqueries that return a particular kind of result often can be used only in certain contexts, as described in the following sections.
-
-There are few restrictions on the type of statements in which subqueries can be used. A subquery can contain many of the keywords or clauses that an ordinary SELECT can contain: DISTINCT, GROUP BY, ORDER BY, LIMIT, joins, index hints, UNION constructs, comments, functions, and so on.
-
-Beginning with MySQL 8.0.19, TABLE and VALUES statements can be used in subqueries. Subqueries using VALUES are generally more verbose versions of subqueries that can be rewritten more compactly using set notation, or with SELECT or TABLE syntax; assuming that table ts is created using the statement CREATE TABLE ts VALUES ROW(2), ROW(4), ROW(6), the statements shown here are all equivalent:
-
-SELECT * FROM tt
-    WHERE b > ANY (VALUES ROW(2), ROW(4), ROW(6));
-
-SELECT * FROM tt
-    WHERE b > ANY (SELECT * FROM ts);
-
-SELECT * FROM tt
-    WHERE b > ANY (TABLE ts);
-Examples of TABLE subqueries are shown in the sections that follow.
-
-A subquery's outer statement can be any one of: SELECT, INSERT, UPDATE, DELETE, SET, or DO.
-
-For information about how the optimizer handles subqueries, see Section 8.2.2, “Optimizing Subqueries, Derived Tables, View References, and Common Table Expressions”. For a discussion of restrictions on subquery use, including performance issues for certain forms of subquery syntax, see Section 13.2.15.12, “Restrictions on Subqueries”.
-
+    SELECT * FROM tabella WHERE campo > ANY (VALUES ROW(2), ROW(4), ROW(6));
+    
+    SELECT * FROM tabella_1 WHERE campo > ANY (TABLE tabella_2);
+    
 
 
 **********************************************************************
 
 **********************************************************************
-
-
-13.2.20 WITH (Common Table Expressions)
-A common table expression (CTE) is a named temporary result set that exists within the scope of a single statement and that can be referred to later within that statement, possibly multiple times. The following discussion describes how to write statements that use CTEs.
-
-Common Table Expressions
-
-Recursive Common Table Expressions
-
-Limiting Common Table Expression Recursion
-
-Recursive Common Table Expression Examples
-
-Common Table Expressions Compared to Similar Constructs
-
-For information about CTE optimization, see Section 8.2.2.4, “Optimizing Derived Tables, View References, and Common Table Expressions with Merging or Materialization”.
-
-Additional Resources
-These articles contain additional information about using CTEs in MySQL, including many examples:
-
-MySQL 8.0 Labs: [Recursive] Common Table Expressions in MySQL (CTEs)
-
-MySQL 8.0 Labs: [Recursive] Common Table Expressions in MySQL (CTEs), Part Two – how to generate series
-
-MySQL 8.0 Labs: [Recursive] Common Table Expressions in MySQL (CTEs), Part Three – hierarchies
-
-MySQL 8.0.1: [Recursive] Common Table Expressions in MySQL (CTEs), Part Four – depth-first or breadth-first traversal, transitive closure, cycle avoidance
-
-Common Table Expressions
-To specify common table expressions, use a WITH clause that has one or more comma-separated subclauses. Each subclause provides a subquery that produces a result set, and associates a name with the subquery. The following example defines CTEs named cte1 and cte2 in the WITH clause, and refers to them in the top-level SELECT that follows the WITH clause:
-
-WITH
-  cte1 AS (SELECT a, b FROM table1),
-  cte2 AS (SELECT c, d FROM table2)
-SELECT b, d FROM cte1 JOIN cte2
-WHERE cte1.a = cte2.c;
-In the statement containing the WITH clause, each CTE name can be referenced to access the corresponding CTE result set.
-
-A CTE name can be referenced in other CTEs, enabling CTEs to be defined based on other CTEs.
-
-A CTE can refer to itself to define a recursive CTE. Common applications of recursive CTEs include series generation and traversal of hierarchical or tree-structured data.
-
-Common table expressions are an optional part of the syntax for DML statements. They are defined using a WITH clause:
-
-with_clause:
-    WITH [RECURSIVE]
-        cte_name [(col_name [, col_name] ...)] AS (subquery)
-        [, cte_name [(col_name [, col_name] ...)] AS (subquery)] ...
-cte_name names a single common table expression and can be used as a table reference in the statement containing the WITH clause.
-
-The subquery part of AS (subquery) is called the “subquery of the CTE” and is what produces the CTE result set. The parentheses following AS are required.
-
-A common table expression is recursive if its subquery refers to its own name. The RECURSIVE keyword must be included if any CTE in the WITH clause is recursive. For more information, see Recursive Common Table Expressions.
-
-Determination of column names for a given CTE occurs as follows:
-
-If a parenthesized list of names follows the CTE name, those names are the column names:
-
-WITH cte (col1, col2) AS
-(
-  SELECT 1, 2
-  UNION ALL
-  SELECT 3, 4
-)
-SELECT col1, col2 FROM cte;
-The number of names in the list must be the same as the number of columns in the result set.
-
-Otherwise, the column names come from the select list of the first SELECT within the AS (subquery) part:
 
 WITH cte AS
 (
