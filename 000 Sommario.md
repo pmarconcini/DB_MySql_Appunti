@@ -30,7 +30,7 @@
 
 2.10 [Classificazione delle istruzioni SQL](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/210%20Classificazione%20delle%20istruzioni%20SQL.md)
 
-2.20 [Funzioni e operatori](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/220%20Funzioni%20e%20operatori.md) (da fare) +Functions and Operators
+2.20 [Funzioni e operatori](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/220%20Funzioni%20e%20operatori.md)
 
 2.30 [Data Query Language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md)   
 
