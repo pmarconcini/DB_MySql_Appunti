@@ -32,11 +32,11 @@
 
 2.20 [Funzioni e operatori](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/220%20Funzioni%20e%20operatori.md) (da fare) +Functions and Operators
 
-2.30 [Data query language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md)   
+2.30 [Data Query Language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md)   
 
 2.40 [Join e subqueries](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/240%20Join%20e%20subquery.md)
 
-2.50 [Insert, update e delete (DML)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/250%20Insert%2C%20update%20e%20delete%20(DML).md) (da fare) +SQL Statements
+2.50 [Data Manipulation Language (DML)]((https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/250%20Data%20Manipulation%20Language%20(DML).md)) (da fare) +SQL Statements
 
 2.60 [Gestione della transazione (TCL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/260%20Gestione%20della%20transazione%20(TCL).md) (da fare)
 
