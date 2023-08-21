@@ -1,7 +1,7 @@
-# Join e subquery
+# JOIN E SUBQUERIES
 
 --------------------------------------------
-## Join
+## JOIN
 
 La join è la rappresentazione della relazione che intercorre tra due tabelle; tale relazione può coinvolgere una o più colonne di ogni tabella e può coincidere con un vincolo di integrità referenziale o essere una relazione solamente logica.
 
@@ -132,6 +132,123 @@ In MySql è possibile, tramite CROSS join, stabilire in maniera più rapida rela
 
 
 
+--------------------------------------------
+--------------------------------------------
+## SUBQUERIES
+
+Una subquery è una query annidata all’interno di un’altra query, detta parent (tale rapporto gerarchico può essere riproposto per più livelli); deve essere racchiusa tra parentesi tonde e può essere utilizzata in tutte le clausole e, in caso di necessità, può fare riferimento ai campi della query parent specificandone gli alias di tabella. Con gli stessi criteri le subqueries possono essere utilizzate anche nelle DML di manipolazione dati vera e propria. 
+
+--------------------------------------------
+## OPERATORI IN, ANY, SOME, EXISTS E ALL
+
+Alcuni operatori utilizzabili nella clausola WHERE utilizzano subqueries: 
+
+-	IN (verificata se il valore è uno di quelli dell’elenco)
+-	<operatore di confronto> ANY (condizione rispettata rispetto ad almeno uno dei valori)
+-	EXISTS (esistenza di almeno un valore)
+-	<operatore di confronto> ALL (condizione rispettata rispetto a tutti i valori)
+
+NB: SOME ha esattamente lo stesso utilizzo di ANY e restituisce lo stesso risultato. Di fatto sono interscambiabili.
+
+
+Il valore restituito da una subquery per ogni record può essere sia un dato semplice (quindi una unica colonna) che complesso (quindi sottoforma di riga); in questo secondo caso esistono dei limiti nella modalità di utilizzo:
+
+-	Nella condizione IN le due parti del confronto devono avere lo stesso numero di colonne, corrispondenti per tipo di dato
+-	Non è possibile utilizzare dati complessi con gli operatori ANY, ALL e SOME.
+
+
+Nell'esempio seguente sono presenti subqueries usate con la clausola IN e nella SELECT come fonte dati (sia con riferimento alla parent che senza):
+
+    SELECT empno, ename, mgr, -- non è necessario l'alias perchè non c'è ambiguità con le subqueries
+        (SELECT ename FROM emp WHERE empno = e.mgr) MANAGER, -- nella condizione si fa riferimento all'alias della parent
+        sal - (SELECT AVG(sal) FROM emp) DELTA_SAL_MEDIO, -- nessuna neccessità di legarsi alla parent
+        sal - (SELECT AVG(sal) FROM emp WHERE deptno = e.deptno) DELTA_SAL_MEDIO_SEDE -- neccessità di legarsi alla parent
+    FROM emp e
+    WHERE deptno IN (SELECT deptno FROM dept WHERE loc IN ('NEW YORK', 'DALLAS'))
+    ORDER BY DELTA_SAL_MEDIO DESC;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/ae9e00ff-1452-4791-bb5a-4a85c8863b66)
+
+
+Nell'esempio seguente l'utilizzo con l'operatore EXISTS (decisamente preferibile a IN in termini di performance, ove utilizzabile, perchè la ricerca termina al rinvenimento della prima occorrenza):
+
+    SELECT deptno, count(*) k, AVG(sal) media, SUM(sal) somma, MAX(sal) massimo, MIN(sal) minimo
+    FROM emp x
+    WHERE EXISTS (SELECT 1 FROM emp WHERE x.deptno = deptno AND job IN ('SALESMAN', 'ANALYST'))
+    GROUP BY deptno;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/cc487fd4-5727-45ff-92c3-73ff3f1b3bbb)
+
+
+Nell'esempio seguente l'utilizzo dell'operatore ALL con uno degli operatori di confronto (la query retituisce i dipendenti con salario maggiore sia della media salariale dei pari ruolo che della media salariale del loro dipartimento):
+
+    SELECT ename, job, sal
+    FROM emp e
+    WHERE sal > ALL (SELECT avg(sal)  FROM emp sq WHERE sq.job = e.job
+                 UNION
+                 SELECT avg(sal)  FROM emp sq WHERE sq.deptno = e.deptno
+                 );		 
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/905ff824-e58c-4349-87ae-5e9360bbe868)
+
+
+Nell'esempio seguente l'utilizzo dell'operatore ANY con uno degli operatori di confronto (la query retituisce i dipendenti con salario maggiore di ALMENO un valore tra la media salariale dei pari ruolo e la media salariale del loro dipartimento):
+
+    SELECT ename, job, sal
+    FROM emp e
+    WHERE sal > ANY (SELECT avg(sal)  FROM emp sq WHERE sq.job = e.job
+                 UNION
+                 SELECT avg(sal)  FROM emp sq WHERE sq.deptno = e.deptno
+                 );		 
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/599199fd-1882-4792-9029-fc327281ff5c)
+
+
+Nell'esempio seguente la subquery è utilizzata nella clausola FROM e il recordset che restituisce è referenziabile tramite l'alias (obbligatorio in questo caso):
+
+    SELECT empno, ename, e.deptno, sal, media, sal - media delta_sal
+    FROM emp e, (SELECT deptno, AVG (sal) media FROM emp GROUP BY deptno) sq1
+    WHERE e.deptno = sq1.deptno
+    ORDER BY delta_sal DESC;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/e46f142d-8483-45f8-b9e0-b93ca45d9fd4)
+
+
+--------------------------------------------
+## INLINE VIEW
+
+Una particolare forma di subquery è la Inline View, in cui il recordset ottenuto dalla query è oggetto a sua volta di query e si trova, sempre racchiuso tra parentesi e identificato tramite alias, nella clausola FROM. Nell’esempio seguente la query più interna serve per ordinare i dati, la seconda per associare l’ordinale grazie al ROWNUM e la terza per filtrare (è il meccanismo utilizzato per ottenere un set posizionato di record prima della versione 12.1 di Oracle).
+
+Nell'esempio seguente grazie alla inline view è possibile selezionare gli impiegati nelle posizioni pari della classifica:
+
+    SELECT ename, sal, ordine
+    FROM (    
+        SELECT ename, sal, @rownum := @rownum + 1 ordine
+        FROM emp, (SELECT @rownum := 0) r
+        ORDER BY sal DESC
+        ) iv
+    WHERE MOD(ordine, 2) = 0;   
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/f4b94ad0-efb9-4f21-80b6-21d887217444)
+
+
+--------------------------------------------
+## CLAUSOLA WITH
+
+Una alternativa alla vista inline è l’utilizzo della clausola WITH in cui si deve definire prima della clausola SELECT la query necessaria per stabilire i dati che faranno da “bacino” nella DML. E’ preferibile all’utilizzo della vista inline soprattutto nei casi in cui sia necessario accedere più volte al contenuto di una data tabella. 
+
+Dall'esempio seguente si comprende come sia necessario, dopo la parola chiave WITH, definire un nome che può a sua volta avere un alias nella clausola FROM:
+ 
+    WITH dept_medie AS (
+        SELECT deptno, AVG(sal) sal_medio
+        FROM   emp
+        GROUP BY deptno)
+    SELECT e.ename,       e.sal,       e.deptno,    dm.sal_medio,       dm.sal_medio - e.sal sal_diff
+    FROM   emp e,       dept_medie dm
+    WHERE  e.deptno = dm.deptno
+    ORDER BY e.ename;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/1beb0777-da2e-4bae-ae58-139019936c6d)
 
 
 
@@ -140,9 +257,9 @@ In MySql è possibile, tramite CROSS join, stabilire in maniera più rapida rela
 
 
 
-**********************************************************************
 
-**********************************************************************
+
+
 
 13.2.15 Subqueries
 13.2.15.1 The Subquery as Scalar Operand
