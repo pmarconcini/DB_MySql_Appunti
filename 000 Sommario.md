@@ -34,7 +34,7 @@
 
 2.30 [Data query language (DQL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/230%20Data%20query%20language%20(DQL).md)   
 
-2.40 [Join e subqueries](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/240%20Join%20e%20subquery.md) (da fare)
+2.40 [Join e subqueries](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/240%20Join%20e%20subquery.md)
 
 2.50 [Insert, update e delete (DML)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/250%20Insert%2C%20update%20e%20delete%20(DML).md) (da fare) +SQL Statements
 
