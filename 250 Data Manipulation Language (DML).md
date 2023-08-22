@@ -78,6 +78,9 @@ NB: al momento la console calcola erroneamente il numero di record processati, c
 ## REPLACE
 
 L'istruzione REPLACE è, in sostanza, una variante della INSERT che ne mantiene tutte le peculiarità ma permette di aggiornare il record nel caso di violazione di chiave duplicata. 
+
+Per utilizzare l'istruzione REPLACE è necessario avere i privilegi INSERT e DELETE.
+
 Nell'esempio seguente l'ID 80 è già esistente e quindi viene aggiornata la descrizione (e vengono nullificate le colonne per cui non è disponibile un valore) mentre l'ID 88 non esiste e quindi viene eseguito l'inserimento:
 
     REPLACE INTO dept (deptno, dname) VALUES (80, 'E-SHOP'), (88, 'E-SHOP');
@@ -118,6 +121,7 @@ Nell'esempio seguente due aggiornamenti in cui è necessario specificare il rife
 ==> Rows matched: 13  Changed: 13  Warnings: 0	0.032 sec ==> Rows matched: 16  Changed: 0  Warnings: 0	0.000 sec
 
 
+
 I dati di valorizzazione possono essere ricavati anche da subqueries o da altre tabelle (detta "update multitabella"), come negli esempi seguenti equivalenti:
 
     UPDATE tabella_1 t1
@@ -132,7 +136,7 @@ I dati di valorizzazione possono essere ricavati anche da subqueries o da altre 
 
 E' possibile aggiungere l'opzione IGNORE per bypassare eventuali errori bloccanti, come nel caso della UPDATE seguente che causa un errore di chiave duplicata:
     
-    UPDATE dept d
+    UPDATE IGNORE dept d
     SET deptno = 10 
     WHERE deptno > 80;    
 
@@ -157,371 +161,62 @@ Per ottenere una UPDATE valida è necessario trasformare lo script in un'update 
 
 
 
+--------------------------------------------
+##  DELETE E TRUNCATE
 
-
-
-
-
-
-
-
-
-***************************************************************************************************************************
-
-***************************************************************************************************************************
-***************************************************************************************************************************
-
-***************************************************************************************************************************
- 
-
-
-
-DML - MANIPOLAZIONE: DELETE E TRUNCATE
 L’istruzione DELETE, utilizzata per eliminare dati in una singola tabella, prevede una parte necessaria e una facoltativa:
-•	DELETE FROM <nome della singola tabella: es. dept => parte necessaria. E’ possibile specificare un alias di tabella, spesso necessario in caso di subquery nella clausola WHERE
-•	WHERE  <condizioni> => parte facoltativa. Esattamente come nel caso delle queries di interrogazione permette il filtro dei record. In assenza della clausola WHERE l’eliminazione riguarderà tutti i record presenti in tabella
-Esiste anche in questo caso la forma alternativa RETURNING … INTO … della clausola WHERE utilizzabile nel codice PL/SQL che descriveremo successivamente.
-NB: è possibile utilizzare l’istruzione con viste e viste materializzate, con il seguente vincolo:
+- DELETE FROM <nome della singola tabella: es. dept => parte necessaria. E’ possibile specificare un alias di tabella, spesso necessario in caso di subquery nella clausola WHERE
+- WHERE  <condizioni> => parte facoltativa. Esattamente come nel caso delle queries di interrogazione permette il filtro dei record. In assenza della clausola WHERE l’eliminazione riguarderà tutti i record presenti in tabella, a meno che non sia attivo il "Safe update mode" di MySQL che impedische aggiornamenti e modifiche che non facciano riferimento alla chiave primaria nella clausola WHERE.
+- Tramite la clausola facoltativa ORDER BY è possibile impostare l'ordine di eliminazione dei record  selezionati dalla clausola WHERE.
+- Tramite la clausola facoltativa LIMIT è possibile limitare il numero di record eliminati a prescindere dal numero di record selezionati dalla clausola WHERE.
+
+NB: è possibile utilizzare l’istruzione con le viste, con il seguente vincolo:
 •	la vista deve prendere in considerazione nella clausola SELECT tutti i campi della chiave primaria della tabella di cui si vuole eliminare dati
+
+Per utilizzare l'istruzione DELETE è necessario avere il privilegio DELETE.
+
+    DELETE FROM dept d
+    WHERE deptno > 40;
+
+==> 12 row(s) affected	0.031 sec
+
+Una diversa e spesso migliore alternativa per l’eliminazione di tutti i record di una tabella è l’istruzione TRUNCATE che è però considerabile una DDL e, in quanto tale, implica l’esecuzione automatica della COMMIT e l’eliminazione delle versioni precedenti dei dati da parte di Oracle. La TRUNCATE NON può essere utilizzata su tabelle la cui chiave primaria sia parte di vincoli di integrità referenziale attivi.
  
-5 5 Esempio DML – DELETE
-1.	DELETE FROM dept d
-2.	WHERE deptno > 40;
-3.	COMMIT;
-	 
-Una migliore alternativa per l’eliminazione di tutti i record di una tabella è l’istruzione TRUNCATE che è però considerabile una DDL e, in quanto tale, implica l’esecuzione automatica della COMMIT e l’eliminazione delle versioni precedenti dei dati da parte di Oracle. La TRUNCATE NON può essere utilizzata su tabelle la cui chiave primaria sia parte di vincoli di integrità referenziale attivi.
- 
-5 6 Esempio DDL – TRUNCATE
-1.	TRUNCATE TABLE prova;
-
-DML - MANIPOLAZIONE: MERGE
-L’istruzione, utilizzata per combinare operazioni multiple, prevede alcune parti obbligatorie e alcune facoltative:
-•	MERGE INTO <nome della singola tabella di destinazione: es. dept> => parte necessaria. E’ la tabella in cui inserire o aggiornare i dati.
-•	USING  <tabella o query di origine: es. dept_modificati>. E’ obbligatoria.
-•	ON (<condizioni di join>). E’ obbligatoria.
-•	WHEN MATCHED THEN UPDATE SET <elenco valorizzazioni> e WHEN NOT MATCHED THEN INSERT (<elenco campi>) VALUES (<elenco espressioni>). E’ obbligatorio che sia presente almeno una delle due forme.
-•	La clausola WHEN MATCHED può prevedere anche la clausola WHERE seguita dalle condizioni ed eventualmente, successivamente, la scrittura DELETE WHERE <condizioni> per associare anche l’istruzione di eliminazione; le condizioni di eliminazione vengono verificate DOPO l’aggiornamento e coinvolgono esclusivamente i record aggiornati.
-•	È possibile specificare delle condizioni di filtro tramite la clausola WHERE a fine istruzione oppure integrando adeguatamente la clausola di join ON.
-
- 
-5 7 Esempio DML – MERGE USING query
-1.	MERGE INTO bonus D
-2.	   USING (SELECT empno, sal + nvl(comm, 0) tot FROM emp
-3.	         ) S
-4.	   ON (D.empno = S.empno)
-5.	   WHEN MATCHED THEN 
-6.	     UPDATE SET D.bonus = D.bonus + S.tot * .01
-7.	     DELETE WHERE (D.bonus > 50)
-8.	   WHEN NOT MATCHED THEN 
-9.	     INSERT (D.empno, D.bonus)
-10.	     VALUES (S.empno, S.tot * .01)
-11.	   WHERE (S.tot <= 3000);
-12.	COMMIT;
+    TRUNCATE TABLE tabella;
 
-	Dopo la prima esecuzione:	   	
-	Dopo la seconda esecuzione: 	 
 
 
-L’esempio seguente è assolutamente equivalente a quello appena visto:
- 
-5 8 Esempio DML – MERGE USING tabella
-1.	MERGE INTO bonus D
-2.	   USING emp S
-3.	   ON (D.empno = S.empno)
-4.	   WHEN MATCHED THEN 
-5.	     UPDATE SET D.bonus = D.bonus + (S.sal + nvl(S.comm, 0)) * .01
-6.	     DELETE WHERE (D.bonus > 50)
-7.	   WHEN NOT MATCHED THEN 
-8.	     INSERT (D.empno, D.bonus)
-9.	     VALUES (S.empno, (S.sal + nvl(S.comm, 0)) * .01)
-10.	   WHERE ((S.sal + nvl(S.comm, 0)) <= 3000);
+Non è possibile eliminare i dati di una tabella e contemporaneamente eseguire su di essa una query poichè si genera l'errore 1093, come nell'esempio seguente:
 
+    DELETE tabella
+    WHERE id IN (SELECT id FROM tabella WHERE colonna BETWEEN 0 AND 1000);
 
+==> ERROR 1093 (HY000): You can't specify target table 'tabella' for update in FROM clause
 
 
-***************************************************************************************************************************
 
-***************************************************************************************************************************
-***********************************************************************************
+Per ottenere una DELETE valida è necessario trasformare lo script in una delete multitabella. La subquery utilizzata come INLINE VIEW può anche essere utilizzata per eliminare i dati:
 
-***********************************************************************************
+    DELETE FROM tabella t1, (SELECT id FROM tabella WHERE colonna BETWEEN 0 AND 1000) t2
+    WHERE t1.id = t2.id;
 
-13.2.2 DELETE Statement
-DELETE is a DML statement that removes rows from a table.
 
-A DELETE statement can start with a WITH clause to define common table expressions accessible within the DELETE. See Section 13.2.20, “WITH (Common Table Expressions)”.
+Se l'eliminazione coinvolge una quantità parziale delle righe della tabella compresa quella con l'ultima valorizzazione tramite AUTO_INCREMENT il valore NON sarà riutilizzato nè con MyISAM nè con InnoDB. Se tutti i record vengono eliminati il conteggio ripartirà da 1.
 
-Single-Table Syntax
-DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name [[AS] tbl_alias]
-    [PARTITION (partition_name [, partition_name] ...)]
-    [WHERE where_condition]
-    [ORDER BY ...]
-    [LIMIT row_count]
-The DELETE statement deletes rows from tbl_name and returns the number of deleted rows. To check the number of deleted rows, call the ROW_COUNT() function described in Section 12.15, “Information Functions”.
 
-Main Clauses
-The conditions in the optional WHERE clause identify which rows to delete. With no WHERE clause, all rows are deleted.
+E' possibile eliminare dati contemporaneamente da più tabelle; per farlo esistono due tipi di scrittura:
 
-where_condition is an expression that evaluates to true for each row to be deleted. It is specified as described in Section 13.2.13, “SELECT Statement”.
+    DELETE t1, t2 FROM t1 INNER JOIN t2 INNER JOIN t3 -- elimina i dati delle tabelle t1 e t2; t3 è usata esclusivamente come filtro
+    WHERE t1.id=t2.id AND t2.id=t3.id;
 
-If the ORDER BY clause is specified, the rows are deleted in the order that is specified. The LIMIT clause places a limit on the number of rows that can be deleted. These clauses apply to single-table deletes, but not multi-table deletes.
+    DELETE FROM t1, t2 USING t1 INNER JOIN t2 INNER JOIN t3 -- elimina i dati delle tabelle t1 e t2; t3 è usata esclusivamente come filtro
+    WHERE t1.id=t2.id AND t2.id=t3.id;
+    
+E' possibile utilizzare gli alias di tabella in questo modo:
 
-Multiple-Table Syntax
-DELETE [LOW_PRIORITY] [QUICK] [IGNORE]
-    tbl_name[.*] [, tbl_name[.*]] ...
-    FROM table_references
-    [WHERE where_condition]
-
-DELETE [LOW_PRIORITY] [QUICK] [IGNORE]
-    FROM tbl_name[.*] [, tbl_name[.*]] ...
-    USING table_references
-    [WHERE where_condition]
-Privileges
-You need the DELETE privilege on a table to delete rows from it. You need only the SELECT privilege for any columns that are only read, such as those named in the WHERE clause.
-
-Performance
-When you do not need to know the number of deleted rows, the TRUNCATE TABLE statement is a faster way to empty a table than a DELETE statement with no WHERE clause. Unlike DELETE, TRUNCATE TABLE cannot be used within a transaction or if you have a lock on the table. See Section 13.1.37, “TRUNCATE TABLE Statement” and Section 13.3.6, “LOCK TABLES and UNLOCK TABLES Statements”.
-
-The speed of delete operations may also be affected by factors discussed in Section 8.2.5.3, “Optimizing DELETE Statements”.
-
-To ensure that a given DELETE statement does not take too much time, the MySQL-specific LIMIT row_count clause for DELETE specifies the maximum number of rows to be deleted. If the number of rows to delete is larger than the limit, repeat the DELETE statement until the number of affected rows is less than the LIMIT value.
-
-Subqueries
-You cannot delete from a table and select from the same table in a subquery.
-
-Partitioned Table Support
-DELETE supports explicit partition selection using the PARTITION clause, which takes a list of the comma-separated names of one or more partitions or subpartitions (or both) from which to select rows to be dropped. Partitions not included in the list are ignored. Given a partitioned table t with a partition named p0, executing the statement DELETE FROM t PARTITION (p0) has the same effect on the table as executing ALTER TABLE t TRUNCATE PARTITION (p0); in both cases, all rows in partition p0 are dropped.
-
-PARTITION can be used along with a WHERE condition, in which case the condition is tested only on rows in the listed partitions. For example, DELETE FROM t PARTITION (p0) WHERE c < 5 deletes rows only from partition p0 for which the condition c < 5 is true; rows in any other partitions are not checked and thus not affected by the DELETE.
-
-The PARTITION clause can also be used in multiple-table DELETE statements. You can use up to one such option per table named in the FROM option.
-
-For more information and examples, see Section 24.5, “Partition Selection”.
-
-Auto-Increment Columns
-If you delete the row containing the maximum value for an AUTO_INCREMENT column, the value is not reused for a MyISAM or InnoDB table. If you delete all rows in the table with DELETE FROM tbl_name (without a WHERE clause) in autocommit mode, the sequence starts over for all storage engines except InnoDB and MyISAM. There are some exceptions to this behavior for InnoDB tables, as discussed in Section 15.6.1.6, “AUTO_INCREMENT Handling in InnoDB”.
-
-For MyISAM tables, you can specify an AUTO_INCREMENT secondary column in a multiple-column key. In this case, reuse of values deleted from the top of the sequence occurs even for MyISAM tables. See Section 3.6.9, “Using AUTO_INCREMENT”.
-
-Modifiers
-The DELETE statement supports the following modifiers:
-
-If you specify the LOW_PRIORITY modifier, the server delays execution of the DELETE until no other clients are reading from the table. This affects only storage engines that use only table-level locking (such as MyISAM, MEMORY, and MERGE).
-
-For MyISAM tables, if you use the QUICK modifier, the storage engine does not merge index leaves during delete, which may speed up some kinds of delete operations.
-
-The IGNORE modifier causes MySQL to ignore ignorable errors during the process of deleting rows. (Errors encountered during the parsing stage are processed in the usual manner.) Errors that are ignored due to the use of IGNORE are returned as warnings. For more information, see The Effect of IGNORE on Statement Execution.
-
-Order of Deletion
-If the DELETE statement includes an ORDER BY clause, rows are deleted in the order specified by the clause. This is useful primarily in conjunction with LIMIT. For example, the following statement finds rows matching the WHERE clause, sorts them by timestamp_column, and deletes the first (oldest) one:
-
-DELETE FROM somelog WHERE user = 'jcole'
-ORDER BY timestamp_column LIMIT 1;
-ORDER BY also helps to delete rows in an order required to avoid referential integrity violations.
-
-InnoDB Tables
-If you are deleting many rows from a large table, you may exceed the lock table size for an InnoDB table. To avoid this problem, or simply to minimize the time that the table remains locked, the following strategy (which does not use DELETE at all) might be helpful:
-
-Select the rows not to be deleted into an empty table that has the same structure as the original table:
-
-INSERT INTO t_copy SELECT * FROM t WHERE ... ;
-Use RENAME TABLE to atomically move the original table out of the way and rename the copy to the original name:
-
-RENAME TABLE t TO t_old, t_copy TO t;
-Drop the original table:
-
-DROP TABLE t_old;
-No other sessions can access the tables involved while RENAME TABLE executes, so the rename operation is not subject to concurrency problems. See Section 13.1.36, “RENAME TABLE Statement”.
-
-MyISAM Tables
-In MyISAM tables, deleted rows are maintained in a linked list and subsequent INSERT operations reuse old row positions. To reclaim unused space and reduce file sizes, use the OPTIMIZE TABLE statement or the myisamchk utility to reorganize tables. OPTIMIZE TABLE is easier to use, but myisamchk is faster. See Section 13.7.3.4, “OPTIMIZE TABLE Statement”, and Section 4.6.4, “myisamchk — MyISAM Table-Maintenance Utility”.
-
-The QUICK modifier affects whether index leaves are merged for delete operations. DELETE QUICK is most useful for applications where index values for deleted rows are replaced by similar index values from rows inserted later. In this case, the holes left by deleted values are reused.
-
-DELETE QUICK is not useful when deleted values lead to underfilled index blocks spanning a range of index values for which new inserts occur again. In this case, use of QUICK can lead to wasted space in the index that remains unreclaimed. Here is an example of such a scenario:
-
-Create a table that contains an indexed AUTO_INCREMENT column.
-
-Insert many rows into the table. Each insert results in an index value that is added to the high end of the index.
-
-Delete a block of rows at the low end of the column range using DELETE QUICK.
-
-In this scenario, the index blocks associated with the deleted index values become underfilled but are not merged with other index blocks due to the use of QUICK. They remain underfilled when new inserts occur, because new rows do not have index values in the deleted range. Furthermore, they remain underfilled even if you later use DELETE without QUICK, unless some of the deleted index values happen to lie in index blocks within or adjacent to the underfilled blocks. To reclaim unused index space under these circumstances, use OPTIMIZE TABLE.
-
-If you are going to delete many rows from a table, it might be faster to use DELETE QUICK followed by OPTIMIZE TABLE. This rebuilds the index rather than performing many index block merge operations.
-
-Multi-Table Deletes
-You can specify multiple tables in a DELETE statement to delete rows from one or more tables depending on the condition in the WHERE clause. You cannot use ORDER BY or LIMIT in a multiple-table DELETE. The table_references clause lists the tables involved in the join, as described in Section 13.2.13.2, “JOIN Clause”.
-
-For the first multiple-table syntax, only matching rows from the tables listed before the FROM clause are deleted. For the second multiple-table syntax, only matching rows from the tables listed in the FROM clause (before the USING clause) are deleted. The effect is that you can delete rows from many tables at the same time and have additional tables that are used only for searching:
-
-DELETE t1, t2 FROM t1 INNER JOIN t2 INNER JOIN t3
-WHERE t1.id=t2.id AND t2.id=t3.id;
-Or:
-
-DELETE FROM t1, t2 USING t1 INNER JOIN t2 INNER JOIN t3
-WHERE t1.id=t2.id AND t2.id=t3.id;
-These statements use all three tables when searching for rows to delete, but delete matching rows only from tables t1 and t2.
-
-The preceding examples use INNER JOIN, but multiple-table DELETE statements can use other types of join permitted in SELECT statements, such as LEFT JOIN. For example, to delete rows that exist in t1 that have no match in t2, use a LEFT JOIN:
-
-DELETE t1 FROM t1 LEFT JOIN t2 ON t1.id=t2.id WHERE t2.id IS NULL;
-The syntax permits .* after each tbl_name for compatibility with Access.
-
-If you use a multiple-table DELETE statement involving InnoDB tables for which there are foreign key constraints, the MySQL optimizer might process tables in an order that differs from that of their parent/child relationship. In this case, the statement fails and rolls back. Instead, you should delete from a single table and rely on the ON DELETE capabilities that InnoDB provides to cause the other tables to be modified accordingly.
-
-Note
-If you declare an alias for a table, you must use the alias when referring to the table:
-
-DELETE t1 FROM test AS t1, test2 WHERE ...
-Table aliases in a multiple-table DELETE should be declared only in the table_references part of the statement. Elsewhere, alias references are permitted but not alias declarations.
-
-Correct:
-
-DELETE a1, a2 FROM t1 AS a1 INNER JOIN t2 AS a2
-WHERE a1.id=a2.id;
-
-DELETE FROM a1, a2 USING t1 AS a1 INNER JOIN t2 AS a2
-WHERE a1.id=a2.id;
-Incorrect:
-
-DELETE t1 AS a1, t2 AS a2 FROM t1 INNER JOIN t2
-WHERE a1.id=a2.id;
-
-DELETE FROM t1 AS a1, t2 AS a2 USING t1 INNER JOIN t2
-WHERE a1.id=a2.id;
-Table aliases are also supported for single-table DELETE statements beginning with MySQL 8.0.16. (Bug #89410,Bug #27455809)
-
-
-
-**************************************************************************
-
-**************************************************************************
-
-13.2.12 REPLACE Statement
-REPLACE [LOW_PRIORITY | DELAYED]
-    [INTO] tbl_name
-    [PARTITION (partition_name [, partition_name] ...)]
-    [(col_name [, col_name] ...)]
-    { {VALUES | VALUE} (value_list) [, (value_list)] ...
-      |
-      VALUES row_constructor_list
-    }
-
-REPLACE [LOW_PRIORITY | DELAYED]
-    [INTO] tbl_name
-    [PARTITION (partition_name [, partition_name] ...)]
-    SET assignment_list
-
-REPLACE [LOW_PRIORITY | DELAYED]
-    [INTO] tbl_name
-    [PARTITION (partition_name [, partition_name] ...)]
-    [(col_name [, col_name] ...)]
-    {SELECT ... | TABLE table_name}
-
-value:
-    {expr | DEFAULT}
-
-value_list:
-    value [, value] ...
-
-row_constructor_list:
-    ROW(value_list)[, ROW(value_list)][, ...]
-
-assignment:
-    col_name = value
-
-assignment_list:
-    assignment [, assignment] ...
-REPLACE works exactly like INSERT, except that if an old row in the table has the same value as a new row for a PRIMARY KEY or a UNIQUE index, the old row is deleted before the new row is inserted. See Section 13.2.7, “INSERT Statement”.
-
-REPLACE is a MySQL extension to the SQL standard. It either inserts, or deletes and inserts. For another MySQL extension to standard SQL—that either inserts or updates—see Section 13.2.7.2, “INSERT ... ON DUPLICATE KEY UPDATE Statement”.
-
-DELAYED inserts and replaces were deprecated in MySQL 5.6. In MySQL 8.0, DELAYED is not supported. The server recognizes but ignores the DELAYED keyword, handles the replace as a nondelayed replace, and generates an ER_WARN_LEGACY_SYNTAX_CONVERTED warning: REPLACE DELAYED is no longer supported. The statement was converted to REPLACE. The DELAYED keyword is scheduled for removal in a future release. release.
-
-Note
-REPLACE makes sense only if a table has a PRIMARY KEY or UNIQUE index. Otherwise, it becomes equivalent to INSERT, because there is no index to be used to determine whether a new row duplicates another.
-
-Values for all columns are taken from the values specified in the REPLACE statement. Any missing columns are set to their default values, just as happens for INSERT. You cannot refer to values from the current row and use them in the new row. If you use an assignment such as SET col_name = col_name + 1, the reference to the column name on the right hand side is treated as DEFAULT(col_name), so the assignment is equivalent to SET col_name = DEFAULT(col_name) + 1.
-
-In MySQL 8.0.19 and later, you can specify the column values that REPLACE attempts to insert using VALUES ROW().
-
-To use REPLACE, you must have both the INSERT and DELETE privileges for the table.
-
-If a generated column is replaced explicitly, the only permitted value is DEFAULT. For information about generated columns, see Section 13.1.20.8, “CREATE TABLE and Generated Columns”.
-
-REPLACE supports explicit partition selection using the PARTITION clause with a list of comma-separated names of partitions, subpartitions, or both. As with INSERT, if it is not possible to insert the new row into any of these partitions or subpartitions, the REPLACE statement fails with the error Found a row not matching the given partition set. For more information and examples, see Section 24.5, “Partition Selection”.
-
-The REPLACE statement returns a count to indicate the number of rows affected. This is the sum of the rows deleted and inserted. If the count is 1 for a single-row REPLACE, a row was inserted and no rows were deleted. If the count is greater than 1, one or more old rows were deleted before the new row was inserted. It is possible for a single row to replace more than one old row if the table contains multiple unique indexes and the new row duplicates values for different old rows in different unique indexes.
-
-The affected-rows count makes it easy to determine whether REPLACE only added a row or whether it also replaced any rows: Check whether the count is 1 (added) or greater (replaced).
-
-If you are using the C API, the affected-rows count can be obtained using the mysql_affected_rows() function.
-
-You cannot replace into a table and select from the same table in a subquery.
-
-MySQL uses the following algorithm for REPLACE (and LOAD DATA ... REPLACE):
-
-Try to insert the new row into the table
-
-While the insertion fails because a duplicate-key error occurs for a primary key or unique index:
-
-Delete from the table the conflicting row that has the duplicate key value
-
-Try again to insert the new row into the table
-
-It is possible that in the case of a duplicate-key error, a storage engine may perform the REPLACE as an update rather than a delete plus insert, but the semantics are the same. There are no user-visible effects other than a possible difference in how the storage engine increments Handler_xxx status variables.
-
-Because the results of REPLACE ... SELECT statements depend on the ordering of rows from the SELECT and this order cannot always be guaranteed, it is possible when logging these statements for the source and the replica to diverge. For this reason, REPLACE ... SELECT statements are flagged as unsafe for statement-based replication. such statements produce a warning in the error log when using statement-based mode and are written to the binary log using the row-based format when using MIXED mode. See also Section 17.2.1.1, “Advantages and Disadvantages of Statement-Based and Row-Based Replication”.
-
-MySQL 8.0.19 and later supports TABLE as well as SELECT with REPLACE, just as it does with INSERT. See Section 13.2.7.1, “INSERT ... SELECT Statement”, for more information and examples.
-
-When modifying an existing table that is not partitioned to accommodate partitioning, or, when modifying the partitioning of an already partitioned table, you may consider altering the table's primary key (see Section 24.6.1, “Partitioning Keys, Primary Keys, and Unique Keys”). You should be aware that, if you do this, the results of REPLACE statements may be affected, just as they would be if you modified the primary key of a nonpartitioned table. Consider the table created by the following CREATE TABLE statement:
-
-CREATE TABLE test (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  data VARCHAR(64) DEFAULT NULL,
-  ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id)
-);
-When we create this table and run the statements shown in the mysql client, the result is as follows:
-
-mysql> REPLACE INTO test VALUES (1, 'Old', '2014-08-20 18:47:00');
-Query OK, 1 row affected (0.04 sec)
-
-mysql> REPLACE INTO test VALUES (1, 'New', '2014-08-20 18:47:42');
-Query OK, 2 rows affected (0.04 sec)
-
-mysql> SELECT * FROM test;
-+----+------+---------------------+
-| id | data | ts                  |
-+----+------+---------------------+
-|  1 | New  | 2014-08-20 18:47:42 |
-+----+------+---------------------+
-1 row in set (0.00 sec)
-Now we create a second table almost identical to the first, except that the primary key now covers 2 columns, as shown here (emphasized text):
-
-CREATE TABLE test2 (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  data VARCHAR(64) DEFAULT NULL,
-  ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id, ts)
-);
-When we run on test2 the same two REPLACE statements as we did on the original test table, we obtain a different result:
-
-mysql> REPLACE INTO test2 VALUES (1, 'Old', '2014-08-20 18:47:00');
-Query OK, 1 row affected (0.05 sec)
-
-mysql> REPLACE INTO test2 VALUES (1, 'New', '2014-08-20 18:47:42');
-Query OK, 1 row affected (0.06 sec)
-
-mysql> SELECT * FROM test2;
-+----+------+---------------------+
-| id | data | ts                  |
-+----+------+---------------------+
-|  1 | Old  | 2014-08-20 18:47:00 |
-|  1 | New  | 2014-08-20 18:47:42 |
-+----+------+---------------------+
-2 rows in set (0.00 sec)
-This is due to the fact that, when run on test2, both the id and ts column values must match those of an existing row for the row to be replaced; otherwise, a row is inserted.
+    DELETE a1, a2 FROM t1 AS a1 INNER JOIN t2 AS a2
+    WHERE a1.id=a2.id;
+    
+    DELETE FROM a1, a2 USING t1 AS a1 INNER JOIN t2 AS a2
+    WHERE a1.id=a2.id;
 
