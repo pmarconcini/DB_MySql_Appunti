@@ -25,6 +25,8 @@
 
 1.50 [Character Sets e Collations](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/150%20Character%20Sets%20e%20Collations.md)
 
+1.60 [Prepared statements](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/160%20Prepared%20statements.md)
+
 -----------------------------------
 ## 2. SQL - DQL, DML, TCL
 
