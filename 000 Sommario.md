@@ -36,7 +36,7 @@
 
 2.40 [Join e subqueries](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/240%20Join%20e%20subquery.md)
 
-2.50 [Data Manipulation Language (DML)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/250%20Data%20Manipulation%20Language%20(DML).md)) (da fare) +SQL Statements
+2.50 [Data Manipulation Language (DML)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/250%20Data%20Manipulation%20Language%20(DML).md)
 
 2.60 [Gestione della transazione (TCL)](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/260%20Gestione%20della%20transazione%20(TCL).md) (da fare)
 
