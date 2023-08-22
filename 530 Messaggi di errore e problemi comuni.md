@@ -13,6 +13,10 @@ Error Code: 1175. You are using safe update mode and you tried to update a table
 
     SET SQL_SAFE_UPDATES = 0;
 
+==> Per abilitare il Safe Update Mode si può utilizzare la seguente istruzione:
+
+    SET SQL_SAFE_UPDATES = 1;
+
  
 -----------------------------------------------------
 ## MySQL Workbench
