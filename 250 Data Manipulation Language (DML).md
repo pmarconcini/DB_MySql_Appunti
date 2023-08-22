@@ -87,51 +87,94 @@ Nell'esempio seguente l'ID 80 è già esistente e quindi viene aggiornata la des
 NB: al momento la console calcola erroneamente il numero di record processati, come si evince dalla risposta
 
  
+--------------------------------------------
+## UPDATE
 
-
-
-
-***************************************************************************************************************************
-
-***************************************************************************************************************************
-***************************************************************************************************************************
-
-***************************************************************************************************************************
- 
-
-
-DML - MANIPOLAZIONE: UPDATE
 L’istruzione, utilizzata per aggiornare dati in una singola tabella, prevede alcune parti necessarie e alcune facoltative:
-•	UPDATE <nome della singola tabella: es. dept> =>parte necessaria. E’ possibile specificare un alias di tabella, spesso necessario in caso di subquery nelle clausole SET e/o WHERE
-•	SET <elenco delle valorizzazioni dei campi separate da virgola: es. loc = INITCAP(loc)> => parte necessaria. Le espressioni valide sono tutte quelle utilizzabili nella clausola SELECT. E’ possibile valorizzare contemporaneamente più campi tramite una unica subquery: in questo caso l’elenco dei campi deve essere racchiuso tra parentesi.
-•	WHERE  <condizioni> => parte facoltativa. Esattamente come nel caso delle queries di interrogazione permette il filtro dei record. In assenza della clausola WHERE l’aggiornamento riguarderà tutti i record presenti in tabella
-Esistono delle forme alternative della clausola WHERE utilizzabili nel codice PL/SQL (CURRENT OF e RETURNING … INTO …) che descriveremo successivamente.
-NB: è possibile utilizzare l’istruzione con viste e viste materializzate, con i seguenti vincoli:
-•	la vista deve prendere in considerazione nella clausola SELECT tutti i campi della chiave primaria della tabella che si vuole aggiornare
-•	la DML di manipolazione deve intervenire esclusivamente su campi presenti nella clausola SELECT della vista nella loro forma originale (quindi non variati da elaborazioni e/o funzioni)
+- UPDATE <nome_della_singola_tabella: es. dept> => parte necessaria. E’ possibile specificare un alias di tabella, spesso necessario in caso di subquery nelle clausole SET e/o WHERE
+- SET <elenco_delle_valorizzazioni_dei_campi_separate_da_virgola: es. loc = INITCAP(loc)> => parte necessaria. Le espressioni valide sono tutte quelle utilizzabili nella clausola SELECT. E’ possibile valorizzare contemporaneamente più campi tramite una unica subquery: in questo caso l’elenco dei campi deve essere racchiuso tra parentesi.
+- WHERE  <condizioni> => parte facoltativa. Esattamente come nel caso delle queries di interrogazione permette il filtro dei record. In assenza della clausola WHERE l’aggiornamento riguarderà tutti i record presenti in tabella, a meno che non sia attivo il "Safe update mode" di MySQL che impedische aggiornamenti e modifiche che non facciano riferimento alla chiave primaria nella clausola WHERE.
+- Nell'istruzione si può fare riferimento al valore corrente delle colonne coinvolte (ie: UPDATE tabella SET colonna = colonna + 1; incrementa "colonna" di 1), ma l'utilizzo successivo all'aggiornamento sarà con il valore nuovo (ie: UPDATE tab SET col1 = col1 + 1, col2 = col1; supponendo un valore iniziale di col1 = 10, dopo l'update entrambe le colonne avranno valore 11); la clausola WHERE è elaborata prima della clausola SET e quindi in quel contesto i valori saranno sempre quelli originali.
+- Tramite la clausola facoltativa ORDER BY è possibile impostare l'ordine di aggiornamento dei record  selezionati dalla clausola WHERE.
+- Tramite la clausola facoltativa LIMIT è possibile limitare il numero di record aggiornati a prescindere dal numero di record selezionati dalla clausola WHERE.
+
+NB: è possibile utilizzare l’istruzione con le viste con i seguenti vincoli:
+- la vista deve prendere in considerazione nella clausola SELECT tutti i campi della chiave primaria della tabella che si vuole aggiornare
+- la DML di manipolazione deve intervenire esclusivamente su campi presenti nella clausola SELECT della vista nella loro forma originale (quindi non variati da elaborazioni e/o funzioni)
+
+Per utilizzare l'istruzione UPDATE è necessario avere il privilegio UPDATE.
+
+
+Nell'esempio seguente due aggiornamenti in cui è necessario specificare il riferimento alla chiave (campo DEPTNO); da notare come la secondo UPDATE esegua esattamente lo stesso aggiornamento della prima sul campo LOC e MySQL risponda segnalando le 16 righe interessate e le 0 modificate (il valore originale e quello proposto coincidono):
+
+    UPDATE dept d
+    SET dname = concat(dname, '*'), loc = UPPER(loc)
+    WHERE deptno > 0 AND NOT EXISTS (SELECT 1 FROM emp WHERE deptno = d.deptno);
+    
+    UPDATE dept d
+    SET loc = UPPER(loc)
+    WHERE deptno > 0; -- la condizione si può omettere in assenza di Safe Update Mode attivo
+
+==> Rows matched: 13  Changed: 13  Warnings: 0	0.032 sec ==> Rows matched: 16  Changed: 0  Warnings: 0	0.000 sec
+
+
+I dati di valorizzazione possono essere ricavati anche da subqueries o da altre tabelle (detta "update multitabella"), come negli esempi seguenti equivalenti:
+
+    UPDATE tabella_1 t1
+    SET colonna_1 = (SELECT colonna_2 FROM tabella_2 t2 WHERE t2.ID = t1.ID)
+    WHERE ID = 123;
+
+    UPDATE tabella_1 t1, tabella_2 t2
+    SET t1.colonna_1 = t2.colonna_2 
+    WHERE t1.ID = t2.ID AND t1.ID = 123;
+
+
+
+E' possibile aggiungere l'opzione IGNORE per bypassare eventuali errori bloccanti, come nel caso della UPDATE seguente che causa un errore di chiave duplicata:
+    
+    UPDATE dept d
+    SET deptno = 10 
+    WHERE deptno > 80;    
+
+==> 0 row(s) affected, 1 warning(s): 1062 Duplicate entry '10' for key 'dept.PRIMARY'	0.000 sec
+
+
+Non è possibile aggiornare una tabella e contemporaneamente eseguire su di essa una query poichè si genera l'errore 1093, come nell'esempio seguente:
+
+    UPDATE tabella
+    SET colonna = colonna * 0.9
+    WHERE id IN (SELECT id FROM tabella WHERE colonna BETWEEN 0 AND 1000);
+
+==> ERROR 1093 (HY000): You can't specify target table 'tabella' for update in FROM clause
+
+
+Per ottenere una UPDATE valida è necessario trasformare lo script in un'update multitabella. La subquery utilizzata come INLINE VIEW può anche essere utilizzata per valorizzare una o più colonne della tabella in aggiornamento:
+
+    UPDATE tabella t1, (SELECT id, colonna1, colonna2 FROM tabella WHERE colonna BETWEEN 0 AND 1000) t2
+    SET t1.colonna1 = t1.colonna1 * 0.9
+        t1.colonna2 = t2.colonna2
+    WHERE t1.id = t2.id;
+
+
+
+
+
+
+
+
+
+
+
+
+***************************************************************************************************************************
+
+***************************************************************************************************************************
+***************************************************************************************************************************
+
+***************************************************************************************************************************
  
-5 4 Esempio DML – UPDATE
-1.	--#1
-2.	UPDATE dept d
-3.	SET dname = dname || '*', loc = INITCAP(loc)
-4.	WHERE NOT EXISTS (SELECT 1 FROM emp WHERE deptno = d.deptno);
-5.	UPDATE dept d
-6.	SET loc = UPPER(loc);
-7.	COMMIT;    
-	 
 
-1.	--#2
-2.	UPDATE prova a
-3.	SET (t, d) = (SELECT 'Il quadrato di ' || n || ' e'' ' || power(n, 2), sysdate FROM prova WHERE n = a.n);
-4.	COMMIT;
-	Prima: 		Dopo: 
 
-In maniera simile alla valorizzazione massiva tramite subquery è possibile aggiornare tutti i campi di un record tramite l’utilizzo della funzione VALUE associata anche in questo caso a una subquery; segue un esempio della particolare casistica:
-1.	--#3
-UPDATE tabella_demo1 p 
-2.	SET VALUE(p) = (SELECT VALUE(q) FROM tabella_demo2 q WHERE p.id = q.id)
-   WHERE p.id = 10;
-Può essere molto utile, per esempio, per il ripristino di dati da una tabella di backup o versionamento.
 
 DML - MANIPOLAZIONE: DELETE E TRUNCATE
 L’istruzione DELETE, utilizzata per eliminare dati in una singola tabella, prevede una parte necessaria e una facoltativa:
@@ -199,141 +242,6 @@ L’esempio seguente è assolutamente equivalente a quello appena visto:
 ***************************************************************************************************************************
 
 ***************************************************************************************************************************
-***************************************************************************************************************************
-
-***************************************************************************************************************************
- 
-
-13.2.17 UPDATE Statement
-UPDATE is a DML statement that modifies rows in a table.
-
-An UPDATE statement can start with a WITH clause to define common table expressions accessible within the UPDATE. See Section 13.2.20, “WITH (Common Table Expressions)”.
-
-Single-table syntax:
-
-UPDATE [LOW_PRIORITY] [IGNORE] table_reference
-    SET assignment_list
-    [WHERE where_condition]
-    [ORDER BY ...]
-    [LIMIT row_count]
-
-value:
-    {expr | DEFAULT}
-
-assignment:
-    col_name = value
-
-assignment_list:
-    assignment [, assignment] ...
-Multiple-table syntax:
-
-UPDATE [LOW_PRIORITY] [IGNORE] table_references
-    SET assignment_list
-    [WHERE where_condition]
-For the single-table syntax, the UPDATE statement updates columns of existing rows in the named table with new values. The SET clause indicates which columns to modify and the values they should be given. Each value can be given as an expression, or the keyword DEFAULT to set a column explicitly to its default value. The WHERE clause, if given, specifies the conditions that identify which rows to update. With no WHERE clause, all rows are updated. If the ORDER BY clause is specified, the rows are updated in the order that is specified. The LIMIT clause places a limit on the number of rows that can be updated.
-
-For the multiple-table syntax, UPDATE updates rows in each table named in table_references that satisfy the conditions. Each matching row is updated once, even if it matches the conditions multiple times. For multiple-table syntax, ORDER BY and LIMIT cannot be used.
-
-For partitioned tables, both the single-single and multiple-table forms of this statement support the use of a PARTITION clause as part of a table reference. This option takes a list of one or more partitions or subpartitions (or both). Only the partitions (or subpartitions) listed are checked for matches, and a row that is not in any of these partitions or subpartitions is not updated, whether it satisfies the where_condition or not.
-
-Note
-Unlike the case when using PARTITION with an INSERT or REPLACE statement, an otherwise valid UPDATE ... PARTITION statement is considered successful even if no rows in the listed partitions (or subpartitions) match the where_condition.
-
-For more information and examples, see Section 24.5, “Partition Selection”.
-
-where_condition is an expression that evaluates to true for each row to be updated. For expression syntax, see Section 9.5, “Expressions”.
-
-table_references and where_condition are specified as described in Section 13.2.13, “SELECT Statement”.
-
-You need the UPDATE privilege only for columns referenced in an UPDATE that are actually updated. You need only the SELECT privilege for any columns that are read but not modified.
-
-The UPDATE statement supports the following modifiers:
-
-With the LOW_PRIORITY modifier, execution of the UPDATE is delayed until no other clients are reading from the table. This affects only storage engines that use only table-level locking (such as MyISAM, MEMORY, and MERGE).
-
-With the IGNORE modifier, the update statement does not abort even if errors occur during the update. Rows for which duplicate-key conflicts occur on a unique key value are not updated. Rows updated to values that would cause data conversion errors are updated to the closest valid values instead. For more information, see The Effect of IGNORE on Statement Execution.
-
-UPDATE IGNORE statements, including those having an ORDER BY clause, are flagged as unsafe for statement-based replication. (This is because the order in which the rows are updated determines which rows are ignored.) Such statements produce a warning in the error log when using statement-based mode and are written to the binary log using the row-based format when using MIXED mode. (Bug #11758262, Bug #50439) See Section 17.2.1.3, “Determination of Safe and Unsafe Statements in Binary Logging”, for more information.
-
-If you access a column from the table to be updated in an expression, UPDATE uses the current value of the column. For example, the following statement sets col1 to one more than its current value:
-
-UPDATE t1 SET col1 = col1 + 1;
-The second assignment in the following statement sets col2 to the current (updated) col1 value, not the original col1 value. The result is that col1 and col2 have the same value. This behavior differs from standard SQL.
-
-UPDATE t1 SET col1 = col1 + 1, col2 = col1;
-Single-table UPDATE assignments are generally evaluated from left to right. For multiple-table updates, there is no guarantee that assignments are carried out in any particular order.
-
-If you set a column to the value it currently has, MySQL notices this and does not update it.
-
-If you update a column that has been declared NOT NULL by setting to NULL, an error occurs if strict SQL mode is enabled; otherwise, the column is set to the implicit default value for the column data type and the warning count is incremented. The implicit default value is 0 for numeric types, the empty string ('') for string types, and the “zero” value for date and time types. See Section 11.6, “Data Type Default Values”.
-
-If a generated column is updated explicitly, the only permitted value is DEFAULT. For information about generated columns, see Section 13.1.20.8, “CREATE TABLE and Generated Columns”.
-
-UPDATE returns the number of rows that were actually changed. The mysql_info() C API function returns the number of rows that were matched and updated and the number of warnings that occurred during the UPDATE.
-
-You can use LIMIT row_count to restrict the scope of the UPDATE. A LIMIT clause is a rows-matched restriction. The statement stops as soon as it has found row_count rows that satisfy the WHERE clause, whether or not they actually were changed.
-
-If an UPDATE statement includes an ORDER BY clause, the rows are updated in the order specified by the clause. This can be useful in certain situations that might otherwise result in an error. Suppose that a table t contains a column id that has a unique index. The following statement could fail with a duplicate-key error, depending on the order in which rows are updated:
-
-UPDATE t SET id = id + 1;
-For example, if the table contains 1 and 2 in the id column and 1 is updated to 2 before 2 is updated to 3, an error occurs. To avoid this problem, add an ORDER BY clause to cause the rows with larger id values to be updated before those with smaller values:
-
-UPDATE t SET id = id + 1 ORDER BY id DESC;
-You can also perform UPDATE operations covering multiple tables. However, you cannot use ORDER BY or LIMIT with a multiple-table UPDATE. The table_references clause lists the tables involved in the join. Its syntax is described in Section 13.2.13.2, “JOIN Clause”. Here is an example:
-
-UPDATE items,month SET items.price=month.price
-WHERE items.id=month.id;
-The preceding example shows an inner join that uses the comma operator, but multiple-table UPDATE statements can use any type of join permitted in SELECT statements, such as LEFT JOIN.
-
-If you use a multiple-table UPDATE statement involving InnoDB tables for which there are foreign key constraints, the MySQL optimizer might process tables in an order that differs from that of their parent/child relationship. In this case, the statement fails and rolls back. Instead, update a single table and rely on the ON UPDATE capabilities that InnoDB provides to cause the other tables to be modified accordingly. See Section 13.1.20.5, “FOREIGN KEY Constraints”.
-
-You cannot update a table and select directly from the same table in a subquery. You can work around this by using a multi-table update in which one of the tables is derived from the table that you actually wish to update, and referring to the derived table using an alias. Suppose you wish to update a table named items which is defined using the statement shown here:
-
-CREATE TABLE items (
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    wholesale DECIMAL(6,2) NOT NULL DEFAULT 0.00,
-    retail DECIMAL(6,2) NOT NULL DEFAULT 0.00,
-    quantity BIGINT NOT NULL DEFAULT 0
-);
-To reduce the retail price of any items for which the markup is 30% or greater and of which you have fewer than one hundred in stock, you might try to use an UPDATE statement such as the one following, which uses a subquery in the WHERE clause. As shown here, this statement does not work:
-
-mysql> UPDATE items
-     > SET retail = retail * 0.9
-     > WHERE id IN
-     >     (SELECT id FROM items
-     >         WHERE retail / wholesale >= 1.3 AND quantity > 100);
-ERROR 1093 (HY000): You can't specify target table 'items' for update in FROM clause
-Instead, you can employ a multi-table update in which the subquery is moved into the list of tables to be updated, using an alias to reference it in the outermost WHERE clause, like this:
-
-UPDATE items,
-       (SELECT id FROM items
-        WHERE id IN
-            (SELECT id FROM items
-             WHERE retail / wholesale >= 1.3 AND quantity < 100))
-        AS discounted
-SET items.retail = items.retail * 0.9
-WHERE items.id = discounted.id;
-Because the optimizer tries by default to merge the derived table discounted into the outermost query block, this works only if you force materialization of the derived table. You can do this by setting the derived_merge flag of the optimizer_switch system variable to off before running the update, or by using the NO_MERGE optimizer hint, as shown here:
-
-UPDATE /*+ NO_MERGE(discounted) */ items,
-       (SELECT id FROM items
-        WHERE retail / wholesale >= 1.3 AND quantity < 100)
-        AS discounted
-    SET items.retail = items.retail * 0.9
-    WHERE items.id = discounted.id;
-The advantage of using the optimizer hint in such a case is that it applies only within the query block where it is used, so that it is not necessary to change the value of optimizer_switch again after executing the UPDATE.
-
-Another possibility is to rewrite the subquery so that it does not use IN or EXISTS, like this:
-
-UPDATE items,
-       (SELECT id, retail / wholesale AS markup, quantity FROM items)
-       AS discounted
-    SET items.retail = items.retail * 0.9
-    WHERE discounted.markup >= 1.3
-    AND discounted.quantity < 100
-    AND items.id = discounted.id;
-In this case, the subquery is materialized by default rather than merged, so it is not necessary to disable merging of the derived table.
-
 ***********************************************************************************
 
 ***********************************************************************************
