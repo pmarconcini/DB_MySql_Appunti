@@ -1,6 +1,20 @@
 # Messaggi di errore e problemi comuni
 
 -----------------------------------------------------
+## MySQL Database (SQL)
+
+-----------------------------------------------------
+### Error Code: 1175 - SAFE UPDATE MODE
+
+L'errore si verifica eseguendo UPDATE o DELETE senza che nella clausola WHERE siano specificati filri per i campi della chiave primaria:
+Error Code: 1175. You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column. 
+
+==> Per disabilitare il Safe Update Mode si può utilizzare la seguente istruzione:
+
+    SET SQL_SAFE_UPDATES = 0;
+
+ 
+-----------------------------------------------------
 ## MySQL Workbench
 
 -----------------------------------------------------
