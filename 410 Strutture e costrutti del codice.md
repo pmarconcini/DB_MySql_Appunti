@@ -197,6 +197,53 @@ Oltre a quelle già viste in precedenza (valorizzazione e lettura di variabili, 
 Strutture cicliche e condizionali possono essere annidate tra loro.
 
 
+
+--------------------------------------------
+### IF
+
+Il costrutto IF permette di diversificare il processo tramite la verifica di uno o più insiemi alternativi di condizioni; la verifica segue l’ordine in cui gli insiemi sono presentati nel codice e termina in corrispondenza del primo caso positivo, proseguendo con le istruzioni che ad esso corrispondono. Eventuali altri insiemi di condizioni seguenti sono quindi ignorati, anche con un eventuale esito positivo della verifica.
+
+Gli elementi del costrutto sono quelli seguenti: 
+
+	IF <insieme_di_condizioni> THEN 	-- obbligatorio
+		<sequenza_di_istruzioni>
+	ELSIF <insieme_di_condizioni> THEN	-- facoltativo
+		<sequenza_di_istruzioni>
+	ELSIF <insieme_di_condizioni> THEN	-- facoltativo
+		<sequenza_di_istruzioni>
+	ELSE					-- facoltativo
+		<sequenza_di_istruzioni>
+	END IF;					-- obbligatorio
+
+La strutturazione di un <insieme_di_condizioni> segue le stesse regole già incontrate nell’affrontare SQL.
+La <sequenza_di_istruzioni> può comprendere tutte le istruzioni singole, condizionali e cicliche, anche annidate.
+
+La prima “uscita” deve essere necessariamente “IF”, che deve essere necessariamente presente come la chiusura del costrutto “END IF;”. L’uscita “ELSE”, se presente, deve essere l’ultimo prima della chiusura ed intercetta tutte le casistiche che non hanno soddisfatto nessun insieme di condizioni precedenti.
+
+ 
+Esempio di costrutto IF
+
+	DROP PROCEDURE IF EXISTS test;
+	DELIMITER $$
+	CREATE PROCEDURE test () 
+	blk_1: BEGIN 	
+		DECLARE a INT DEFAULT 10;
+		IF a = 1 THEN 
+			SELECT 1;
+		ELSEIF a < 5 THEN 
+			SELECT 5;
+		ELSE
+			BEGIN
+				SELECT 0;
+			END;
+		END IF;
+	END blk_1
+	$$
+	DELIMITER ;
+	CALL test();
+
+
+
 --------------------------------------------
 ### CASE
 
@@ -211,30 +258,31 @@ Gli elementi delle due forme del costrutto sono quelli seguenti:
  	-- CASE semplice
 	CASE <espressione> 
 	WHEN <valore 1> THEN	 		-- obbligatorio
-		<sequenza di istruzioni>
+		<sequenza_di_istruzioni>
 	WHEN <valore 2> THEN			-- facoltativo
-		<sequenza di istruzioni>
+		<sequenza_di_istruzioni>
 	WHEN <valore 3> THEN			-- facoltativo
-		<sequenza di istruzioni>
+		<sequenza_di_istruzioni>
 	 […]
 	ELSE					-- facoltativo
-		<sequenza di istruzioni>
+		<sequenza_di_istruzioni>
 	END CASE;				-- obbligatorio
 
 	-- CASE complesso
 	CASE
-	WHEN <insieme di condizioni> THEN 	-- obbligatorio
-		<sequenza di istruzioni>
-	WHEN <insieme di condizioni> THEN	-- facoltativo
-		<sequenza di istruzioni>
-	WHEN <insieme di condizioni> THEN	-- facoltativo
-		<sequenza di istruzioni>
+	WHEN <insieme_di_condizioni> THEN 	-- obbligatorio
+		<sequenza_di_istruzioni>
+	WHEN <insieme_di_condizioni> THEN	-- facoltativo
+		<sequenza_di_istruzioni>
+	WHEN <insieme_di_condizioni> THEN	-- facoltativo
+		<sequenza_di_istruzioni>
 	ELSE					-- facoltativo
-		<sequenza di istruzioni>
+		<sequenza_di_istruzioni>
 	END IF;					-- obbligatorio
 
 La prima “uscita” deve essere necessariamente “CASE”, che deve essere necessariamente presente come la chiusura del costrutto “END CASE;”. 
 L’uscita “ELSE”, se presente, deve essere l’ultima prima della chiusura ed intercetta tutte le casistiche che non hanno soddisfatto nessun insieme di condizioni precedenti (nella forma complessa) o non hanno avuto un valore corrispondente a quello dell’espressione (nella forma semplice).
+La <sequenza_di_istruzioni> può comprendere tutte le istruzioni singole, condizionali e cicliche, anche annidate.
 
  
 Esempio di costrutto CASE Semplice:
@@ -260,7 +308,7 @@ Esempio di costrutto CASE Semplice:
 	CALL test();
 
 
-Esempio PL/SQL – Costrutto CASE Complesso:
+Esempio di costrutto CASE Complesso:
 
 	DROP PROCEDURE IF EXISTS test;
 	DELIMITER $$
