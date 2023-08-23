@@ -166,6 +166,7 @@ A differenza delle altre le variabili locali devono essere dichiarate tramite l'
 
 	DECLARE <nome_variabile> <tipo_variabile> [DEFAULT <valore_iniziale>] ;
 
+E' preferibile che il nome NON coincida con quello di altri oggetti perchè in alcune situazioni può causare degli errori logici (ie: il riferimento alla variabile prevale su quello alle colonne).
 La tipologia è obbligatoria e può essere una di quelle utilizzabili nella definizione delle colonne delle tabelle.
 Se non è definito un valore di inizializzazione la variabile assumerà il valore NULL.
 
@@ -176,5 +177,23 @@ Per valorizzare la variabile si può:
 
 Per ottenerne il valore è sufficiente riferirsi ad esa per nome.
  
+
+--------------------------------------------
+## ISTRUZIONI DI CONTROLLO DEL PROCESSO
+
+Oltre a quelle già viste in precedenza (valorizzazione e lettura di variabili, definizione dei blocchi, dichiarazioni) sono disponibili queste istruzioni (affrontate nei paragrafi seguenti): 
+- Strutture condizionali:
+	- CASE
+ 	- IF 
+- Strutture cicliche:
+	- ITERATE
+	- LOOP
+ 	- REPEAT
+  	- WHILE
+- Istruzioni
+	- LEAVE
+ 	- RETURN
+
+Strutture cicliche e condizionali possono essere annidate tra loro.
 
 
