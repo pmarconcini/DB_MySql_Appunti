@@ -103,3 +103,77 @@ Nell'esempio seguente:
 		CALL test();
 
 
+--------------------------------------------
+## DECLARE
+
+L'istruzione DECLARE si trova SEMPRE in apertura di blocco (immediatamente dopo BEGIN) e permette di definire (appunto dichiarandoli) eventuali variabili locali, cursori e condizioni d'errore ("condition handler").
+Il nome dell'elemento dichiarato DEVE essere unico a livello di blocco.
+La visibilità (o scope) di quanto dichiarato è il blocco di dichiarazione e tutti i blocchi in esso annidati, ma in caso di dichiarazione omonima prevarrà l'elemento locale (anche in eventuali ulteriori livelli di annidamento).
+
+A seguire un esempio relativo alla visibilità della variabile "a": la variabile dichiarata in apertura del blocco blk_1 copre teoricamente tutto il codice (si tratta del blocco principale contenente tutti gli altri), ma per omonimia nel blocco blk_3 (e in quelli in esso posizionati) prevale la variabile locale "più locale".
+
+ 
+	DROP PROCEDURE IF EXISTS test;
+	DELIMITER $$
+	CREATE PROCEDURE test () 
+	blk_1: BEGIN 	
+		DECLARE a INT; 	
+	    SET a = 1; 	
+	    SELECT a; -- ==> 1
+		blk_2a: BEGIN 	
+			SET a = a + 1; 	
+			SELECT a; -- ==> 2
+			blk_3: BEGIN 	
+				DECLARE a INT; 	
+				SET a = 100; 	
+				SELECT a; -- ==> 100
+				blk_4: BEGIN 	
+					SET a = a + 1; 	
+					SELECT a; -- ==> 101
+				END blk_4;
+			END blk_3;
+		END blk_2a;
+		blk_2b: BEGIN 	
+			SET a = a + 1; 	
+			SELECT a; -- ==> 3
+		END blk_2b;
+	END blk_1
+	$$
+	DELIMITER ;
+	CALL test();
+	
+
+L'ordine di dichiarazione DEVE sempre essere:
+
+- variabili locali
+- definizione delle CONDITION (condizioni d'errore definite dall'utente)
+- cursori
+- definizioni degli HANDLER (condizioni d'errore predefinite)
+
+Le varie tipologie di elemento saranno affrontate nei prossimi paragrafi.
+
+
+--------------------------------------------
+## VARIABILI
+
+Nel codice possono essere utilizzate liberamente: 
+
+- Le variabili di sistema
+- Le variabili di sessione definite dall'utente (@nome_variabile)
+- Le variabili locali
+
+A differenza delle altre le variabili locali devono essere dichiarate tramite l'istruzione DECLARE (v. paragrafo dedicato) secondo il seguente template:
+
+	DECLARE <nome_variabile> <tipo_variabile> ;
+
+NB: non è possibile definire un valore di inizializzazione contestualmente alla dichiarazione.
+
+Per valorizzare la variabile si può:
+- Utilizzare l'istruzione: SET  <nome_variabile> = <valore>;
+- Utilizzare la clausola INTO di una SELECT: SELECT <valore> INTO <nome_variabile> [...] ;
+- Utilizzare la clausola FETCH all'interno di un cursore (argomento trattato in seguito): FETCH <valore> INTO <nome_variabile> [...] ;
+
+Per ottenerne il valore è sufficiente riferirsi ad esa per nome.
+ 
+
+
