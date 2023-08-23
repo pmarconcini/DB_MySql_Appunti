@@ -331,3 +331,26 @@ Esempio di costrutto CASE Complesso:
 	CALL test();
 
 
+
+--------------------------------------------
+### LEAVE
+
+L'istruzione LEAVE <etichetta>; permette di interrompere un ciclo o l'elaborazione del processo. 
+
+Esempio di interruzione del processo con esposizione del valore 10 ma NON del valore 100:
+
+	DROP PROCEDURE IF EXISTS test;
+	DELIMITER $$
+	CREATE PROCEDURE test () 
+	blk_1: BEGIN 	
+		DECLARE a INT DEFAULT 10;
+		SELECT a;
+	    LEAVE blk_1;
+	    SET a = 100;
+		SELECT a;
+	END blk_1
+	$$
+	DELIMITER ;
+	CALL test();
+
+
