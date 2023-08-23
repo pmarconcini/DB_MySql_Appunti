@@ -164,9 +164,10 @@ Nel codice possono essere utilizzate liberamente:
 
 A differenza delle altre le variabili locali devono essere dichiarate tramite l'istruzione DECLARE (v. paragrafo dedicato) secondo il seguente template:
 
-	DECLARE <nome_variabile> <tipo_variabile> ;
+	DECLARE <nome_variabile> <tipo_variabile> [DEFAULT <valore_iniziale>] ;
 
-NB: non è possibile definire un valore di inizializzazione contestualmente alla dichiarazione.
+La tipologia è obbligatoria e può essere una di quelle utilizzabili nella definizione delle colonne delle tabelle.
+Se non è definito un valore di inizializzazione la variabile assumerà il valore NULL.
 
 Per valorizzare la variabile si può:
 - Utilizzare l'istruzione: SET  <nome_variabile> = <valore>;
