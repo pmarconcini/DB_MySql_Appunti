@@ -197,3 +197,89 @@ Oltre a quelle già viste in precedenza (valorizzazione e lettura di variabili, 
 Strutture cicliche e condizionali possono essere annidate tra loro.
 
 
+--------------------------------------------
+### CASE
+
+E’ un costrutto logicamente simile al costrutto “IF” e quindi prevede l’eventuale esecuzione delle istruzioni associate alla prima condizione rispettata. La sostanziale differenza è che DEVE essere utilizzata una delle uscite e, qualora ciò non avvenisse, si verifica un errore (Error Code: 1339. Case not found for CASE statement).
+ 
+ Esistono due forme di CASE:
+- Semplice: è specificato una unica espressione da verificare e il processo si diversifica rispetto ai suoi valori
+- Complesso (o searched): ad ogni “uscita” corrisponde un insieme di condizioni, esattamente come per il costrutto IF
+ 
+Gli elementi delle due forme del costrutto sono quelli seguenti: 
+
+ 	-- CASE semplice
+	CASE <espressione> 
+	WHEN <valore 1> THEN	 		-- obbligatorio
+		<sequenza di istruzioni>
+	WHEN <valore 2> THEN			-- facoltativo
+		<sequenza di istruzioni>
+	WHEN <valore 3> THEN			-- facoltativo
+		<sequenza di istruzioni>
+	 […]
+	ELSE					-- facoltativo
+		<sequenza di istruzioni>
+	END CASE;				-- obbligatorio
+
+	-- CASE complesso
+	CASE
+	WHEN <insieme di condizioni> THEN 	-- obbligatorio
+		<sequenza di istruzioni>
+	WHEN <insieme di condizioni> THEN	-- facoltativo
+		<sequenza di istruzioni>
+	WHEN <insieme di condizioni> THEN	-- facoltativo
+		<sequenza di istruzioni>
+	ELSE					-- facoltativo
+		<sequenza di istruzioni>
+	END IF;					-- obbligatorio
+
+La prima “uscita” deve essere necessariamente “CASE”, che deve essere necessariamente presente come la chiusura del costrutto “END CASE;”. 
+L’uscita “ELSE”, se presente, deve essere l’ultima prima della chiusura ed intercetta tutte le casistiche che non hanno soddisfatto nessun insieme di condizioni precedenti (nella forma complessa) o non hanno avuto un valore corrispondente a quello dell’espressione (nella forma semplice).
+
+ 
+Esempio di costrutto CASE Semplice:
+
+	DROP PROCEDURE IF EXISTS test;
+	DELIMITER $$
+	CREATE PROCEDURE test () 
+	blk_1: BEGIN 	
+		DECLARE a INT DEFAULT 10;
+	    CASE a
+		WHEN 1 THEN 
+			SELECT 1;
+		WHEN 2 THEN 
+			SELECT 5;
+		ELSE
+			BEGIN
+				SELECT 0;
+			END;
+	    END CASE;
+	END blk_1
+	$$
+	DELIMITER ;
+	CALL test();
+
+
+Esempio PL/SQL – Costrutto CASE Complesso:
+
+	DROP PROCEDURE IF EXISTS test;
+	DELIMITER $$
+	CREATE PROCEDURE test () 
+	blk_1: BEGIN 	
+	    DECLARE a INT DEFAULT 10;
+    	CASE 
+      	WHEN a = 1 THEN 
+			SELECT 1;
+      	WHEN a < 5 THEN 
+			SELECT 5;
+       	ELSE
+	    	BEGIN
+				SELECT 0;
+	        END;
+	    END CASE;
+	END blk_1
+	$$
+	DELIMITER ;
+	CALL test();
+
+
