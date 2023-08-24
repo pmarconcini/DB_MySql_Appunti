@@ -429,3 +429,49 @@ Nell'esempio seguente:
 
 
 
+
+
+--------------------------------------------
+### CURSORI
+
+I cursori sono strutture cicliche realizzate tramite l'istruzione LOOP per processare separatamente (uno per volta) i record presenti nel recordset del cursore stesso.
+In MySQL i dati ricavati da cursori sono read-only e i cursori sono monodirezionali.
+E' possibile annidare cursori (o, per meglio dire, i LOOP che ne ciclano il contenuto), facendo la dovuta attenzione all'ordine di apertura e chiusura degli stessi.
+
+L'utilizzo del cursore prevede 4 diverse istruzioni:
+- DECLARE: la dichiarazione del cursore, contenente la DQL necessaria al recepimento dei dati
+- OPEN: l'apertura del cursore ed il recepimento del recordset
+- FETCH: la lettura del "prossimo" record (è il primo, alla prima elaborazione) e l'incasellamento dei dati nelle variabili locali di destinazione
+- CLOSE: la chiusura del cursore con la deallocazione della memoria
+
+L'istruzione FETCH è l'unica che si trova (generalmente) all'interno di un LOOP perchè vengano processati tutti i record uno dopo l'altro; nel momento in cui sono esauriti i record da processare, la FETCH genera un errore "NOT FOUND" che va gestito tramite un HANDLER (per una valorizzare una variabile semaforo che deve essere a sua volta dichiarata) per causare l'uscita dal LOOP: 
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET <variabile> = TRUE;
+
+Nell'esempio seguente viene generato l'elenco dei nomi della tabella EMP utilizzando il cursore "cur_nomi" e la variabile semaforo "fine" che assume valore TRUE quando la FETCH non ha successo:
+
+	DROP PROCEDURE IF EXISTS test;
+	DELIMITER $$
+	CREATE PROCEDURE test ()
+	blk_1: BEGIN
+		DECLARE fine INT DEFAULT FALSE;
+		DECLARE elenco VARCHAR(400) DEFAULT '';
+		DECLARE nome VARCHAR(400);
+		DECLARE cur_nomi CURSOR FOR SELECT ename FROM emp;
+		DECLARE CONTINUE HANDLER FOR NOT FOUND SET fine = TRUE;
+		OPEN cur_nomi;
+		read_loop: LOOP
+			FETCH cur_nomi INTO nome;
+			IF fine THEN
+				LEAVE read_loop;
+			END IF;
+			SET elenco = concat(elenco, nome, ' ' );
+		END LOOP read_loop;
+		CLOSE cur_nomi;
+		SELECT elenco;
+	END blk_1
+	$$
+	DELIMITER ;
+	CALL test();
+
+ 
