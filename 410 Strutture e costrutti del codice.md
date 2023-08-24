@@ -331,6 +331,14 @@ Esempio di costrutto CASE Complesso:
 	CALL test();
 
 
+--------------------------------------------
+### ITERATE
+
+L'istruzione ITERATE <etichetta>; permette di avviare nuovamente l'elaborazione di un ciclo (all'atto pratico significa che il flusso dell'elaborazione torna all'apertura del cursore corrispondente all'etichetta). 
+
+Per l'esempio di utilizzo si rimanda al paragrafo dedicato ai cicli.
+
+
 
 --------------------------------------------
 ### LEAVE
@@ -352,5 +360,62 @@ Esempio di interruzione del processo con esposizione del valore 10 ma NON del va
 	$$
 	DELIMITER ;
 	CALL test();
+
+Per gli esempi di uscita da cicli si rimanda al paragrafo dedicato a tale argomento.
+
+
+
+--------------------------------------------
+### STRUTTURE CICLICHE (LOOP, REPEAT e WHILE)
+
+Sono disponibili tre tipologie di strutture cicliche:
+
+- LOOP, non prevede una condizione di verifica e quindi è necessario specificare l'istruzione di uscita LEAVE
+- REPEAT, prevede una o più condizioni associate alla parola chiave UNTIL e l'iterazione continua fino a che non si verificano
+- WHILE, prevede una o più condizioni associate alla parola stessa e l'iterazione continua fino a che si verificano  
+
+Nell'esempio seguente:
+
+- il ciclo "loop_leave" si interrompe tramite l'istruzione LEAVE al verificarsi di una condizione specificata tramite struttura condizionale (non deve necessariamente essere IF)
+- il ciclo "loop_iterate" si ripete (itera) all'esecuzione dell'istruzione ITERATE e si interrompe tramite l'istruzione LEAVE a cui il flusso arriva solo al verificarsi di una condizione specificata tramite struttura condizionale (non deve necessariamente essere IF) con relativo "salto" di ITERATE
+- il ciclo "loop_repeat" si interrompe al verificarsi della condizione specificata dopo la clausola UNTIL
+- il ciclo "loop_while" si ripete al verificarsi della condizione specificata dopo la clausola WHILE stessa
+- L'eseguire o meno almeno una volta il codice all'interno del ciclo dipende dalla posizione in cui si trova l'istruzione di verifica (ovviamente con WHILE non è possibile far eseguire il codice "almeno una volta"
+
+ 		DROP PROCEDURE IF EXISTS test;
+		DELIMITER $$
+		CREATE PROCEDURE test ()
+		blk_1: BEGIN
+			DECLARE a INT DEFAULT 0;
+			loop_leave: LOOP
+			    SET a = a +1;
+		        IF a = 10 THEN 
+					LEAVE loop_leave;
+				END IF;
+			END LOOP loop_leave;
+
+			loop_iterate: LOOP
+			    SET a = a +10;
+		        IF a < 100 THEN 
+					ITERATE loop_iterate;
+				END IF;
+				LEAVE loop_iterate;
+			END LOOP loop_iterate;
+			
+			loop_repeat: REPEAT
+			    SET a = a +100;
+				UNTIL a >= 1000
+			END REPEAT loop_repeat;
+			
+			loop_while: WHILE a < 10000 DO
+				SET a = a +1000;
+			END WHILE loop_while; 		    
+		    
+            SELECT a;
+		END blk_1
+		$$
+		DELIMITER ;
+		CALL test();
+
 
 
