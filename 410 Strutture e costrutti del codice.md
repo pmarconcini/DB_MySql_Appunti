@@ -441,12 +441,15 @@ E' possibile annidare cursori (o, per meglio dire, i LOOP che ne ciclano il cont
 L'utilizzo del cursore prevede 4 diverse istruzioni:
 - DECLARE: la dichiarazione del cursore, contenente la DQL necessaria al recepimento dei dati
 - OPEN: l'apertura del cursore ed il recepimento del recordset
-- FETCH: la lettura del "prossimo" record (è il primo, alla prima elaborazione) e l'incasellamento dei dati nelle variabili locali di destinazione
-- CLOSE: la chiusura del cursore con la deallocazione della memoria
+- FETCH: la lettura del "prossimo" record (è il primo, alla prima elaborazione) e l'incasellamento dei dati nelle variabili locali di destinazione. Il numero di colonne e di variabili devono coincidere per numero e tipologia di dato.
+- CLOSE: la chiusura del cursore con la deallocazione della memoria (è implicita al termine dell'elaborazione del trigger/procedura/funzione
 
 L'istruzione FETCH è l'unica che si trova (generalmente) all'interno di un LOOP perchè vengano processati tutti i record uno dopo l'altro; nel momento in cui sono esauriti i record da processare, la FETCH genera un errore "NOT FOUND" che va gestito tramite un HANDLER (per una valorizzare una variabile semaforo che deve essere a sua volta dichiarata) per causare l'uscita dal LOOP: 
 
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET <variabile> = TRUE;
+
+Non gestire la mancata della FETCH genera l'errore bloccante con Error Code 1329 (No data - zero rows fetched, selected, or processed).
+Se non coincide il numero di colonne estratte dalla FETCH col numero di variabili di destinazione si verifica l'errore bloccante con Error Code 1328 (Incorrect number of FETCH variables).
 
 Nell'esempio seguente viene generato l'elenco dei nomi della tabella EMP utilizzando il cursore "cur_nomi" e la variabile semaforo "fine" che assume valore TRUE quando la FETCH non ha successo:
 
