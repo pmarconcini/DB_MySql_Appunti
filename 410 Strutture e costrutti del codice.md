@@ -344,6 +344,7 @@ Per l'esempio di utilizzo si rimanda al paragrafo dedicato ai cicli.
 ### LEAVE
 
 L'istruzione LEAVE <etichetta>; permette di interrompere un ciclo o l'elaborazione del processo. 
+Può essere usato in procedure e triggers ma NON nelle funzioni (che si aspettano l'istruzione RETURN).
 
 Esempio di interruzione del processo con esposizione del valore 10 ma NON del valore 100:
 
@@ -364,6 +365,15 @@ Esempio di interruzione del processo con esposizione del valore 10 ma NON del va
 Per gli esempi di uscita da cicli si rimanda al paragrafo dedicato a tale argomento.
 
 
+--------------------------------------------
+### RETURN
+
+L'istruzione RETURN <espressione>; permette di interrompere l'elaborazione restituendo il valore dell'espressione. 
+Può essere usato esclusivamente nelle funzioni (può essere presente più volte nella singola funzione) ma NON in procedure e triggers (in cui si può usare l'istruzione LEAVE per interrompere l'elaborazione).
+
+Per gli esempi si rimanda al capitolo dedicato a lle funzioni user-defined.
+
+
 
 --------------------------------------------
 ### STRUTTURE CICLICHE (LOOP, REPEAT e WHILE)
@@ -378,9 +388,9 @@ Nell'esempio seguente:
 
 - il ciclo "loop_leave" si interrompe tramite l'istruzione LEAVE al verificarsi di una condizione specificata tramite struttura condizionale (non deve necessariamente essere IF)
 - il ciclo "loop_iterate" si ripete (itera) all'esecuzione dell'istruzione ITERATE e si interrompe tramite l'istruzione LEAVE a cui il flusso arriva solo al verificarsi di una condizione specificata tramite struttura condizionale (non deve necessariamente essere IF) con relativo "salto" di ITERATE
-- il ciclo "loop_repeat" si interrompe al verificarsi della condizione specificata dopo la clausola UNTIL
+- il ciclo "loop_repeat" si interrompe al verificarsi della condizione specificata dopo la clausola UNTIL (tale clausola DEVE trovarsi subito prima della chiusura del ciclo)
 - il ciclo "loop_while" si ripete al verificarsi della condizione specificata dopo la clausola WHILE stessa
-- L'eseguire o meno almeno una volta il codice all'interno del ciclo dipende dalla posizione in cui si trova l'istruzione di verifica (ovviamente con WHILE non è possibile far eseguire il codice "almeno una volta"
+- Con il tipo LOOP l'eseguire o meno almeno una volta il codice all'interno del ciclo dipende dalla posizione in cui si trova l'istruzione di verifica (ovviamente con WHILE non è possibile far eseguire il codice "almeno una volta", mentre con REPEAT il codice è sempre eseguito "almeno una volta")
 
  		DROP PROCEDURE IF EXISTS test;
 		DELIMITER $$
