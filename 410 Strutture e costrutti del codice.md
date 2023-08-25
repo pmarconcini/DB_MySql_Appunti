@@ -523,3 +523,122 @@ Benchè si possa spesso gestire l'eccezione con il solo HANDLER è preferibile u
 
 
 
+
+
+
+Il codice per definire una HANDLER è il seguente:
+
+	DECLARE { CONTINUE | EXIT } HANDLER FOR <condizione> [, <condizione> [, ...]] { <istruzione> | <blocco_istruzioni>}
+ 
+La "condizione" può essere uno dei seguenti valori:
+
+- Codice di errore numerico di MySQL
+- SQLSTATE [VALUE] <valore_sqlstate>
+- <nome_condizione>
+- SQLWARNING
+- NOT FOUND
+- SQLEXCEPTION
+
+La HANDLER è eseguita al verificarsi di una delle condizioni. 
+Il codice eseguito può essere costtuito da una riga singola o da un blocco di codice.
+La dichiarazione deve essere dopo quella di variabili locali e CONDITION.
+
+Dopo l'elaborazione del codice dell'HANDLER:
+- l'opzione CONTINUE fa riprendere dalla istruzione successiva a quella che ha generato l'errore
+- l'opzione EXIT fa riprendere dall'END del blocco in cui si trova l'istruzione che ha generato l'errore
+
+SQLWARNING è una opzione che racchiude tutti gli errori con SQLSTATE che iniziano con '01'.
+NOT FOUND è una opzione che racchiude tutti gli errori con SQLSTATE che iniziano con '02'. E' utilizzato soprattutto per gestire l'uscita dai LOOP dei cursori (SQLSTATE '02000', si rimanda al relativo paragrafo).
+SQLEXCEPTION è una opzione che racchiude tutti gli errori con SQLSTATE che NON iniziano con '00', '01' o '02'.
+
+Se si verifica un errore per cui non è stata realizzata la HANDLER possono veerificarsi situazioni diverse:
+- per condizioni SQLEXCEPTION l'elaborazione termina come se fosse stata utilizzata l'opzione EXIT ma senza codice specificato (quindi se l'errore si verifica in una procedura chiamata da altra procedura l'errore si propaga a quest'ultima per la ricerca di una eventuale HANDLER adeguata.
+- per condizioni SQLWARNING l'elaborazione continua come se fosse stata utilizzata l'opzione CONTINUE ma senza codice specificato
+- per condizioni NOT FOUND se l'errore si è verificato normalmente continua come con opzione CONTINUE mentre se è causato da SIGNAL o RESIGNAL interrompe l'elaborazione come con opzione EXIT
+
+
+
+
+mysql> delimiter //
+
+mysql> CREATE PROCEDURE handlerdemo ()
+       BEGIN
+         DECLARE CONTINUE HANDLER FOR SQLSTATE '23000' SET @x2 = 1;
+         SET @x = 1;
+         INSERT INTO test.t VALUES (1);
+         SET @x = 2;
+         INSERT INTO test.t VALUES (1);
+         SET @x = 3;
+       END;
+       //
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL handlerdemo()//
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT @x//
+    +------+
+    | @x   |
+    +------+
+    | 3    |
+    +------+
+    1 row in set (0.00 sec)
+Notice that @x is 3 after the procedure executes, which shows that execution continued to the end of the procedure after the error occurred. If the DECLARE ... HANDLER statement had not been present, MySQL would have taken the default action (EXIT) after the second INSERT failed due to the PRIMARY KEY constraint, and SELECT @x would have returned 2.
+
+To ignore a condition, declare a CONTINUE handler for it and associate it with an empty block. For example:
+
+DECLARE CONTINUE HANDLER FOR SQLWARNING BEGIN END;
+The scope of a block label does not include the code for handlers declared within the block. Therefore, the statement associated with a handler cannot use ITERATE or LEAVE to refer to labels for blocks that enclose the handler declaration. Consider the following example, where the REPEAT block has a label of retry:
+
+CREATE PROCEDURE p ()
+BEGIN
+  DECLARE i INT DEFAULT 3;
+  retry:
+    REPEAT
+      BEGIN
+        DECLARE CONTINUE HANDLER FOR SQLWARNING
+          BEGIN
+            ITERATE retry;    # illegal
+          END;
+        IF i < 0 THEN
+          LEAVE retry;        # legal
+        END IF;
+        SET i = i - 1;
+      END;
+    UNTIL FALSE END REPEAT;
+END;
+The retry label is in scope for the IF statement within the block. It is not in scope for the CONTINUE handler, so the reference there is invalid and results in an error:
+
+ERROR 1308 (42000): LEAVE with no matching label: retry
+To avoid references to outer labels in handlers, use one of these strategies:
+
+To leave the block, use an EXIT handler. If no block cleanup is required, the BEGIN ... END handler body can be empty:
+
+DECLARE EXIT HANDLER FOR SQLWARNING BEGIN END;
+Otherwise, put the cleanup statements in the handler body:
+
+DECLARE EXIT HANDLER FOR SQLWARNING
+  BEGIN
+    block cleanup statements
+  END;
+To continue execution, set a status variable in a CONTINUE handler that can be checked in the enclosing block to determine whether the handler was invoked. The following example uses the variable done for this purpose:
+
+
+CREATE PROCEDURE p ()
+BEGIN
+  DECLARE i INT DEFAULT 3;
+  DECLARE done INT DEFAULT FALSE;
+  retry:
+    REPEAT
+      BEGIN
+        DECLARE CONTINUE HANDLER FOR SQLWARNING
+          BEGIN
+            SET done = TRUE;
+          END;
+        IF done OR i < 0 THEN
+          LEAVE retry;
+        END IF;
+        SET i = i - 1;
+      END;
+    UNTIL FALSE END REPEAT;
+END;
