@@ -522,17 +522,13 @@ Benchè si possa spesso gestire l'eccezione con il solo HANDLER è preferibile u
 	  END;
 
 
-
-
-
-
 Il codice per definire una HANDLER è il seguente:
 
 	DECLARE { CONTINUE | EXIT } HANDLER FOR <condizione> [, <condizione> [, ...]] { <istruzione> | <blocco_istruzioni>}
  
 La "condizione" può essere uno dei seguenti valori:
 
-- Codice di errore numerico di MySQL
+- Codice di errore numerico di MySQL (o corrispondente costante di sistema, come da tabella di riepilogo finale)
 - SQLSTATE [VALUE] <valore_sqlstate>
 - <nome_condizione>
 - SQLWARNING
@@ -551,94 +547,180 @@ SQLWARNING è una opzione che racchiude tutti gli errori con SQLSTATE che inizia
 NOT FOUND è una opzione che racchiude tutti gli errori con SQLSTATE che iniziano con '02'. E' utilizzato soprattutto per gestire l'uscita dai LOOP dei cursori (SQLSTATE '02000', si rimanda al relativo paragrafo).
 SQLEXCEPTION è una opzione che racchiude tutti gli errori con SQLSTATE che NON iniziano con '00', '01' o '02'.
 
-Se si verifica un errore per cui non è stata realizzata la HANDLER possono veerificarsi situazioni diverse:
+Se si verifica un errore per cui non è stata realizzata la HANDLER possono verificarsi situazioni diverse:
 - per condizioni SQLEXCEPTION l'elaborazione termina come se fosse stata utilizzata l'opzione EXIT ma senza codice specificato (quindi se l'errore si verifica in una procedura chiamata da altra procedura l'errore si propaga a quest'ultima per la ricerca di una eventuale HANDLER adeguata.
 - per condizioni SQLWARNING l'elaborazione continua come se fosse stata utilizzata l'opzione CONTINUE ma senza codice specificato
 - per condizioni NOT FOUND se l'errore si è verificato normalmente continua come con opzione CONTINUE mentre se è causato da SIGNAL o RESIGNAL interrompe l'elaborazione come con opzione EXIT
 
 
+L'istruzione RESIGNAL prevede il seguente template e può essere inserita nel codice di una HANDLER in modo da modificare le caratteristiche del warning/errore che si è verificato:
+
+	RESIGNAL [ { SQLSTATE [VALUE] <valore_sqlstate> | <nome_condition> }] [SET { MESSAGE_TEXT | MYSQL_ERRNO } [, { MESSAGE_TEXT | MYSQL_ERRNO } ] ...]
+
+L'istruzione RESIGNAL senza opzioni semplicemente "rinnova" l'errore (per esempio come eccezione all'interno di una HANDLER con opzione CONTINUE.
 
 
-mysql> delimiter //
+L'istruzione SIGNAL prevede il seguente template e può essere inserita nel codice di un blocco in modo da forzare un warning o un errore:
 
-mysql> CREATE PROCEDURE handlerdemo ()
-       BEGIN
-         DECLARE CONTINUE HANDLER FOR SQLSTATE '23000' SET @x2 = 1;
-         SET @x = 1;
-         INSERT INTO test.t VALUES (1);
-         SET @x = 2;
-         INSERT INTO test.t VALUES (1);
-         SET @x = 3;
-       END;
-       //
-Query OK, 0 rows affected (0.00 sec)
+	SIGNAL { SQLSTATE [VALUE] <valore_sqlstate> | <nome_condition> } [SET { MESSAGE_TEXT | MYSQL_ERRNO } [, { MESSAGE_TEXT | MYSQL_ERRNO } ] ...]
 
-mysql> CALL handlerdemo()//
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> SELECT @x//
-    +------+
-    | @x   |
-    +------+
-    | 3    |
-    +------+
-    1 row in set (0.00 sec)
-Notice that @x is 3 after the procedure executes, which shows that execution continued to the end of the procedure after the error occurred. If the DECLARE ... HANDLER statement had not been present, MySQL would have taken the default action (EXIT) after the second INSERT failed due to the PRIMARY KEY constraint, and SELECT @x would have returned 2.
-
-To ignore a condition, declare a CONTINUE handler for it and associate it with an empty block. For example:
-
-DECLARE CONTINUE HANDLER FOR SQLWARNING BEGIN END;
-The scope of a block label does not include the code for handlers declared within the block. Therefore, the statement associated with a handler cannot use ITERATE or LEAVE to refer to labels for blocks that enclose the handler declaration. Consider the following example, where the REPEAT block has a label of retry:
-
-CREATE PROCEDURE p ()
-BEGIN
-  DECLARE i INT DEFAULT 3;
-  retry:
-    REPEAT
-      BEGIN
-        DECLARE CONTINUE HANDLER FOR SQLWARNING
-          BEGIN
-            ITERATE retry;    # illegal
-          END;
-        IF i < 0 THEN
-          LEAVE retry;        # legal
-        END IF;
-        SET i = i - 1;
-      END;
-    UNTIL FALSE END REPEAT;
-END;
-The retry label is in scope for the IF statement within the block. It is not in scope for the CONTINUE handler, so the reference there is invalid and results in an error:
-
-ERROR 1308 (42000): LEAVE with no matching label: retry
-To avoid references to outer labels in handlers, use one of these strategies:
-
-To leave the block, use an EXIT handler. If no block cleanup is required, the BEGIN ... END handler body can be empty:
-
-DECLARE EXIT HANDLER FOR SQLWARNING BEGIN END;
-Otherwise, put the cleanup statements in the handler body:
-
-DECLARE EXIT HANDLER FOR SQLWARNING
-  BEGIN
-    block cleanup statements
-  END;
-To continue execution, set a status variable in a CONTINUE handler that can be checked in the enclosing block to determine whether the handler was invoked. The following example uses the variable done for this purpose:
+L'istruzione SIGNAL deve sempre fare riferimento a un SQLSTATE esistente o a una CONDITION.
 
 
-CREATE PROCEDURE p ()
-BEGIN
-  DECLARE i INT DEFAULT 3;
-  DECLARE done INT DEFAULT FALSE;
-  retry:
-    REPEAT
-      BEGIN
-        DECLARE CONTINUE HANDLER FOR SQLWARNING
-          BEGIN
-            SET done = TRUE;
-          END;
-        IF done OR i < 0 THEN
-          LEAVE retry;
-        END IF;
-        SET i = i - 1;
-      END;
-    UNTIL FALSE END REPEAT;
-END;
+
+Nell'esempio seguente si possono vedere tutti gli esempi di utilizzo singolo ed associato delle istruzioni per la gestione degli errori:
+- blk_1: HANDLER per intercettare gli errori non gestiti localmente dei blocchi annidati; l'opzione CONTINUE fa riprendere dal punto di errore.
+- blk_2: cursore con caso NOT FOUND e variabile semaforo "fine"
+- blk_3: gestione locale con EXIT per errore 1365 ==> n1 valorizzato nell'HANDLER
+- blk_4: gestione locale con CONTINUE per errore 1365 ==> n2 valorizzato nel blocco
+- blk_5: gestione locale con EXIT per SQLEXCEPTION ==> n3 valorizzato nell'HANDLER
+- blk_6: senza gestione locale eredita il CONTINUE ==> n4 valorizzato nel blocco
+- blk_7: warning invocato con SIGNAL con gestione locale con EXIT senza gestione locale ==> n5 valorizzato nell'HANDLER
+- blk_8: gestione locale con riferimento a CONDITION con EXIT per errore 1365 ==> n6 valorizzato nell'HANDLER
+- blk_9: warning invocato con SIGNAL con riferimento a CONDITION senza gestione locale e CONTINUE ereditato ==> n7 valorizzato nel blocco
+- blk_1: il warning di SIGNAL tra i blocchi "blk_9" e "blk_10" è intercettato dall'HANDLER
+- blk_10: gestione locale che intercetta il warning causato da SIGNAL e, tramite RESIGNAL, modifica la segnalazione in errore non gestito e bloccante ==> n8 non valorizzato e ultima select non eseguita
+
+ 		DROP PROCEDURE IF EXISTS test;
+		DELIMITER $$
+		CREATE PROCEDURE test ()
+		blk_1: BEGIN
+			DECLARE n0 INT DEFAULT 0;
+			DECLARE n1 INT;			DECLARE n2 INT;			DECLARE n3 INT;			DECLARE n4 INT;			DECLARE n5 INT;			DECLARE n6 INT;			
+            DECLARE n7 INT;			DECLARE n8 INT;
+			DECLARE elenco VARCHAR(400) DEFAULT '';
+			DECLARE nome VARCHAR(400);
+            DECLARE CONTINUE HANDLER FOR 1365, SQLEXCEPTION SET n0 = n0 + 1;
+			blk_2: BEGIN -- esempio cursore
+				DECLARE fine INT DEFAULT FALSE;
+				DECLARE cur_nomi CURSOR FOR SELECT ename FROM emp;
+				DECLARE CONTINUE HANDLER FOR NOT FOUND SET fine = TRUE;
+				OPEN cur_nomi;
+				read_loop: LOOP
+					FETCH cur_nomi INTO nome;
+					IF fine THEN
+						LEAVE read_loop;
+					END IF;
+					SET elenco = concat(elenco, nome, ' ' );
+				END LOOP read_loop;
+				CLOSE cur_nomi;
+                SELECT elenco;
+			END blk_2;
+			blk_3: BEGIN -- esempio EXIT Code: 1365 Division by 0 (SQLSTATE 22001)	
+                DECLARE EXIT HANDLER FOR 1365 SET n1 = 2;
+				SET n1 = 1/0;
+				SET n1 = 3;
+                SELECT n1;
+			END blk_3;
+			blk_4: BEGIN -- esempio CONTINUE Code: 1365 Division by 0 (SQLSTATE 22001)
+                DECLARE CONTINUE HANDLER FOR 1365 SET n2 = 2;
+				SET n2 = 1/0;
+				SET n2 = 3;
+                SELECT n2;
+			END blk_4;
+			blk_5: BEGIN -- esempio EXIT con SQLEXCEPTION	
+ 				DECLARE EXIT HANDLER FOR SQLEXCEPTION SET n3 = 2;
+				SELECT empno INTO n3 FROM emp; -- causa SQLEXCEPTION
+				SET n3 = 3;
+                SELECT n3;
+			END blk_5;
+			blk_6: BEGIN -- esempio senza gestione con delega al blocco contenitore	(CONTINUE)
+				SET n4 = 'aaa';
+				SET n4 = 3;
+                SELECT n4;
+			END blk_6;
+			blk_7: BEGIN -- esempio con WARNING da SIGNAL
+ 				DECLARE EXIT HANDLER FOR SQLWARNING SET n5 = 2;
+				SET n5 = 1;
+				SIGNAL SQLSTATE '01000';
+                SET n5 = 3;
+                SELECT n5;
+			END blk_7;
+			blk_8: BEGIN -- esempio con CONDITION e HANDLER
+				DECLARE divisione_impossibile CONDITION FOR 1365;
+ 				DECLARE EXIT HANDLER FOR divisione_impossibile SET n6 = 2;
+				SET n6 = 1/0;
+                SET n6 = 3;
+                SELECT n6;
+			END blk_8;
+			blk_9: BEGIN -- esempio con CONDITION e SIGNAL (wrning non gestito > CONTINUE)
+				DECLARE w_divisione_impossibile CONDITION FOR SQLSTATE '01000';
+				SIGNAL w_divisione_impossibile;
+ 				-- SIGNAL SQLSTATE '01000'; -- forma alternativa alle due righe precedenti
+                SET n7 = 3;
+                SELECT n7;
+			END blk_9;
+			SIGNAL SQLSTATE '01000' SET MESSAGE_TEXT = 'Interruzione forzata';
+            SELECT elenco, n0, n1, n2, n3, n4, n5, n6, n7, n8, 'fine elaborazione';
+			blk_10: BEGIN -- esempio con RESIGNAL
+				DECLARE w_divisione_impossibile CONDITION FOR SQLSTATE '01000';
+				DECLARE CONTINUE HANDLER FOR w_divisione_impossibile RESIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = 'Resignal interruzione forzata';
+                SET n8 = 3;
+				SIGNAL w_divisione_impossibile;
+                SELECT n8;
+			END blk_10;
+		END blk_1
+		$$
+		DELIMITER ;
+		CALL test();
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/a6dea971-7bac-4b06-aeb1-e94381151f9a)
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/b24e12f1-29b3-4b15-8141-424e58753cc5)
+
+
+A seguire la tabella di riepilogo dei codici di errore più frequenti:
+
+|MySQL Error Number|MySQL Error Name|State|
+|----|-----|-----|
+|1022|ER_DUP_KEY|23000|
+|1046|ER_NO_DB_ERROR|3D000|
+|1050|ER_TABLE_EXISTS_ERROR|42S01|
+|1052|ER_NON_UNIQ_ERROR|23000|
+|1053|ER_SERVER_SHUTDOWN|08S01|
+|1054|ER_BAD_FIELD_ERROR|42S22|
+|1058|ER_WRONG_VALUE_COUNT|21S01|
+|1059|ER_TOO_LONG_IDENT|42000|
+|1064|ER_PARSE_ERROR|42000|
+|1065|ER_EMPTY_QUERY|42000|
+|1102|ER_WRONG_DB_NAME|42000|
+|1103|ER_WRONG_TABLE_NAME|42000|
+|1104|ER_TOO_BIG_SELECT|42000|
+|1106|ER_UNKNOWN_PROCEDURE|42000|
+|1107|ER_WRONG_PARAMCOUNT_TO_PROCEDURE|42000|
+|1109|ER_UNKNOWN_TABLE|42S02|
+|1120|ER_WRONG_OUTER_JOIN|42000|
+|1121|ER_NULL_COLUMN_IN_INDEX|42000|
+|1138|ER_INVALID_USE_OF_NULL|22004|
+|1139|ER_REGEXP_ERROR|42000|
+|1142|ER_TABLEACCESS_DENIED_ERROR|42000|
+|1148|ER_NOT_ALLOWED_COMMAND|42000|
+|1149|ER_SYNTAX_ERROR|42000|
+|1162|ER_TOO_LONG_STRING|42000|
+|1166|ER_WRONG_COLUMN_NAME|42000|
+|1169|ER_DUP_UNIQUE|23000|
+|1171|ER_PRIMARY_CANT_HAVE_NULL|42000|
+|1172|ER_TOO_MANY_ROWS|42000|
+|1205|ER_LOCK_WAIT_TIMEOUT|40001|
+|1207|ER_READ_ONLY_TRANSACTION|25000|
+|1213|ER_LOCK_DEADLOCK|40001|
+|1222|ER_WRONG_NUMBER_OF_COLUMNS_IN_SELECT|21000|
+|1231|ER_WRONG_VALUE_FOR_VAR|42000|
+|1232|ER_WRONG_TYPE_FOR_VAR|42000|
+|1261|ER_WARN_TOO_FEW_RECORDS|01000|
+|1262|ER_WARN_TOO_MANY_RECORDS|01000|
+|1263|ER_WARN_NULL_TO_NOTNULL|22004|
+|1264|ER_WARN_DATA_OUT_OF_RANGE|22003|
+|1265|ER_WARN_DATA_TRUNCATED|01000|
+|1304|ER_SP_ALREADY_EXISTS|42000|
+|1305|ER_SP_DOES_NOT_EXIST|42000|
+|1317|ER_QUERY_INTERRUPTED|70100|
+|1339|ER_SP_CASE_NOT_FOUND|20000|
+|1365|ER_DIVISION_BY_ZERO|22012|
+|1406|ER_DATA_TOO_LONG|22001|
+|1690|ER_DATA_OUT_OF_RANGE|22003|
+|1698|ER_ACCESS_DENIED_NO_PASSWORD_ERROR|28000|
+|1701|ER_TRUNCATE_ILLEGAL_FK|42000|
+|1792|ER_CANT_EXECUTE_IN_READ_ONLY_TRANSACTION|25006|
+
+
