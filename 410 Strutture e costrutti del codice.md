@@ -477,4 +477,49 @@ Nell'esempio seguente viene generato l'elenco dei nomi della tabella EMP utilizz
 	DELIMITER ;
 	CALL test();
 
+
+
+--------------------------------------------
+### GESTIONE DEGLI ERRORI (CONDITION HANDLING)
+
+Un eventuale errore (di sistema o logico e quindi definito dall'utente) bloccante causa la terminazione dell'esecuzione del codice, ma in MySQL gli errori possono essere intercettati e gestiti tramite le istruzioni HANDLER e CONDITION.
+
+- La CONDITION può essere richiamata durante l'elaborazione al verificarsi di una certa condizione e può permettere di gestire l'interruzione o la permettere la continuazione
+- La HANDLER è richiamata durante l'elaborazione al verificarsi di uncerto errore di sistema e può permettere di gestire l'interruzione o la permettere la continuazione
+- La CONDITION può essere rinominata e referenziata nella HANDLER
+- In entrambi i casi è necessaria la dichiarazione tramite l'istruzione DECLARE
+- Per causare il verificarsi di una condizione si utilizza l'istruzione SIGNAL (le informazioni relative possono essere aggiornate tramite l'istruzione RESIGNAL)
+
+Il codice per definire una CONDITION è il seguente:
+
+	DECLARE <nome_condizione> CONDITION FOR { <codice_numerico_errore_mysql> | SQLSTATE [VALUE] <valore_stato_sql> }
  
+- La dichiarazione deve trovarsi prima di cursori ed handler (vedere l'elenco seguente)
+- SQLSTATE [VALUE] prevede come valore un dato alfanumerico di 5 caratteri (vedere l'elenco seguente)
+- CONDITION richiamate da SIGNAL o che utilizzano RESIGNAL devono essere necessariamente associate a valori SQLSTATE
+
+
+Benchè si possa spesso gestire l'eccezione con il solo HANDLER è preferibile utilizzare anche CONDITION per migliorare la lettura del codice, come da confronto nell'esempio seguente:
+
+	-- senza CONDITION
+	DECLARE CONTINUE HANDLER FOR 1051
+	  BEGIN
+	    -- codice da eseguire
+	  END;
+	
+	-- con CONDITION e error code
+	DECLARE tabella_inesistente CONDITION FOR 1051;
+	DECLARE CONTINUE HANDLER FOR tabella_inesistente
+	  BEGIN
+	    -- codice da eseguire
+	  END;
+	
+	-- con CONDITION e SQLSTATE
+	DECLARE tabella_inesistente CONDITION FOR SQLSTATE '42S02';
+	DECLARE CONTINUE HANDLER FOR tabella_inesistente
+	  BEGIN
+	    -- codice da eseguire
+	  END;
+
+
+
