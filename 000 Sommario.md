@@ -61,7 +61,7 @@
 -----------------------------------
 ## 4. SQL - DDL, oggetti con codice
 
-4.10 [Strutture e costrutti del codice](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/410%20Strutture%20e%20costrutti%20del%20codice.md) (da fare)
+4.10 [Strutture e costrutti del codice](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/410%20Strutture%20e%20costrutti%20del%20codice.md)
 
 4.20 [Definizione delle procedure](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/420%20Definizione%20delle%20procedure.md) (da fare)
 
@@ -81,6 +81,8 @@
 5.20 [Data Dictionary e INFORMATION_SCHEMA](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/520%20Data%20Dictionary%20e%20INFORMATION_SCHEMA.md) (da fare)
 
 5.30 [Messaggi di errore e problemi comuni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/530%20Messaggi%20di%20errore%20e%20problemi%20comuni.md) (da fare)
+
++https://dev.mysql.com/doc/refman/8.0/en/get-diagnostics.html
 
 +MySQL Data Dictionary
 +INFORMATION_SCHEMA Tables
