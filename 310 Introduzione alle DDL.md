@@ -11,17 +11,18 @@ Attenzione: le istruzioni DDL causano un'azione di salvataggio (COMMIT) implicit
 
 Nell'esempio seguente la creazione della tabella t_1 causa il salvataggio della riga con valore 2, ma non avviando una nuova transazione l'operazione di annullamento (rollback) non ha effetto e la riga con valore 3 è mantenuta; senza l'istruzione di creazione della tabella entrambi i record sarebbero stati annullati.
 
+    drop table if exists t_1, t_0;
     create table t_0 (n integer);
     DELIMITER $$
     CREATE PROCEDURE p_prova()
     BEGIN
         truncate table t_0; -- DDL
     	insert into t_0 (n) values (1);
-    	**start transaction;**
-    	**insert into t_0 (n) values (2);**
-        **create table t_1 (id int);** -- DDL > commit implicito e SENZA nuovo avvio transazione
-    	**insert into t_0 (n) values (3);**
-        **rollback;**
+    	start transaction;
+    	insert into t_0 (n) values (2);
+        create table t_1 (id int); -- DDL > commit implicito e SENZA nuovo avvio transazione
+    	insert into t_0 (n) values (3);
+        rollback;
     	start transaction;
     	insert into t_0 (n) values (4);
         rollback;
@@ -33,5 +34,13 @@ Nell'esempio seguente la creazione della tabella t_1 causa il salvataggio della 
     DELIMITER ;
     call p_prova();
 
-==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/aa89ca13-8951-4220-9428-2b00160a8044)
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/840aa0ed-bbf9-45fc-8607-f8616230f384)
 
+
+Le DDL possono contenere o meno istruzioni complesse; in queste lezioni saranno esaminati prima gli oggetti che NON prevedono utilizzo di codice nella creazione (database, tabelle, viste e indici) e poi, dopo aver esplicato le strutture complesse ed i costrutti disponibili, quelli che ne prevedono l'utilizzo all'interno (procedure, funzioni, triggers ed eventi, in una definizione semplice gli "stored programs").
+
+Per convenzione nel mondo MySQL per "stored routines" si inte esclusivamente le procedure (Stored procedure) e le funzioni (Stored function).
+Per "stored programs", come detto, si intende triggers ed eventi in aggiunta alle "stored routines".
+Per "stored objects" si intende l'insieme degli oggetti senza codice e degli "stored programs".
+
+Ogni oggetto ha delle istruzioni di creazione (CREATE), modifica (ALTER) ed eliminazione (DROP) con caratteristiche ed opzioni peculiari, che saranno affrontate negli specifici capitoli.
