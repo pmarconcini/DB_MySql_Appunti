@@ -6,6 +6,8 @@
 0.10 [Links e risorse utili](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/010%20%20Links%20e%20risorse%20utili)
 
 0.20 [Installazione e strumenti](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/020%20Installazione%20e%20strumenti.md) (da completare, mancano gli strumenti)
++ https://dev.mysql.com/doc/refman/8.0/en/mysql-shell-userguide.html
+  
 
 0.30 [Concetti generali e RDBS](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/030%20Concetti%20generali%20e%20RDBMS.md) (da fare)
 
@@ -63,7 +65,7 @@
 
 4.10 [Strutture e costrutti del codice](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/410%20Strutture%20e%20costrutti%20del%20codice.md)
 
-4.20 [Definizione delle procedure](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/420%20Definizione%20delle%20procedure.md) (da fare)
+4.20 [Definizione delle procedure](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/420%20Definizione%20delle%20procedure.md)
 
 4.30 [Definizione delle funzioni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/430%20Definizione%20delle%20funzioni.md) (da fare)
 
