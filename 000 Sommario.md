@@ -67,7 +67,7 @@
 
 4.20 [Definizione delle procedure](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/420%20Definizione%20delle%20procedure.md)
 
-4.30 [Definizione delle funzioni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/430%20Definizione%20delle%20funzioni.md) (da fare)
+4.30 [Definizione delle funzioni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/430%20Definizione%20delle%20funzioni.md)
 
 4.40 [Definizione dei trigger](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/440%20Definizione%20dei%20trigger.md) (da fare)
 
