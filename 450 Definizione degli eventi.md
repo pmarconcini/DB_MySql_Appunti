@@ -93,3 +93,30 @@ A seguire un esempio di schedulazione con avvio a 10 secondi di distanza, ripeti
     DELIMITER ;
     SELECT p.* FROM prova p;
 
+
+--------------------------------------
+### ALTER
+
+Tramite l'istruzione ALTER è possibile modificare un evento esistente, utilizzando il template seguente:
+
+    ALTER    [DEFINER = user]    EVENT <nome_evento>
+    ON SCHEDULE  { AT <timestamp> [+ INTERVAL <intervallo>]  |  EVERY <intervallo> [STARTS <timestamp> [+ INTERVAL <intervallo>] ...] [ENDS <timestamp> [+ INTERVAL <intervallo>] ...] }
+    [ON COMPLETION [NOT] PRESERVE]     [ENABLE | DISABLE | DISABLE ON SLAVE]     [COMMENT 'descrizione della schedulata']    [RENAME TO <nuovo_nome_evento>]
+    [DO <body>];
+
+L'intervallo può essere definito tramite una delle seguenti opzioni:  
+{YEAR | QUARTER | MONTH | DAY | HOUR | MINUTE | WEEK | SECOND | YEAR_MONTH | DAY_HOUR | DAY_MINUTE | DAY_SECOND | HOUR_MINUTE | HOUR_SECOND | MINUTE_SECOND}
+
+Le opzioni sono le stesse e con la stessa logica già viste nel paragrafo dedicato alla creazione dell'evento. 
+Rispetto a tale indicazioni si aggiunge l'opzione RENAME TO per rinominare l'evento.
+Se non viene specificata l'opzione DO (ed il relativo body) viene mantenuto il codice impostato precedentemente.
+
+
+
+--------------------------------------
+### DROP
+
+Tramite l'istruzione DROP è possibile eliminare un evento esistente, utilizzando il template seguente:
+
+DROP EVENT [IF EXISTS] <nome_evento>;
+
