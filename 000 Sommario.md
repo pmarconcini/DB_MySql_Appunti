@@ -56,8 +56,6 @@
 
 3.50 [Definizione delle viste](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/350%20Definizione%20delle%20viste.md) 
 
-+MySQL Data Dictionary
-
 -----------------------------------
 ## 4. SQL - DDL, oggetti con codice
 
