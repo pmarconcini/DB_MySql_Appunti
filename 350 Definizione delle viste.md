@@ -12,9 +12,11 @@ L'istruzione è la seguente:
 
     CREATE OR REPLACE] [DEFINER = <nome_utente>] [SQL SECURITY    DEFINER | INVOKER ]
         VIEW <nome_vista> [(<elenco_delle_colonne)]
-        AS <query>;
+        AS <query>
+        [ WITH CHECK OPTION ] ;
 
 Gli attributi DEFINER e SQL SECURITY permettono di stabilire il tipo di verifica dei privilegi al momento dell'utilizzo; se non specificato, il DEFINER è l'utente che ha creato la vista.
+L'opzione WITH CHECK OPTION fa considerare, in caso di DML, la clausola WHERE della vista come vincolante (cioè il record ottenuto dalla DML per essere accettato deve avere le caratteristiche per rientrare in quelli selezionati).
 Per creare una vista è necessario possedere il privilegio CREATE VIEW e i privilegi sulle singole tabelle interessate (o, con l'attributo DEFINER), li deve possedere l'utente indicato.
 Per la sostituzione della vista (OR REPLACE) è necessario avere anche il pivilegio DROP VIEW.
 L' elenco delle colonne è una alternativa allo specificare tutti gli alias di colonna nella clausola SELECT
