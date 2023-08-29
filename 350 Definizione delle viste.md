@@ -48,6 +48,11 @@ E' necessario che l'utente abbia il privilegio DROP VIEW.
 L'istruzione è la seguente:
 
     DROP VIEW [IF EXISTS] <elenco_viste>;
-    
 
+--------------------------
+
+## INFORMAZIONI
+    
+Le informazioni sulle viste possono essere ricavate dalla tabella VIEWS del database INFORMATION_SCHEMA. 
+Si può usare l'istruzione SHOW CREATE VIEW <nome_vista> per ricavare il codice.
 
