@@ -69,9 +69,9 @@
 
 4.30 [Definizione delle funzioni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/430%20Definizione%20delle%20funzioni.md)
 
-4.40 [Definizione dei trigger](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/440%20Definizione%20dei%20trigger.md) (da fare)
+4.40 [Definizione dei trigger](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/440%20Definizione%20dei%20trigger.md)
 
-4.50 [Definizione degli eventi](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/450%20Definizione%20degli%20eventi.md) (da fare)
+4.50 [Definizione degli eventi](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/450%20Definizione%20degli%20eventi.md) (WIP)
 
 +Stored Objects
 
