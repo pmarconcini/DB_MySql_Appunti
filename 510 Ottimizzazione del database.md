@@ -36,3 +36,44 @@
 
 ### Concorrenza
   https://dev.mysql.com/doc/refman/8.0/en/locking-issues.html
+
+
+-----------------------------------
+## Utilizzo del PERFORMANCE_SCHEMA
+
+Per una trattazione completa si rimanda alla [documentazione ufficiale](https://dev.mysql.com/doc/refman/8.0/en/performance-schema.html).
+
+Il PERFORMANCE_SCHEMA è un database a cui si può accedere per monitorare le performance tramite tabelle gestite autonomamente da MySQL; in particolare il monitoraggio è relativo alle attività del server e delle loro tempistiche.Sono disponibili sia i dati correnti che i dati storici e aggregati.
+Attivare il PERFORMANCE_SCHEMA non causa variazioni nel comportamento generale del server, nè impatta sulle fnzionalità, neanche in caso di problemi o errori interni al servizio.
+
+Il servizio è abilitato come scelta predefinita in fase di installazione e lo stato è impostabile da file di configurazione (performance_schema=ON)
+
+Per visualizzare lo stato:
+
+    SHOW VARIABLES LIKE 'performance_schema';
+
+
+Per conoscere le tabelle disponibili:
+
+    SHOW TABLES FROM performance_schema;
+
+    
+Non tutte le funzioni sono abilitate di default ed è possibile intervenire direttamente in tabella:
+
+    SELECT NAME, ENABLED, TIMED FROM performance_schema.setup_instruments;
+    UPDATE performance_schema.setup_instruments SET ENABLED = 'YES', TIMED = 'YES';
+
+    SELECT * FROM performance_schema.setup_consumers;
+    UPDATE performance_schema.setup_consumers SET ENABLED = 'YES';
+
+
+Attivati i servizi, per conoscere le attività correnti e storiche (10000 azioni) del database:
+
+    SELECT * FROM performance_schema.events_waits_current;
+    
+    SELECT EVENT_ID, EVENT_NAME, TIMER_WAIT FROM performance_schema.events_waits_history WHERE THREAD_ID = 13 ORDER BY EVENT_ID;
+
+    SELECT EVENT_NAME, COUNT_STAR FROM performance_schema.events_waits_summary_global_by_event_name ORDER BY COUNT_STAR DESC LIMIT 10;
+
+
+
