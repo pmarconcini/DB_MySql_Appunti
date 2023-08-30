@@ -74,14 +74,12 @@
 
 5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) 
 
-5.20 [Data Dictionary e INFORMATION_SCHEMA](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/520%20Data%20Dictionary%20e%20INFORMATION_SCHEMA.md) (da fare)
+5.20 [Data Dictionary e INFORMATION_SCHEMA](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/520%20Data%20Dictionary%20e%20INFORMATION_SCHEMA.md)
 
 5.30 [Messaggi di errore e problemi comuni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/530%20Messaggi%20di%20errore%20e%20problemi%20comuni.md) (da fare)
 
 +https://dev.mysql.com/doc/refman/8.0/en/get-diagnostics.html
 
-+MySQL Data Dictionary
-+INFORMATION_SCHEMA Tables
 +MySQL Performance Schema
 +MySQL sys Schema
 +Connectors and APIs
