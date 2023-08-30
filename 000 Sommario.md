@@ -72,18 +72,16 @@
 -----------------------------------
 ## 5. Informazioni, errori frequenti e soluzioni
 
-5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) 
+5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) (WIP)
++MySQL Performance Schema
++MySQL sys Schema
 
 5.20 [Data Dictionary e INFORMATION_SCHEMA](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/520%20Data%20Dictionary%20e%20INFORMATION_SCHEMA.md)
 
 5.30 [Messaggi di errore e problemi comuni](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/530%20Messaggi%20di%20errore%20e%20problemi%20comuni.md) (da fare)
-
 +https://dev.mysql.com/doc/refman/8.0/en/get-diagnostics.html
-
-+MySQL Performance Schema
-+MySQL sys Schema
-+Connectors and APIs
 +Error Messages and Common Problems
+
 
 -----------------------------------
 ## 6. Snippets e focus
@@ -99,6 +97,7 @@
 +Windows function +Partitioning
 ==> https://dev.mysql.com/doc/refman/8.0/en/window-function-descriptions.html
 
++Connectors and APIs
 
 
 
