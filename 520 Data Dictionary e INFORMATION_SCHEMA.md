@@ -9,7 +9,13 @@ Le informazioni sono distribuite in tabelle read-only gestite autonmamente dal s
 
 E' possibile recuperare le informazioni direttamente dalle tabelle tramite una query standard su INFORMATION_SCHEMA.<oggetti> o utilizzando il set di istruzioni SHOW <oggetti>: una SELECT offre più possibilità perchè espone più dati e sono utilizzabili tutte le caratteristiche di SQL, mentre con SHOW è possibile applicare esclusivaente la condizione di filtro LIKE, come da template a seguire:
 
-    SHOW <oggetti> [ LIKE '%%' ];
+    SHOW <oggetti>    [ FROM { INFORMATION_SCHEMA | <database> } ]     [ [ WHERE <nome_colonna> ] LIKE '%<testo>%' ];
+
+
+Segue un esempio con filtro (attenzione al tipo di apice):
+
+    SHOW CHARACTER SET WHERE `Default collation` LIKE '%latin%';
+
 
 I dati ottenuti sono spesso legati ai privilegi dell'utente che vi accede: quando l'utente NON ha un privilegio richiesto per il dato esso è trasformato automaticamente in NULL.
 
@@ -42,3 +48,21 @@ A seguire le viste consultabili di maggior importanza, consultabili con le istru
 - TRIGGERS	> triggers
 - USER_PRIVILEGES	> privilegi degli utenti
 - VIEWS	> viste
+
+
+--------------------------------
+### Estensioni dell'istruzione SHOW
+
+Sono disponibili alcune estensioni dell'istruzione SHOW, per agevolare la ricerca di metadati:
+
+    SHOW TABLES FROM INFORMATION_SCHEMA; -- elenca le viste del database virtuale INFORMATION_SCHEMA
+    SHOW CHARACTER SET;
+    SHOW COLLATION;
+    SHOW FUNCTION STATUS;
+    SHOW INDEX;
+    SHOW OPEN TABLES;
+    SHOW PROCEDURE STATUS;
+    SHOW STATUS;
+    SHOW TABLE STATUS;
+    SHOW VARIABLES;
+
