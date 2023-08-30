@@ -25,7 +25,7 @@ I dati ottenuti sono spesso legati ai privilegi dell'utente che vi accede: quand
 
 Per l'elenco completo delle viste e dei dati esposti si rimanda alla [documentazione ufficiale](https://dev.mysql.com/doc/refman/8.0/en/information-schema-general-table-reference.html).
 
-A seguire le viste consultabili di maggior importanza, consultabili con le istruzioni viste in precedenza (as esempio SELECT * FROM INFORMATION_SCHEMA.TABLES; o SHOW TABLES;):
+A seguire le viste consultabili di maggior importanza, consultabili con le istruzioni viste in precedenza (as esempio SELECT * FROM INFORMATION_SCHEMA.TABLES;):
 
 - CHARACTER_SETS > set di caratteri disponibili
 - COLLATIONS	> set di collezioni disponibili per ogni character set
