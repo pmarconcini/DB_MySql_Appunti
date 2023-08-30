@@ -73,8 +73,6 @@
 ## 5. Informazioni, errori frequenti e soluzioni
 
 5.10 [Ottimizzazione del database](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/510%20Ottimizzazione%20del%20database.md) (WIP)
-+MySQL Performance Schema
-+MySQL sys Schema
 
 5.20 [Data Dictionary e INFORMATION_SCHEMA](https://github.com/pmarconcini/DB_MySql_Appunti/blob/master/520%20Data%20Dictionary%20e%20INFORMATION_SCHEMA.md)
 
