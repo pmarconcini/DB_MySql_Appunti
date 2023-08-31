@@ -1,10 +1,10 @@
 # Messaggi di errore e problemi comuni
+-----------------------------------------------------
+
+[Documentazione ufficiale per i problemi più comuni](https://dev.mysql.com/doc/refman/8.0/en/common-errors.html)
 
 -----------------------------------------------------
-## MySQL Database (SQL)
-
------------------------------------------------------
-### Criteri generali
+## Criteri generali
 
 Il messaggio di errore può essere generato lato client o lato server.
 In caso di errore lato server, lo stesso scrive informazioni in vari sistemi di logging disponibili per i DBA e manda una notifica di errore all'eventuale client che ha fatto la richiesta.
@@ -14,74 +14,43 @@ Gli elementi che costituiscono la notifica di un errore sono:
 - un Error code: valore numerico, in un elenco specifico di MySQL; ogni valore ha un corrispondente valore simbolico identificativo (a.e. per 1146 è ER_NO_SUCH_TABLE)
 - il valore di SQLSTATE
 - un testo descrittivo
+
+
+Per poter avere informazioni su errori e segnalazioni si può usare le seguenti istruzioni:
+
+    SHOW WARNINGS;
+    SHOW ERRORS ;
   
 
+-----------------------------------------------------
+#### Valore di SQLSTATE
+
+E' un valore costituito da 5 caratteri di tipo stringa (ad esempio '42S02'). 
+
+I primi due caratteri indicano la classe:
+- '00' indica successo
+- '01' indica un warning (avvertimento)
+- '02' indica la situazione "not found" (tipicamente una istruzione SELECT ... INTO che non restituisce record.
+- maggiore di '02' indica un errore (o eccezione).
+
+Per alcuni errori lato server e per tutti quelli lato client SQLSTATE assume il valore 'HY000' (errore generale).
 
 
-***********************************************
+-----------------------------------------------------
+#### Error Code
+
+I codici errore sono raggruppati in range come segue:
+- da 1 a 999: codici errore globali (range usato sia lato server che client).
+- da 1000 a 1999: Errori lato server per invio al client.
+- da 2000 a 2999: Errori lato client.
+- da 3000 a 4999: Errori lato server per invio al client.
+- da 5000 a 5999: Errori X Plugin per invio al client.
+- da 10000 a 49999: Errori lato server non inviati al client.
+- da 50000 a 51999: Errori legati a prodotti di terze parti.
 
 
-The set of error codes used in error messages is partitioned into distinct ranges; see Error Code Ranges.
-
-Error codes are stable across General Availability (GA) releases of a given MySQL series. Before a series reaches GA status, new codes may still be under development and are subject to change.
-
-SQLSTATE value: This value is a five-character string (for example, '42S02'). SQLSTATE values are taken from ANSI SQL and ODBC and are more standardized than the numeric error codes. The first two characters of an SQLSTATE value indicate the error class:
-
-Class = '00' indicates success.
-
-Class = '01' indicates a warning.
-
-Class = '02' indicates “not found.” This is relevant within the context of cursors and is used to control what happens when a cursor reaches the end of a data set. This condition also occurs for SELECT ... INTO var_list statements that retrieve no rows.
-
-Class > '02' indicates an exception.
-
-For server-side errors, not all MySQL error numbers have corresponding SQLSTATE values. In these cases, 'HY000' (general error) is used.
-
-For client-side errors, the SQLSTATE value is always 'HY000' (general error), so it is not meaningful for distinguishing one client error from another.
-
-Message string: This string provides a textual description of the error.
-
-Error Code Ranges
-The set of error codes used in error messages is partitioned into distinct ranges, each with its own purpose:
-
-1 to 999: Global error codes. This error code range is called “global” because it is a shared range that is used by the server as well as by clients.
-
-When an error in this range originates on the server side, the server writes it to the error log, padding the error code with leading zeros to six digits and adding a prefix of MY-.
-
-When an error in this range originates on the client side, the client library makes it available to the client program with no zero-padding or prefix.
-
-1,000 to 1,999: Server error codes reserved for messages sent to clients.
-
-2,000 to 2,999: Client error codes reserved for use by the client library.
-
-3,000 to 4,999: Server error codes reserved for messages sent to clients.
-
-5,000 to 5,999: Error codes reserved for use by X Plugin for messages sent to clients.
-
-10,000 to 49,999: Server error codes reserved for messages to be written to the error log (not sent to clients).
-
-When an error in this range occurs, the server writes it to the error log, padding the error code with leading zeros to six digits and adding a prefix of MY-.
-
-50,000 to 51,999: Error codes reserved for use by third parties.
-
-The server handles error messages written to the error log differently from error messages sent to clients:
-
-When the server writes a message to the error log, it pads the error code with leading zeros to six digits and adds a prefix of MY- (examples: MY-000022, MY-010048).
-
-When the server sends a message to a client program, it adds no zero-padding or prefix to the error code (examples: 1036, 3013).
-
-
-
-
-
-
-
-
-
-
-
-**********************************************
-
+-----------------------------------------------------
+## MySQL Database (SQL)
 
 -----------------------------------------------------
 ### Error Code: 1175 - SAFE UPDATE MODE
