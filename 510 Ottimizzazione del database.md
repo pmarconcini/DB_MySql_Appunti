@@ -28,11 +28,40 @@
   - Se tutti i campi riferiti nelle clausole ORDER BY e GROUP BY sono nella stessa tabella è preferibile prtire da essa nella query
   - Se tutti i campi necessari sono presenti in un indice MySql utilizzerà direttamente l'indice come sorgente
 
-### EXPLAIN (@TODO)
-  https://dev.mysql.com/doc/refman/8.0/en/using-explain.html
+### EXPLAIN
+
+Per una trattazione completa si rimanda alla [documentazione ufficiale](https://dev.mysql.com/doc/refman/8.0/en/using-explain.html)
+
+L'istruzione EXPLAIN fornisce la spiegazione del piano di esecuzione di una query (SELECT, DELETE, INSERT, REPLACE e UPDATE), ma senza estrarre realmente i dati.
+
+Una attenta lettura ed interpretazione dell'output permette di identificare eventuali punti di rallentamento delle operazioni.
+
+E' possibile ricavare ulteriori informazioni eseguento a seguire l'istruzione SHOW WARNINGS.
+
+Lo script è:
+
+    EXPLAIN <istruzione_sql>;
+
+
+A seguire un esempio e l'output prodotto:
+
+    EXPLAIN SELECT d.dname, d.loc, e.ename, e.sal FROM emp e INNER JOIN dept d ON e.deptno = d.deptno
+    WHERE e.SAL > 1000 AND d.loc NOT IN ('NEW YORK', 'BOSTON') ORDER BY e.sal DESC;
+    
+    SHOW WARNINGS;
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/f1c5ae1b-b72b-47b3-8ced-e58ee5c9d325)
+
+==> ![image](https://github.com/pmarconcini/DB_MySql_Appunti/assets/82878995/b526420d-e30b-4a56-a4fa-f47bb0bfcbc6)
+
+La colonna Message riporta la query riadattata da MySQL:
+/* select#1 */ select `scott`.`d`.`DNAME` AS `dname`,`scott`.`d`.`LOC` AS `loc`,`scott`.`e`.`ENAME` AS `ename`,`scott`.`e`.`SAL` AS `sal` from `scott`.`emp` `e` join `scott`.`dept` `d` where ((`scott`.`e`.`DEPTNO` = `scott`.`d`.`DEPTNO`) and (`scott`.`e`.`SAL` > 1000) and (`scott`.`d`.`LOC` not in ('NEW YORK','BOSTON'))) order by `scott`.`e`.`SAL` desc
+
+
 
 ### Buffer e cache (@TODO)
   https://dev.mysql.com/doc/refman/8.0/en/buffering-caching.html
+
 
 ### Concorrenza
   https://dev.mysql.com/doc/refman/8.0/en/locking-issues.html
