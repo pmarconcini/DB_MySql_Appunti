@@ -91,6 +91,12 @@
 ==>  https://dev.mysql.com/doc/refman/8.0/en/json-functions.html
 
 +Scrivere e leggere file
+==> https://dev.mysql.com/doc/refman/8.0/en/load-data.html
+==> https://dev.mysql.com/doc/refman/8.0/en/load-xml.html
+==> https://dev.mysql.com/doc/refman/8.0/en/import-table.html
+==> https://dev.mysql.com/doc/refman/8.0/en/select-into.html
+==> https://chartio.com/resources/tutorials/importing-from-and-exporting-to-files-using-the-mysql-command-line/
+
 
 +Windows function +Partitioning
 ==> https://dev.mysql.com/doc/refman/8.0/en/window-function-descriptions.html
